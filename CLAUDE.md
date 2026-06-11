@@ -8,9 +8,24 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 ## Estado do projeto
 
 - **Fase atual: Fase 0 — Sprites** (em andamento)
-- Aguardando: fotos reais da Kiara em `./reference/` para extrair paleta exata
-- Paleta inicial proposta em `sprites/palette.json` (baseada na descrição da raça;
-  será refinada com as fotos)
+- Fotos reais recebidas em `./reference/` (12 fotos, incluindo câmera noturna,
+  peitoral teal e suéter listrado)
+- Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem
+  de pixels. **Aguardando aprovação da paleta** antes do primeiro sprite.
+- Pendências de confirmação com o dono: cor real do potinho (chutei vermelho) e
+  formato do rabo (curto/amputado vs. comprido — afeta animação de abanar).
+
+### Observações de anatomia (das fotos)
+
+- Orelhas MUITO grandes, pontudas e abertas (quase de morcego) — marca registrada.
+- Focinho fino; grisalho denso no focinho, queixo, sobrancelhas e ao redor dos
+  olhos; pelos brancos salpicados pela cabeça.
+- Tan: bochechas, sobrancelhas (pontinhos), garganta, peito (com mancha clara
+  cremosa no centro), pernas e patas.
+- Olhos grandes com leve névoa azulada de idade (catarata senil) — usar a cor
+  E #4a4854 em vez de castanho-escuro: detalhe autêntico dela.
+- Corpo compacto e robusto, pernas finas.
+- Usa às vezes bandana/coleira vermelha (fotos), peitoral teal no passeio.
 
 ## Fases
 

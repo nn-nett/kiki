@@ -1,43 +1,45 @@
 {
-  "_comment": "Paleta inicial da Kiara — proposta baseada na descrição (Pinscher preto e tan, idosa). Será refinada com as fotos de reference/. Cada chave de 1 letra é usada nas matrizes de pixels dos sprites.",
+  "_comment": "Paleta da Kiara v2 — extraída das fotos reais em reference/ (amostragem de pixels) e ajustada para legibilidade em pixel art 48x48. Cada chave de 1 letra é usada nas matrizes de pixels dos sprites. '.' = transparente.",
   "groups": {
     "pelagem_preta": {
-      "K": { "hex": "#1b1b1f", "name": "preto principal (corpo)" },
-      "k": { "hex": "#2e2e35", "name": "preto highlight (brilho do pelo)" },
-      "X": { "hex": "#0c0c0e", "name": "preto sombra/contorno" }
+      "K": { "hex": "#17171b", "name": "preto principal (corpo)", "fonte": "dorso #0c0a0f, clareado p/ contraste" },
+      "k": { "hex": "#2e3039", "name": "preto highlight (brilho azulado do pelo)", "fonte": "pescoço ao sol #1a2437" },
+      "X": { "hex": "#0a0a0c", "name": "preto contorno/sombra" }
     },
     "marcacoes_tan": {
-      "T": { "hex": "#a5662f", "name": "tan principal (peito, patas, sobrancelhas, focinho)" },
-      "t": { "hex": "#c4884d", "name": "tan claro (highlight)" },
-      "D": { "hex": "#7c4a20", "name": "tan escuro (sombra)" }
+      "T": { "hex": "#8a4f2c", "name": "tan principal (bochechas, peito, pernas)", "fonte": "pata #894c2b" },
+      "t": { "hex": "#b3753f", "name": "tan claro (highlight, sobrancelhas)" },
+      "D": { "hex": "#5e3018", "name": "tan escuro (sombra)", "fonte": "pescoço #733114" }
     },
     "grisalho_idade": {
-      "G": { "hex": "#c9c4bb", "name": "grisalho (focinho, ao redor dos olhos)" },
-      "W": { "hex": "#eceae5", "name": "branco-grisalho (pelos salpicados)" }
+      "G": { "hex": "#a09287", "name": "grisalho sal-e-pimenta (focinho, queixo, ao redor dos olhos)", "fonte": "focinho #6c5a54 clareado" },
+      "W": { "hex": "#ddd5c9", "name": "branco-grisalho (pelos salpicados, mancha do peito)" }
     },
     "rosto": {
-      "E": { "hex": "#3a2716", "name": "olho castanho-escuro" },
-      "N": { "hex": "#101012", "name": "nariz" },
+      "E": { "hex": "#4a4854", "name": "olho com névoa azulada (idade)", "fonte": "olho #806f77" },
+      "e": { "hex": "#1b1820", "name": "contorno do olho" },
+      "N": { "hex": "#121214", "name": "nariz" },
       "P": { "hex": "#d98d8d", "name": "língua/rosa" },
       "B": { "hex": "#ffffff", "name": "brilho do olho" }
     },
     "camera_noturna": {
-      "S": { "hex": "#141418", "name": "silhueta noturna" },
-      "O": { "hex": "#ffffff", "name": "olhos brilhantes" },
-      "o": { "hex": "#cdeefb", "name": "glow dos olhos" }
+      "S": { "hex": "#111114", "name": "silhueta noturna", "fonte": "corpo #0a080b" },
+      "s": { "hex": "#26242a", "name": "silhueta highlight (contra o fundo)", "fonte": "fundo #262427" },
+      "O": { "hex": "#ffffff", "name": "olhos brilhantes", "fonte": "foto noturna #ffffff" },
+      "o": { "hex": "#cfe8f7", "name": "glow dos olhos" }
     },
     "acessorios": {
-      "H": { "hex": "#3aa8a0", "name": "peitoral teal/verde-água" },
-      "L": { "hex": "#1a1a1e", "name": "guia preta (corda)" },
-      "Y": { "hex": "#e6c63d", "name": "detalhe amarelo da guia" }
+      "H": { "hex": "#3fa8ad", "name": "peitoral teal/verde-água", "fonte": "peitoral #53bec8 sol / #5b9494 sombra" },
+      "L": { "hex": "#1c1c20", "name": "guia preta (corda)" },
+      "Y": { "hex": "#e3c23c", "name": "detalhe amarelo da guia" }
     },
     "sueter": {
-      "U": { "hex": "#202024", "name": "suéter preto" },
-      "u": { "hex": "#e7e7e4", "name": "listras brancas do suéter" }
+      "U": { "hex": "#232428", "name": "suéter preto", "fonte": "suéter #2b2c2d" },
+      "u": { "hex": "#cfccc4", "name": "listras claras do suéter" }
     },
     "objetos": {
       "R": { "hex": "#b3702f", "name": "ração" },
-      "V": { "hex": "#c0392b", "name": "potinho (vermelho)" },
+      "V": { "hex": "#c0392b", "name": "potinho (vermelho — CONFIRMAR cor real)" },
       "v": { "hex": "#8e2a1f", "name": "potinho sombra" },
       "C": { "hex": "#6e4a23", "name": "cocô" },
       "c": { "hex": "#8a5e2e", "name": "cocô claro" }
