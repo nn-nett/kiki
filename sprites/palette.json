@@ -1,0 +1,46 @@
+{
+  "_comment": "Paleta inicial da Kiara — proposta baseada na descrição (Pinscher preto e tan, idosa). Será refinada com as fotos de reference/. Cada chave de 1 letra é usada nas matrizes de pixels dos sprites.",
+  "groups": {
+    "pelagem_preta": {
+      "K": { "hex": "#1b1b1f", "name": "preto principal (corpo)" },
+      "k": { "hex": "#2e2e35", "name": "preto highlight (brilho do pelo)" },
+      "X": { "hex": "#0c0c0e", "name": "preto sombra/contorno" }
+    },
+    "marcacoes_tan": {
+      "T": { "hex": "#a5662f", "name": "tan principal (peito, patas, sobrancelhas, focinho)" },
+      "t": { "hex": "#c4884d", "name": "tan claro (highlight)" },
+      "D": { "hex": "#7c4a20", "name": "tan escuro (sombra)" }
+    },
+    "grisalho_idade": {
+      "G": { "hex": "#c9c4bb", "name": "grisalho (focinho, ao redor dos olhos)" },
+      "W": { "hex": "#eceae5", "name": "branco-grisalho (pelos salpicados)" }
+    },
+    "rosto": {
+      "E": { "hex": "#3a2716", "name": "olho castanho-escuro" },
+      "N": { "hex": "#101012", "name": "nariz" },
+      "P": { "hex": "#d98d8d", "name": "língua/rosa" },
+      "B": { "hex": "#ffffff", "name": "brilho do olho" }
+    },
+    "camera_noturna": {
+      "S": { "hex": "#141418", "name": "silhueta noturna" },
+      "O": { "hex": "#ffffff", "name": "olhos brilhantes" },
+      "o": { "hex": "#cdeefb", "name": "glow dos olhos" }
+    },
+    "acessorios": {
+      "H": { "hex": "#3aa8a0", "name": "peitoral teal/verde-água" },
+      "L": { "hex": "#1a1a1e", "name": "guia preta (corda)" },
+      "Y": { "hex": "#e6c63d", "name": "detalhe amarelo da guia" }
+    },
+    "sueter": {
+      "U": { "hex": "#202024", "name": "suéter preto" },
+      "u": { "hex": "#e7e7e4", "name": "listras brancas do suéter" }
+    },
+    "objetos": {
+      "R": { "hex": "#b3702f", "name": "ração" },
+      "V": { "hex": "#c0392b", "name": "potinho (vermelho)" },
+      "v": { "hex": "#8e2a1f", "name": "potinho sombra" },
+      "C": { "hex": "#6e4a23", "name": "cocô" },
+      "c": { "hex": "#8a5e2e", "name": "cocô claro" }
+    }
+  }
+}
