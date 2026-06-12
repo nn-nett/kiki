@@ -61,11 +61,22 @@ só marcar como ✅ com aprovação explícita.
 
 ## Decisões técnicas
 
-- Sprites gerados pixel a pixel via matrizes de caracteres → cores da paleta
-  (cada letra na matriz mapeia para uma cor em `palette.json`). Fácil de editar
-  e versionar em git.
-- Resolução 48x48, fundo transparente, sem anti-aliasing; previews ampliados
-  com nearest-neighbor.
+- **Estratégia de produção (decidida com o dono após iterações)**: adaptar um
+  spritesheet de cachorro pronto (CC0, ex. Husky Sprites do OpenGameArt) em vez
+  de desenhar do zero — extrair frames, recolorir para a paleta da Kiara e
+  ajustar detalhes dela (orelhas grandes, focinho grisalho, rabo curvado).
+  O dono baixa e anexa o sheet (rede do sandbox bloqueia sites de assets;
+  só GitHub passa).
+- Pipeline pronto em `sprites/tools/`: `sheet_extract.py` (recorte + fundo
+  transparente + truque NES de cor emparedada), `recolor.py` (mapa de cores →
+  paleta), `animate.py` (GIF de preview nearest-neighbor alinhado pela base),
+  `pack.py` (spritesheet final + JSON de animações compartilhado desktop/
+  Android), `spritegen.py` (matriz de caracteres → PNG, p/ retoques manuais),
+  `photo2matrix.py` (foto → matriz, experimental).
+- Pipeline validado de ponta a ponta com sprites do FF1 (Black Mage) enviados
+  pelo dono — material Square Enix, só teste local, fora do git (.gitignore).
+- Resolução nativa pequena (16–24 px) ampliada 2x sem anti-aliasing; matrizes
+  de caracteres (`sprites/frames/*.txt`) seguem disponíveis para edição fina.
 - Skin do suéter: decisão pendente (overlay vs. variante completa) — escolher a
   mais simples quando a pose base estiver aprovada.
 
