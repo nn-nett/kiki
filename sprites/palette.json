@@ -38,9 +38,9 @@
       "u": { "hex": "#cfccc4", "name": "listras claras do suéter" }
     },
     "objetos": {
-      "R": { "hex": "#b3702f", "name": "ração" },
-      "V": { "hex": "#c0392b", "name": "potinho (vermelho — CONFIRMAR cor real)" },
-      "v": { "hex": "#8e2a1f", "name": "potinho sombra" },
+      "R": { "hex": "#caa169", "name": "ração (clara p/ contrastar com o barro)" },
+      "V": { "hex": "#b06b42", "name": "potinho de barro (terracota)" },
+      "v": { "hex": "#7d4426", "name": "potinho sombra/interior" },
       "C": { "hex": "#6e4a23", "name": "cocô" },
       "c": { "hex": "#8a5e2e", "name": "cocô claro" }
     }
