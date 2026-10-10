@@ -13,21 +13,7 @@ from pathlib import Path
 
 from PIL import Image
 
-SPRITES_DIR = Path(__file__).resolve().parent.parent
-
-
-def hex2rgb(s):
-    s = s.lstrip("#")
-    return tuple(int(s[i : i + 2], 16) for i in (0, 2, 4))
-
-
-def palette_letters():
-    data = json.loads((SPRITES_DIR / "palette.json").read_text())
-    out = {}
-    for group in data["groups"].values():
-        for key, info in group.items():
-            out[key] = hex2rgb(info["hex"])
-    return out
+from common import hex2rgb, load_palette
 
 
 def main():
@@ -39,7 +25,7 @@ def main():
                     help="lista cores do sprite que não foram mapeadas")
     args = ap.parse_args()
 
-    letters = palette_letters()
+    letters = load_palette()
     rawmap = json.loads(Path(args.mapfile).read_text())
     cmap = {}
     for src, dst in rawmap.items():

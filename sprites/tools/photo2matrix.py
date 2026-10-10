@@ -9,32 +9,11 @@ Uso:
       --crop 0.36 0.05 0.84 0.34 --size 24 24
 """
 import argparse
-import json
 from pathlib import Path
 
 from PIL import Image
 
-SPRITES_DIR = Path(__file__).resolve().parent.parent
-
-
-def load_palette():
-    data = json.loads((SPRITES_DIR / "palette.json").read_text())
-    colors = {}
-    for group in data["groups"].values():
-        for key, info in group.items():
-            h = info["hex"].lstrip("#")
-            colors[key] = tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
-    return colors
-
-
-def nearest(rgb, palette):
-    # distância ponderada (olho humano é mais sensível ao verde)
-    best, bk = None, None
-    for k, (r, g, b) in palette.items():
-        d = 3 * (rgb[0] - r) ** 2 + 4 * (rgb[1] - g) ** 2 + 2 * (rgb[2] - b) ** 2
-        if best is None or d < best:
-            best, bk = d, k
-    return bk
+from common import load_palette, nearest_letter
 
 
 def main():
@@ -55,7 +34,7 @@ def main():
     palette = load_palette()
     rows = []
     for y in range(small.height):
-        rows.append("".join(nearest(small.getpixel((x, y)), palette)
+        rows.append("".join(nearest_letter(small.getpixel((x, y)), palette)
                             for x in range(small.width)))
     out = Path(args.out)
     out.write_text("\n".join(rows) + "\n")
