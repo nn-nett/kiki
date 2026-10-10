@@ -12,10 +12,35 @@ from pathlib import Path
 
 from PIL import Image
 
+from common import hex2rgb
 
-def hex2rgb(s):
-    s = s.lstrip("#")
-    return tuple(int(s[i : i + 2], 16) for i in (0, 2, 4))
+
+def save_gif(imgs, out, durations, scale=10, bg="#46464c"):
+    """Salva GIF: frames ampliados, alinhados pela base, sobre fundo sólido.
+
+    durations: um número (ms p/ todos) ou lista com um valor por frame.
+    """
+    imgs = [im.convert("RGBA") for im in imgs]
+    if isinstance(durations, int):
+        durations = [durations] * len(imgs)
+    w = max(i.width for i in imgs)
+    h = max(i.height for i in imgs)
+    bg = (hex2rgb(bg) if isinstance(bg, str) else tuple(bg)) + (255,)
+    s = scale
+
+    rendered = []
+    for im in imgs:
+        canvas = Image.new("RGBA", (w * s, h * s), bg)
+        big = im.resize((im.width * s, im.height * s), Image.NEAREST)
+        # alinha pela base, centraliza na horizontal
+        canvas.alpha_composite(big, ((w - im.width) * s // 2, (h - im.height) * s))
+        rendered.append(canvas.convert("P", palette=Image.ADAPTIVE))
+
+    rendered[0].save(
+        out, save_all=True, append_images=rendered[1:],
+        duration=list(durations), loop=0, disposal=2,
+    )
+    print(f"gif: {out} ({len(rendered)} frames)")
 
 
 def main():
@@ -27,25 +52,8 @@ def main():
     ap.add_argument("--bg", default="#46464c")
     args = ap.parse_args()
 
-    imgs = [Image.open(f).convert("RGBA") for f in args.frames]
-    w = max(i.width for i in imgs)
-    h = max(i.height for i in imgs)
-    bg = hex2rgb(args.bg) + (255,)
-    s = args.scale
-
-    rendered = []
-    for im in imgs:
-        canvas = Image.new("RGBA", (w * s, h * s), bg)
-        big = im.resize((im.width * s, im.height * s), Image.NEAREST)
-        # alinha pela base, centraliza na horizontal
-        canvas.alpha_composite(big, ((w - im.width) * s // 2, (h - im.height) * s))
-        rendered.append(canvas.convert("P", palette=Image.ADAPTIVE))
-
-    rendered[0].save(
-        args.out, save_all=True, append_images=rendered[1:],
-        duration=args.duration, loop=0, disposal=2,
-    )
-    print(f"gif: {args.out} ({len(rendered)} frames, {args.duration}ms)")
+    imgs = [Image.open(f) for f in args.frames]
+    save_gif(imgs, args.out, args.duration, scale=args.scale, bg=args.bg)
 
 
 if __name__ == "__main__":
