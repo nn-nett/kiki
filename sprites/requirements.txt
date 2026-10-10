@@ -1,0 +1,2 @@
+Pillow>=12
+unfake>=1.0.7
