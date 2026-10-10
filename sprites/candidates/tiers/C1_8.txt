@@ -1,0 +1,10 @@
+# origem: C1_canva_thumb.jpg | normalize.py (unfake) | 8x8
+# escala detectada: 11x | fundo: #34cc39 | bbox 12x16 -> 6x8 | max-colors 16
+......K.
+....KKK.
+....KTK.
+..KKKT..
+.KKKKK..
+.KKKKK..
+....KK..
+.T......

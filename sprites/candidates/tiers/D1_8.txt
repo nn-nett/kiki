@@ -1,0 +1,10 @@
+# origem: D1_figma_gptimage_thumb.jpg | normalize.py (unfake) | 8x8
+# escala detectada: 3x | fundo: #04f904 | bbox 55x76 -> 6x8 | max-colors 16
+....T.T.
+....KKK.
+....KKK.
+....KG..
+..KKKK..
+.KKKKK..
+.KK.....
+.KK.KK..

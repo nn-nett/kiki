@@ -28,6 +28,41 @@ seguram um ciclo de autocrítica antes de te mostrar qualquer coisa. Resultado f
 - Modelos: **Opus, Sonnet e Haiku 5.5 com papéis fixos** (tabela abaixo), usados como
   subagentes.
 
+## Revisão 1 — quatro tamanhos (decidido com o dono depois do primeiro bake-off)
+
+Esta seção vale por cima de qualquer menção a "24x24" no resto do plano.
+
+- **4 níveis de detalhe, tamanho e cores sobem juntos:**
+
+  | Nível | Quadro | Cores | Uso |
+  |---|---|---|---|
+  | "8-bit" mínimo | 8x8 | 3 (K T G) | ícone da bandeja (tray) |
+  | "8-bit" | 16x16 | ~8 (K k T D G W E N) | taskbar em 2x, visual retrô |
+  | "16-bit" | 32x32 | ~11 (X K k D T t G W E B N) | **sprite principal da taskbar (1x)** |
+  | "32/64-bit" | 64x64 | paleta da cachorra toda (sem acessórios) | Android e telas grandes |
+
+  Mais que 64 é exagero (palavras do dono).
+- **O dono gostou de duas rotas: B (foto→pixels) e C1 (Canva)**, e pediu pra dar mais
+  peso a elas. Elas lideram: a pose base em pé nasce do C1 em 64 (perfil limpo de
+  sprite), com os detalhes reais da B (grisalho do focinho, brilho da pelagem).
+- **Mestre em 64 → 32 semi-automático → 16 e 8 redesenhados à mão.** Os testes mostraram
+  que redução automática funciona até 32 e vira borrão em 16 e 8. Nesses dois cada pixel
+  conta, então é onde entra o loop pixel a pixel (rota E): o Sonnet redesenha, o alvo do
+  "olho automático" é a versão 32 reduzida e o Haiku julga A/B.
+- **Boneco articulado por tamanho:** peças em `sprites/parts/<tamanho>/` e receitas em
+  `sprites/anims/<tamanho>/`. O Sonnet porta as receitas entre tamanhos (mesmas poses,
+  coordenadas na escala de cada um). O 8x8 tem só pose parada + 1 piscada.
+- **Contorno pra taskbar escura:** cor G (contraste 5,4 no escuro e 2,7 no claro; o `k`
+  dá só 1,24 e não resolve). Decisão final com o dono, vendo lado a lado.
+- **Rota A original (desenhar direto em 24x24) foi cancelada** e passa a ser o redesenho
+  à mão dos níveis 16 e 8.
+- Ferramentas novas: `photo2sprite.py` (rota B em qualquer tamanho) e `tiers_board.py`
+  (quadro comparativo dos 4 tamanhos + taskbar). `similarity.py` precisa aceitar outros
+  tamanhos além de 24 (alvo por tamanho).
+- Fotos novas em `reference/`: dormindo enrolada (pose "dormindo"), deitada lambendo
+  (língua `P`), e de cima com bandana vermelha (mostra o tamanho do toquinho: curto, preto,
+  pra cima/trás).
+
 ## A ideia central: "boneco articulado" em vez de desenhar cada frame
 
 Em vez de desenhar ~45 frames, desenho **~12–15 peças uma única vez** (cabeça, tronco,

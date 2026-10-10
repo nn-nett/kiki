@@ -1,0 +1,10 @@
+# origem: D2_figma_gemini_thumb.jpg | normalize.py (unfake) | 8x8
+# escala detectada: 5x | fundo: #09e726 | bbox 42x47 -> 7x8 | max-colors 16
+....K.K.
+....KKK.
+....KGK.
+.KKKKK..
+.KKKKG..
+KKKKKK..
+KT..K...
+....G...

@@ -7,13 +7,18 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 
 ## Estado do projeto
 
-- **Fase atual: Fase 0 — Sprites** (em andamento)
-- Fotos reais recebidas em `./reference/` (12 fotos, incluindo câmera noturna,
-  peitoral teal e suéter listrado)
-- Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem
-  de pixels. **Aguardando aprovação da paleta** antes do primeiro sprite.
-- Pendências de confirmação com o dono: cor real do potinho (chutei vermelho) e
-  formato do rabo (curto/amputado vs. comprido — afeta animação de abanar).
+- **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
+- Fotos reais em `./reference/` (15 fotos, incluindo câmera noturna, peitoral teal,
+  suéter listrado, dormindo enrolada, deitada lambendo e de cima com bandana vermelha)
+- Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
+- **Rabo confirmado: toquinho curto, preto, reto ou pra cima** (foto da bandana).
+  Abanar = toquinho mexe 1px + bumbum balança.
+- **4 tamanhos, cores sobem junto:** 8x8 (3 cores, ícone), 16x16 (~8), 32x32 (~11,
+  sprite principal da taskbar) e 64x64 (paleta toda, Android/telas grandes).
+- **Pose base: em pé, de lado** (substitui a sentada).
+- Bake-off da pose base: o dono gostou da rota B (foto→pixels) e da C1 (Canva) — elas
+  lideram. Próximo passo: mestre 64 a partir do C1 com detalhes da B, depois 32, 16, 8.
+- Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
 
 ### Observações de anatomia (das fotos)
 
@@ -29,7 +34,7 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 
 ## Fases
 
-1. **Fase 0 — Sprites**: spritesheet 48x48 gerado programaticamente (Python +
+1. **Fase 0 — Sprites**: spritesheets 8/16/32/64 gerados programaticamente (Python +
    Pillow), fluxo iterativo: cada sprite só avança com aprovação visual do dono.
 2. **Fase 1 — Desktop**: Electron, janela transparente sobre a taskbar do
    Windows 11, 2 monitores, máquina de estados autônoma, potinho, modo passeio,
@@ -41,10 +46,10 @@ explícita do dono. Na Fase 0, NUNCA avançar um sprite sem aprovação visual.*
 
 ## Fase 0 — checklist de sprites
 
-Cada item: gerar 48x48 transparente → preview ampliado 8x → mostrar → iterar →
+Cada item: gerar nos 4 tamanhos, fundo transparente → folha de revisão → mostrar → iterar →
 só marcar como ✅ com aprovação explícita.
 
-- [ ] Pose base (sentada, vista lateral) — define a anatomia para todo o resto
+- [ ] Pose base (em pé, vista lateral) — define a anatomia para todo o resto (64 → 32 → 16 → 8)
 - [ ] Andando (4–6 frames, esquerda/direita)
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
@@ -61,24 +66,30 @@ só marcar como ✅ com aprovação explícita.
 
 ## Decisões técnicas
 
-- **Estratégia de produção (decidida com o dono após iterações)**: adaptar um
-  spritesheet de cachorro pronto (CC0, ex. Husky Sprites do OpenGameArt) em vez
-  de desenhar do zero — extrair frames, recolorir para a paleta da Kiara e
-  ajustar detalhes dela (orelhas grandes, focinho grisalho, rabo curvado).
-  O dono baixa e anexa o sheet (rede do sandbox bloqueia sites de assets;
-  só GitHub passa).
-- Pipeline pronto em `sprites/tools/`: `sheet_extract.py` (recorte + fundo
-  transparente + truque NES de cor emparedada), `recolor.py` (mapa de cores →
-  paleta), `animate.py` (GIF de preview nearest-neighbor alinhado pela base),
-  `pack.py` (spritesheet final + JSON de animações compartilhado desktop/
-  Android), `spritegen.py` (matriz de caracteres → PNG, p/ retoques manuais),
-  `photo2matrix.py` (foto → matriz, experimental).
+- **Estratégia de produção (sessão 2, plano completo em `sprites/PLANO.md`)**:
+  "boneco articulado" — peças desenhadas uma vez (cabeça, tronco, pernas, rabo) e
+  montadas por receita (`tools/rig.py`), sem rotação; noturna, suéter, espelho e
+  passeio saem por filtro (`tools/filters.py`). Ponto de partida escolhido num
+  bake-off de rotas (A Claude desenha, B foto→pixels, C Canva, D Figma AI, E pixel a
+  pixel com juiz). A estratégia antiga de adaptar o sheet de husky foi abandonada
+  (opengameart segue bloqueado na rede do sandbox).
+- **Papéis dos modelos**: Opus (sessão principal) = diretor de arte, código central,
+  decisões e conversa com o dono; Sonnet (subagentes) = desenhista e scripts de rotina;
+  Haiku (subagentes) = juiz rápido A/B e conferências frame a frame.
+- Ferramentas em `sprites/tools/` (base comum em `common.py`): `rig.py`, `filters.py`,
+  `lint.py` (paleta, pés no chão, contraste com a taskbar), `review.py` (folha com
+  grade e foto), `compare.py` (A/B pro juiz), `similarity.py` (nota 0–100 vs. foto),
+  `normalize.py` (imagem de IA → sprite, via `unfake`), `photo2sprite.py` (rota B em
+  qualquer tamanho), `tiers_board.py` (quadro 8/16/32/64), `animate.py`, `pack.py`,
+  `spritegen.py`, `recolor.py`, `sheet_extract.py`. Dependências: `sprites/requirements.txt`.
+- Rede do sandbox: Figma e Canva geram, mas o download em resolução cheia e o upload
+  de fotos são bloqueados; as miniaturas (200–256 px) bastam para 64x64.
 - Pipeline validado de ponta a ponta com sprites do FF1 (Black Mage) enviados
   pelo dono — material Square Enix, só teste local, fora do git (.gitignore).
-- Resolução nativa pequena (16–24 px) ampliada 2x sem anti-aliasing; matrizes
-  de caracteres (`sprites/frames/*.txt`) seguem disponíveis para edição fina.
-- Skin do suéter: decisão pendente (overlay vs. variante completa) — escolher a
-  mais simples quando a pose base estiver aprovada.
+- Sprites sem anti-aliasing; matrizes de caracteres (`.txt`) continuam sendo o
+  formato editável de tudo.
+- Skin do suéter: overlay automático por filtro sobre a peça do tronco.
+- Contorno pra taskbar escura: candidato G (contraste 5,4); decidir com o dono.
 
 ## Estrutura
 
