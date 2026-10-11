@@ -84,8 +84,7 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 const DATA = __DATA__;
 const SCALE_ZOOM = 6, SCALE_BAR = 2, BAR_W = 420, BAR_H = 80;
 let speed = 1, barTheme = 'light', playing = true;
-const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if (reduce) playing = false;
+// toca sempre: a página existe pra ver a animação (o botão "Parada" pausa)
 
 function load(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; }); }
 
@@ -162,6 +161,5 @@ bl.onclick = () => { barTheme = 'light'; setPressed(bl, bd); draw(); };
 const pl = document.getElementById('play'), pa = document.getElementById('pause');
 pl.onclick = () => { playing = true; setPressed(pl, pa); };
 pa.onclick = () => { playing = false; setPressed(pa, pl); draw(); };
-if (!playing) setPressed(pa, pl);
 build();
 </script>
