@@ -1,0 +1,9 @@
+# C2 8x8 rodada 1: redesenho a mao (K T G): orelhas com T dentro, focinho G 2x2, pernas T
+...K..K.
+...KT.KT
+....KKKK
+K...KKGG
+KKKKKTGG
+KKKKKTK.
+K.T.K.T.
+T.T.T.T.

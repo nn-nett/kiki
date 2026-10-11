@@ -1,0 +1,9 @@
+# C2 8x8 rodada 3: nariz K na ponta + mandibula G
+...K..K.
+...KT.KT
+....KKKK
+K...KTGK
+KKKKKKGG
+KKKKKTK.
+K.T.K.T.
+T.T.T.T.

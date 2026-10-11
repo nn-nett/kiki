@@ -1,0 +1,9 @@
+# guia por reducao automatica 4x4 (so guia)
+......X.
+....TKK.
+....KGK.
+....KTG.
+.KKKKK..
+.KKKKX..
+.KT.KK..
+..X.XX..
