@@ -42,9 +42,10 @@ Esta seção vale por cima de qualquer menção a "24x24" no resto do plano.
   | "32/64-bit" | 64x64 | paleta da cachorra toda (sem acessórios) | Android e telas grandes |
 
   Mais que 64 é exagero (palavras do dono).
-- **O dono gostou de duas rotas: B (foto→pixels) e C1 (Canva)**, e pediu pra dar mais
-  peso a elas. Elas lideram: a pose base em pé nasce do C1 em 64 (perfil limpo de
-  sprite), com os detalhes reais da B (grisalho do focinho, brilho da pelagem).
+- **Favoritos do dono (vendo os 4 tamanhos): D2 (Figma/gemini) e C2 (Canva chunky).**
+  D2 limpo vira a base 64x64; C2 limpo vira a base 32x32 (sprite da taskbar). Sonnet
+  limpa (ruído, olho E, grisalho, tan, toquinho), Haiku julga A/B contra o original,
+  Opus revisa e mostra. (Antes, em 24x24, ele tinha curtido B e C1.)
 - **Mestre em 64 → 32 semi-automático → 16 e 8 redesenhados à mão.** Os testes mostraram
   que redução automática funciona até 32 e vira borrão em 16 e 8. Nesses dois cada pixel
   conta, então é onde entra o loop pixel a pixel (rota E): o Sonnet redesenha, o alvo do

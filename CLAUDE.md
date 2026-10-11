@@ -16,8 +16,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - **4 tamanhos, cores sobem junto:** 8x8 (3 cores, ícone), 16x16 (~8), 32x32 (~11,
   sprite principal da taskbar) e 64x64 (paleta toda, Android/telas grandes).
 - **Pose base: em pé, de lado** (substitui a sentada).
-- Bake-off da pose base: o dono gostou da rota B (foto→pixels) e da C1 (Canva) — elas
-  lideram. Próximo passo: mestre 64 a partir do C1 com detalhes da B, depois 32, 16, 8.
+- Bake-off da pose base: vendo os 4 tamanhos, o dono escolheu **D2 (Figma/gemini) e
+  C2 (Canva chunky)** como os melhores (antes tinha curtido B e C1 em 24x24). Em
+  andamento: D2 limpo vira a base 64x64 e C2 limpo vira a base 32x32 (sprite da
+  taskbar); 16 e 8 serão redesenhados a partir deles.
 - Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
 
 ### Observações de anatomia (das fotos)
