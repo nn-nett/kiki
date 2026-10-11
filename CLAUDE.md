@@ -28,9 +28,11 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Potinho (da foto `reference/kiki_perfil_potinho.jpg`): ração num pote baixo de cerâmica
   bege-claro (pedra) e água numa vasilha escura (berinjela) — a paleta ainda está
   terracota e precisa ser ajustada na etapa "comendo".
-- Proporção em ajuste (pedido do dono): pernas mais longas e corpo mais comprido —
-  variações P1/P2 em `sprites/candidates/proporcao/`; página animada de comparação em
-  https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
+- **Proporção P1 aprovada** (pernas +1 px, corpo +2 px; `tools/proportion.py`): já
+  aplicada em `sprites/base/kiara_32.txt` e nas peças `sprites/parts/32/`.
+- Andar em refação: o dono notou que só as patinhas mexiam (ombro, cotovelo e coxa
+  parados). Novo trote com a perna inteira articulada, sobre a P1.
+- Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
 
