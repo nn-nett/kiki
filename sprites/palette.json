@@ -4,8 +4,7 @@
     "pelagem_preta": {
       "K": { "hex": "#17171b", "name": "preto principal (corpo)", "fonte": "dorso #0c0a0f, clareado p/ contraste" },
       "k": { "hex": "#2e3039", "name": "preto highlight (brilho azulado do pelo)", "fonte": "pescoço ao sol #1a2437" },
-      "X": { "hex": "#0a0a0c", "name": "preto contorno/sombra" },
-      "p": { "hex": "#5a4347", "name": "pele da barriga (rosada/acinzentada, um pouco mais clara que o pelo)", "fonte": "dobra da barriga na foto kiki_perfil_potinho #4e3a3e, clareada p/ ler em 32 px" }
+      "X": { "hex": "#0a0a0c", "name": "preto contorno/sombra" }
     },
     "marcacoes_tan": {
       "T": { "hex": "#8a4f2c", "name": "tan principal (bochechas, peito, pernas)", "fonte": "pata #894c2b" },
