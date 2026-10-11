@@ -1,8 +1,8 @@
-"""Quadro comparativo de candidatos nos 4 tamanhos (8, 16, 32, 64).
+"""Quadro comparativo de candidatos nos tamanhos 8, 16 e 32.
 
 Para cada candidato, lê <dir>/<chave>_<tamanho>.png, mostra todos na mesma
 área (ampliados sem suavização) e, ao lado, como ficam na taskbar escura e
-clara do Windows 11 (16 em 2x, 32 e 64 em 1x).
+clara do Windows 11 (16 em 2x, 32 em 1x e em 2x).
 
 Uso:
   python3 sprites/tools/tiers_board.py --dir sprites/candidates/tiers \
@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from common import TASKBAR_DARK, TASKBAR_LIGHT, upscale
 
-SIZES = [8, 16, 32, 64]
+SIZES = [8, 16, 32]
 CELL, PAD, LABEL_W = 192, 16, 190
 
 
@@ -50,7 +50,7 @@ def build(folder, rows, title):
         for k, bg in enumerate((TASKBAR_DARK, TASKBAR_LIGHT)):
             strip = Image.new("RGBA", (280, 70), bg + (255,))
             x = 8
-            for s, scale in ((16, 2), (32, 1), (64, 1)):
+            for s, scale in ((16, 2), (32, 1), (32, 2)):
                 path = Path(folder) / f"{key}_{s}.png"
                 if not path.exists():
                     continue
@@ -58,7 +58,7 @@ def build(folder, rows, title):
                 strip.alpha_composite(im, (x, 70 - im.height - 3))
                 x += im.width + 14
             board.paste(strip.convert("RGB"), (strips_x, y + k * (CELL // 2 + 8)))
-    d.text((strips_x, H - 24), "16 em 2x · 32 · 64", font=f, fill=(190, 190, 190))
+    d.text((strips_x, H - 24), "16 em 2x · 32 · 32 em 2x", font=f, fill=(190, 190, 190))
     return board
 
 
@@ -67,7 +67,7 @@ def main():
     ap.add_argument("rows", nargs="+", help='candidatos "chave:rótulo"')
     ap.add_argument("--dir", required=True, help="pasta com <chave>_<tamanho>.png")
     ap.add_argument("--out", required=True)
-    ap.add_argument("--title", default="Candidatos em 8, 16, 32 e 64 px")
+    ap.add_argument("--title", default="Candidatos em 8, 16 e 32 px")
     args = ap.parse_args()
     rows = [tuple(r.split(":", 1)) if ":" in r else (r, r) for r in args.rows]
     build(args.dir, rows, args.title).save(args.out)

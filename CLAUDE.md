@@ -13,13 +13,14 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
 - **Rabo confirmado: toquinho curto, preto, reto ou pra cima** (foto da bandana).
   Abanar = toquinho mexe 1px + bumbum balança.
-- **4 tamanhos, cores sobem junto:** 8x8 (3 cores, ícone), 16x16 (~8), 32x32 (~11,
-  sprite principal da taskbar) e 64x64 (paleta toda, Android/telas grandes).
+- **3 tamanhos, cores sobem junto:** 8x8 (3 cores, ícone), 16x16 (~8) e 32x32 (~11,
+  sprite principal). O dono descartou o 64: o 32 é o máximo (ampliado 2x quando
+  precisar de mais tamanho).
 - **Pose base: em pé, de lado** (substitui a sentada).
-- Bake-off da pose base: vendo os 4 tamanhos, o dono escolheu **D2 (Figma/gemini) e
-  C2 (Canva chunky)** como os melhores (antes tinha curtido B e C1 em 24x24). Em
-  andamento: D2 limpo vira a base 64x64 e C2 limpo vira a base 32x32 (sprite da
-  taskbar); 16 e 8 serão redesenhados a partir deles.
+- Pose base: o **C2 32x32 com retoque mínimo** é o mais fiel (palavra do dono).
+  Olho castanho. Em ajuste: testa (os 2 pontos bege viram cabeça preta, cristinha
+  grisalha ou sobrancelha — 5 variações em `candidates/base/C2_32_testa/`).
+  16x16 e 8x8 sendo redesenhados à mão a partir do 32.
 - Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
 
 ### Observações de anatomia (das fotos)
@@ -36,7 +37,7 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 
 ## Fases
 
-1. **Fase 0 — Sprites**: spritesheets 8/16/32/64 gerados programaticamente (Python +
+1. **Fase 0 — Sprites**: spritesheets 8/16/32 gerados programaticamente (Python +
    Pillow), fluxo iterativo: cada sprite só avança com aprovação visual do dono.
 2. **Fase 1 — Desktop**: Electron, janela transparente sobre a taskbar do
    Windows 11, 2 monitores, máquina de estados autônoma, potinho, modo passeio,
@@ -48,10 +49,10 @@ explícita do dono. Na Fase 0, NUNCA avançar um sprite sem aprovação visual.*
 
 ## Fase 0 — checklist de sprites
 
-Cada item: gerar nos 4 tamanhos, fundo transparente → folha de revisão → mostrar → iterar →
+Cada item: gerar nos 3 tamanhos (32, 16, 8), fundo transparente → folha de revisão → mostrar → iterar →
 só marcar como ✅ com aprovação explícita.
 
-- [ ] Pose base (em pé, vista lateral) — define a anatomia para todo o resto (64 → 32 → 16 → 8)
+- [ ] Pose base (em pé, vista lateral) — define a anatomia para todo o resto (32 → 16 → 8)
 - [ ] Andando (4–6 frames, esquerda/direita)
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
@@ -82,7 +83,7 @@ só marcar como ✅ com aprovação explícita.
   `lint.py` (paleta, pés no chão, contraste com a taskbar), `review.py` (folha com
   grade e foto), `compare.py` (A/B pro juiz), `similarity.py` (nota 0–100 vs. foto),
   `normalize.py` (imagem de IA → sprite, via `unfake`), `photo2sprite.py` (rota B em
-  qualquer tamanho), `tiers_board.py` (quadro 8/16/32/64), `animate.py`, `pack.py`,
+  qualquer tamanho), `tiers_board.py` (quadro 8/16/32), `animate.py`, `pack.py`,
   `spritegen.py`, `recolor.py`, `sheet_extract.py`. Dependências: `sprites/requirements.txt`.
 - Rede do sandbox: Figma e Canva geram, mas o download em resolução cheia e o upload
   de fotos são bloqueados; as miniaturas (200–256 px) bastam para 64x64.

@@ -28,6 +28,11 @@ seguram um ciclo de autocrítica antes de te mostrar qualquer coisa. Resultado f
 - Modelos: **Opus, Sonnet e Haiku 5.5 com papéis fixos** (tabela abaixo), usados como
   subagentes.
 
+## Revisão 2 — o dono descartou o 64 (out/2026)
+
+Tamanhos finais: **32x32 (principal), 16x16 e 8x8**. Base aprovada como mais fiel: C2 32x32 com
+retoque mínimo e olho castanho. 16 e 8 redesenhados à mão a partir dele.
+
 ## Revisão 1 — quatro tamanhos (decidido com o dono depois do primeiro bake-off)
 
 Esta seção vale por cima de qualquer menção a "24x24" no resto do plano.
