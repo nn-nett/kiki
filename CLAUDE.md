@@ -18,9 +18,9 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   precisar de mais tamanho).
 - **Pose base: em pé, de lado** (substitui a sentada).
 - Pose base: o **C2 32x32 com retoque mínimo** é o mais fiel (palavra do dono).
-  Olho castanho. Em ajuste: testa (os 2 pontos bege viram cabeça preta, cristinha
-  grisalha ou sobrancelha — 5 variações em `candidates/base/C2_32_testa/`).
-  16x16 e 8x8 sendo redesenhados à mão a partir do 32.
+  Olho castanho, testa preta (`candidates/base/C2_32_testa/v1_preta`) — "é isso, vai
+  ser esse". Falta escolher a sobrancelha (5 sugestões em `C2_32_sobrancelha/`) e o
+  contorno. 16x16 e 8x8 redesenhados à mão (`C2_16/`, `C2_8/`), aguardando aprovação.
 - Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
 
 ### Observações de anatomia (das fotos)

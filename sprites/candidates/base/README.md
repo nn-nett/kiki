@@ -8,3 +8,4 @@
 | `C2_32_testa/` | Variações da testa do 32 (pontos bege → preto, cristinha grisalha, sobrancelha bege/grisalha) | aguardando escolha do dono |
 | `C2_16/`, `C2_8/` | Redesenho à mão do 16x16 (`base_r3`) e 8x8 (`base_r4`) a partir do 32 (Sonnet); `guia.txt` = redução automática | o redesenho venceu a redução automática no juiz Haiku nos dois tamanhos |
 | `trio/` | 32 (testa preta) + 16 + 8 juntos, com e sem contorno G | aguardando dono |
+| `C2_32_sobrancelha/` | 5 sugestões de sobrancelha (1 px cinza na linha dos cinzas acima do olho, mais à direita) sobre a `v1_preta` escolhida pelo dono | aguardando escolha |
