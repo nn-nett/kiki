@@ -1,9 +1,0 @@
-# C2 8x8 rodada 4: orelha de tras (esquerda) mais larga, K T K, ponta no meio
-...K..K.
-..KTK.KT
-....KKKK
-K...KTGK
-KKKKKKGG
-KKKKKTK.
-K.T.K.T.
-T.T.T.T.

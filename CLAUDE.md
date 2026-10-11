@@ -13,14 +13,15 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
 - **Rabo confirmado: toquinho curto, preto, reto ou pra cima** (foto da bandana).
   Abanar = toquinho mexe 1px + bumbum balança.
-- **3 tamanhos, cores sobem junto:** 8x8 (3 cores, ícone), 16x16 (~8) e 32x32 (~11,
-  sprite principal). O dono descartou o 64: o 32 é o máximo (ampliado 2x quando
-  precisar de mais tamanho).
+- **Tamanho único: 32x32** (~11 cores: X K k D T t G W E B N). O dono descartou o 64
+  e achou o 16 e o 8 fracos ("só 32"). Ampliado 2x quando precisar de mais tamanho.
+- **Contorno grisalho (G) aprovado**: aplicado por filtro (`filters.py outline color=G`)
+  na saída final, pra não sumir na taskbar escura.
 - **Pose base: em pé, de lado** (substitui a sentada).
-- Pose base: o **C2 32x32 com retoque mínimo** é o mais fiel (palavra do dono).
-  Olho castanho, testa preta (`candidates/base/C2_32_testa/v1_preta`) — "é isso, vai
-  ser esse". Falta escolher a sobrancelha (5 sugestões em `C2_32_sobrancelha/`) e o
-  contorno. 16x16 e 8x8 redesenhados à mão (`C2_16/`, `C2_8/`), aguardando aprovação.
+- **Pose base APROVADA: `sprites/base/kiara_32.txt`** (e `_contorno.png`). Caminho:
+  rascunho C2 (Canva) → retoque mínimo → olho castanho → testa preta → sobrancelha
+  cinza na ponta (opção 3) → buracos fechados. Histórico em `sprites/candidates/base/`.
+- Em andamento: animação "andando".
 - Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
 
 ### Observações de anatomia (das fotos)
@@ -37,7 +38,7 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 
 ## Fases
 
-1. **Fase 0 — Sprites**: spritesheets 8/16/32 gerados programaticamente (Python +
+1. **Fase 0 — Sprites**: spritesheet 32x32 gerado programaticamente (Python +
    Pillow), fluxo iterativo: cada sprite só avança com aprovação visual do dono.
 2. **Fase 1 — Desktop**: Electron, janela transparente sobre a taskbar do
    Windows 11, 2 monitores, máquina de estados autônoma, potinho, modo passeio,
@@ -49,10 +50,10 @@ explícita do dono. Na Fase 0, NUNCA avançar um sprite sem aprovação visual.*
 
 ## Fase 0 — checklist de sprites
 
-Cada item: gerar nos 3 tamanhos (32, 16, 8), fundo transparente → folha de revisão → mostrar → iterar →
+Cada item: gerar em 32x32, fundo transparente → folha de revisão → mostrar → iterar →
 só marcar como ✅ com aprovação explícita.
 
-- [ ] Pose base (em pé, vista lateral) — define a anatomia para todo o resto (32 → 16 → 8)
+- [x] ✅ Pose base (em pé, vista lateral, 32x32) — `sprites/base/kiara_32.txt`
 - [ ] Andando (4–6 frames, esquerda/direita)
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
@@ -92,7 +93,7 @@ só marcar como ✅ com aprovação explícita.
 - Sprites sem anti-aliasing; matrizes de caracteres (`.txt`) continuam sendo o
   formato editável de tudo.
 - Skin do suéter: overlay automático por filtro sobre a peça do tronco.
-- Contorno pra taskbar escura: candidato G (contraste 5,4); decidir com o dono.
+- Contorno pra taskbar escura: G (contraste 5,4) — aprovado pelo dono.
 
 ## Estrutura
 

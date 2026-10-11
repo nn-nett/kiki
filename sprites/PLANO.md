@@ -28,6 +28,13 @@ seguram um ciclo de autocrítica antes de te mostrar qualquer coisa. Resultado f
 - Modelos: **Opus, Sonnet e Haiku 5.5 com papéis fixos** (tabela abaixo), usados como
   subagentes.
 
+## Revisão 3 — só 32x32; pose base aprovada (out/2026)
+
+O dono achou o 16 e o 8 fracos: **tamanho único 32x32**, contorno G aprovado. Pose base
+aprovada em `sprites/base/kiara_32.txt`. Próximo: andando. Estratégia do andar: a parte de
+cima (cabeça + corpo + rabo) é uma peça fixa e só a faixa das pernas é redesenhada por
+frame (4 poses de trote), com a peça de cima subindo 1px nas passagens.
+
 ## Revisão 2 — o dono descartou o 64 (out/2026)
 
 Tamanhos finais: **32x32 (principal), 16x16 e 8x8**. Base aprovada como mais fiel: C2 32x32 com
