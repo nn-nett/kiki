@@ -1,0 +1,90 @@
+{
+  "name": "walk",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "sequence": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "variants": {
+    "contorno": [
+      {
+        "filter": "outline",
+        "opts": {
+          "color": "G"
+        }
+      }
+    ],
+    "esquerda": [
+      "mirror"
+    ]
+  },
+  "frames": [
+    {
+      "duration": 130,
+      "parts": [
+        {
+          "id": "legs",
+          "part": "legs_walk0",
+          "at": [
+            0,
+            20
+          ]
+        },
+        {
+          "id": "upper",
+          "part": "upper",
+          "at": [
+            0,
+            0
+          ],
+          "offset": [
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "base": 0,
+      "set": {
+        "legs": {
+          "part": "legs_walk1"
+        },
+        "upper": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 0,
+      "set": {
+        "legs": {
+          "part": "legs_walk2"
+        }
+      }
+    },
+    {
+      "base": 0,
+      "set": {
+        "legs": {
+          "part": "legs_walk3"
+        },
+        "upper": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}
