@@ -31,9 +31,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   terracota e precisa ser ajustada na etapa "comendo".
 - **Proporção P1 aprovada** (pernas +1 px, corpo +2 px; `tools/proportion.py`): já
   aplicada em `sprites/base/kiara_32.txt` e nas peças `sprites/parts/32/`.
-- Andar em refação: o dono notou que só as patinhas mexiam. Novo trote com a perna
-  inteira articulada (dianteira: ombro, cotovelo, pata; traseira: glúteo, joelho/jarrete,
-  pata), sobre a P1 — versões de 4 e 6 frames em paralelo.
+- Andar refeito com a perna inteira articulada (dianteira: ombro, cotovelo, pata;
+  traseira: glúteo, joelho/jarrete, pata), sobre a P1: trote A (4 frames, `walk_a.json`)
+  e trote B (6 frames de 100 ms, `walk_b.json`, preferido pelo juiz Haiku). Aguardando
+  o dono escolher. O `walk.json` antigo (só patinhas) foi reprovado.
 - Toquinho: o dono achou que ficou pequeno ("um tico maior"); opções em
   `sprites/candidates/rabo/`.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1

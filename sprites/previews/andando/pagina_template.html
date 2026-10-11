@@ -57,14 +57,14 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 <div class="wrap">
   <header>
     <h1>Kiara andando</h1>
-    <p>Trote de 4 frames em 32x32, com contorno grisalho. Compare a proporção atual com duas versões de pernas mais longas e corpo mais comprido. Embaixo de cada uma, ela passeia por uma taskbar do Windows 11 em tamanho real (2x).</p>
+    <p>Proporção P1 (aprovada), sem contorno. Compare o andar antigo, em que só as patinhas mexiam, com os dois trotes novos de perna inteira articulada: ombro, cotovelo e pata na frente; glúteo, joelho e pata atrás. Embaixo de cada um, ela passeia por uma taskbar do Windows 11 em tamanho real (2x).</p>
   </header>
 
   <div class="controls" role="group" aria-label="Controles da animação">
-    <label for="speed">Velocidade <input id="speed" type="range" min="80" max="260" step="10" value="130"> <span id="speedv" class="tabular">130 ms/frame</span></label>
+    <label for="speed">Velocidade <input id="speed" type="range" min="50" max="200" step="10" value="100"> <span id="speedv" class="tabular">100%</span></label>
     <span class="seg" role="group" aria-label="Taskbar">
-      <button id="barDark" aria-pressed="true">Taskbar escura</button>
-      <button id="barLight" aria-pressed="false">Taskbar clara</button>
+      <button id="barLight" aria-pressed="true">Taskbar clara</button>
+      <button id="barDark" aria-pressed="false">Taskbar escura</button>
     </span>
     <span class="seg" role="group" aria-label="Animação">
       <button id="play" aria-pressed="true">Andando</button>
@@ -76,14 +76,14 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 
   <div class="foto">
     <img id="foto" alt="Foto da Kiara de perfil, em pé ao lado do potinho de ração">
-    <p>Referência de perfil: pernas longas, corpo comprido e barriga recolhida. A P2 é a que chega mais perto dessa silhueta. O potinho bege de cerâmica e a vasilha de água escura também vão servir pra animação "comendo".</p>
+    <p>Referência de perfil: pernas longas, corpo comprido e barriga recolhida (base da proporção P1). O trote B tem 6 frames de 100 ms; o A e o antigo têm 4 de 130 ms. O potinho bege de cerâmica e a vasilha de água escura vão servir pra animação "comendo".</p>
   </div>
 </div>
 
 <script>
 const DATA = __DATA__;
 const SCALE_ZOOM = 6, SCALE_BAR = 2, BAR_W = 420, BAR_H = 80;
-let msPerFrame = 130, barTheme = 'dark', playing = true;
+let speed = 1, barTheme = 'light', playing = true;
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (reduce) playing = false;
 
@@ -107,19 +107,18 @@ async function build() {
       <canvas class="bar" width="${BAR_W}" height="${BAR_H}" aria-label="Kiara passeando na taskbar"></canvas>`;
     cards.appendChild(card);
     const [cz, cs, cb] = card.querySelectorAll('canvas');
-    views.push({ walk, stand, cz, cs, cb, x: 10, dir: 1 });
+    views.push({ walk, stand, cz, cs, cb, x: 10, dir: 1, ms: v.ms, f: 0, last: 0 });
   }
-  frame = 0; draw(); loop();
+  draw(); loop();
 }
 
 function ctxOf(c) { const x = c.getContext('2d'); x.imageSmoothingEnabled = false; return x; }
 function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
-let frame = 0, last = 0;
 function draw() {
   const zoomBg = barTheme === 'dark' ? css('--bar-dark') : css('--bar-light');
   for (const v of views) {
-    const img = v.walk[frame % 4];
+    const img = v.walk[v.f % v.walk.length];
     let x = ctxOf(v.cz); x.fillStyle = zoomBg; x.fillRect(0, 0, v.cz.width, v.cz.height);
     x.drawImage(img, 0, 0, 32*SCALE_ZOOM, 32*SCALE_ZOOM);
     x = ctxOf(v.cs); x.fillStyle = zoomBg; x.fillRect(0, 0, v.cs.width, v.cs.height);
@@ -134,23 +133,27 @@ function draw() {
   }
 }
 
-function step() {
-  frame = (frame + 1) % 4;
-  for (const v of views) {
-    // patas plantadas recuam 1 px do sprite por frame: a janela anda o mesmo
-    v.x += v.dir * SCALE_BAR;
-    if (v.x > BAR_W - 32*SCALE_BAR - 6) v.dir = -1;
-    if (v.x < 6) v.dir = 1;
-  }
+function step(v) {
+  v.f = (v.f + 1) % v.walk.length;
+  // patas plantadas recuam 1 px do sprite por frame: a janela anda o mesmo
+  v.x += v.dir * SCALE_BAR;
+  if (v.x > BAR_W - 32*SCALE_BAR - 6) v.dir = -1;
+  if (v.x < 6) v.dir = 1;
 }
 
 function loop(t = 0) {
-  if (playing && t - last >= msPerFrame) { step(); draw(); last = t; }
+  if (playing) {
+    let changed = false;
+    for (const v of views) {
+      if (t - v.last >= v.ms / speed) { step(v); v.last = t; changed = true; }
+    }
+    if (changed) draw();
+  }
   requestAnimationFrame(loop);
 }
 
 document.getElementById('speed').addEventListener('input', e => {
-  msPerFrame = +e.target.value; document.getElementById('speedv').textContent = msPerFrame + ' ms/frame';
+  speed = +e.target.value / 100; document.getElementById('speedv').textContent = e.target.value + '%';
 });
 function setPressed(on, off) { on.setAttribute('aria-pressed', 'true'); off.setAttribute('aria-pressed', 'false'); }
 const bd = document.getElementById('barDark'), bl = document.getElementById('barLight');
