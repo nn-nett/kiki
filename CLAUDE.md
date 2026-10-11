@@ -21,7 +21,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - **Pose base APROVADA: `sprites/base/kiara_32.txt`** (e `_contorno.png`). Caminho:
   rascunho C2 (Canva) → retoque mínimo → olho castanho → testa preta → sobrancelha
   cinza na ponta (opção 3) → buracos fechados. Histórico em `sprites/candidates/base/`.
-- Em andamento: animação "andando".
+- Animação "andando" pronta pra aprovação: trote em 4 frames (`anims/walk.json`,
+  pernas em `parts/32/legs_walk0-3.txt`), corpo desce 1px nos contatos, 130 ms/frame,
+  esquerda por espelho. Previews em `sprites/previews/andando/`. No app, a janela deve
+  andar ~1px do sprite por frame (as patas plantadas recuam 1px/frame) pra não patinar.
 - Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
 
 ### Observações de anatomia (das fotos)
