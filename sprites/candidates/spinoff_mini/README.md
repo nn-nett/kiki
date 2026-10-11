@@ -10,3 +10,5 @@ aproximada dela ao lado).
 - `mini_c`: como a A, com orelhas maiores e pontas soltas (como na referência).
 
 Não substitui o sprite oficial 32x32.
+
+**Resultado: o dono achou os spinoffs ruins e voltou pro estilo oficial.**
