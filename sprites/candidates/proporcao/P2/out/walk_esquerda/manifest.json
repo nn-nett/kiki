@@ -1,0 +1,30 @@
+{
+  "name": "walk_esquerda",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "frames": [
+    {
+      "file": "walk_esquerda_0.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_esquerda_1.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_esquerda_2.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_esquerda_3.png",
+      "duration": 130,
+      "airborne": false
+    }
+  ]
+}

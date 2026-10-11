@@ -1,0 +1,164 @@
+<title>Kiara andando</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: uma coluna de cartões (um por proporção), cada um com a animação ampliada e a cachorra passeando numa taskbar falsa. */
+:root {
+  --bg: #f1eee9;
+  --surface: #fbfaf7;
+  --ink: #1d1b1a;
+  --muted: #6b645d;
+  --line: #ddd6cc;
+  --accent: #b5652f;      /* tan da Kiara */
+  --bar-dark: #202020;    /* taskbar escura do Windows 11 */
+  --bar-light: #f3f3f3;   /* taskbar clara */
+  --font-display: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161514; --surface: #1f1d1b; --ink: #f0ebe4; --muted: #a39a90; --line: #34302c; --accent: #d08a52;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161514; --surface: #1f1d1b; --ink: #f0ebe4; --muted: #a39a90; --line: #34302c; --accent: #d08a52;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 48px; display: grid; gap: 20px; }
+header h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 6vw, 40px); margin: 0; letter-spacing: 0.02em; text-wrap: balance; }
+header p { margin: 6px 0 0; color: var(--muted); max-width: 62ch; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.controls label { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.controls input[type=range] { width: 140px; accent-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 14px; padding: 6px 12px; background: transparent; color: var(--ink); border: 0; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.seg button:focus-visible, .controls input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tabular { font-variant-numeric: tabular-nums; }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card h2 { font-family: var(--font-display); font-weight: 500; font-size: 22px; margin: 0; display: flex; align-items: baseline; gap: 10px; }
+.card h2 small { font-family: var(--font-body); font-size: 13px; color: var(--muted); font-weight: 400; }
+.zoom { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.zoom figure { margin: 0; display: grid; gap: 4px; justify-items: center; }
+.zoom figcaption { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; }
+.zoom canvas { width: 100%; height: auto; border-radius: 8px; }
+.bar { width: 100%; height: auto; border-radius: 6px; }
+.foto { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.foto img { width: 100%; border-radius: 8px; }
+.foto p { margin: 0; color: var(--muted); }
+@media (max-width: 560px) { .foto { grid-template-columns: 1fr; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Kiara andando</h1>
+    <p>Trote de 4 frames em 32x32, com contorno grisalho. Compare a proporção atual com duas versões de pernas mais longas e corpo mais comprido. Embaixo de cada uma, ela passeia por uma taskbar do Windows 11 em tamanho real (2x).</p>
+  </header>
+
+  <div class="controls" role="group" aria-label="Controles da animação">
+    <label for="speed">Velocidade <input id="speed" type="range" min="80" max="260" step="10" value="130"> <span id="speedv" class="tabular">130 ms/frame</span></label>
+    <span class="seg" role="group" aria-label="Taskbar">
+      <button id="barDark" aria-pressed="true">Taskbar escura</button>
+      <button id="barLight" aria-pressed="false">Taskbar clara</button>
+    </span>
+    <span class="seg" role="group" aria-label="Animação">
+      <button id="play" aria-pressed="true">Andando</button>
+      <button id="pause" aria-pressed="false">Parada</button>
+    </span>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="foto">
+    <img id="foto" alt="Foto da Kiara de perfil, em pé ao lado do potinho de ração">
+    <p>Referência de perfil: pernas longas, corpo comprido e barriga recolhida. A P2 é a que chega mais perto dessa silhueta. O potinho bege de cerâmica e a vasilha de água escura também vão servir pra animação "comendo".</p>
+  </div>
+</div>
+
+<script>
+const DATA = __DATA__;
+const SCALE_ZOOM = 6, SCALE_BAR = 2, BAR_W = 420, BAR_H = 80;
+let msPerFrame = 130, barTheme = 'dark', playing = true;
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduce) playing = false;
+
+function load(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; }); }
+
+const cards = document.getElementById('cards');
+const views = [];
+
+async function build() {
+  document.getElementById('foto').src = DATA.foto;
+  for (const v of DATA.variants) {
+    const walk = await Promise.all(v.walk.map(load));
+    const stand = await load(v.stand);
+    const card = document.createElement('section');
+    card.className = 'card';
+    card.innerHTML = `<h2>${v.nome} <small>${v.nota}</small></h2>
+      <div class="zoom">
+        <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>andando</figcaption></figure>
+        <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>parada</figcaption></figure>
+      </div>
+      <canvas class="bar" width="${BAR_W}" height="${BAR_H}" aria-label="Kiara passeando na taskbar"></canvas>`;
+    cards.appendChild(card);
+    const [cz, cs, cb] = card.querySelectorAll('canvas');
+    views.push({ walk, stand, cz, cs, cb, x: 10, dir: 1 });
+  }
+  frame = 0; draw(); loop();
+}
+
+function ctxOf(c) { const x = c.getContext('2d'); x.imageSmoothingEnabled = false; return x; }
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+let frame = 0, last = 0;
+function draw() {
+  const zoomBg = barTheme === 'dark' ? css('--bar-dark') : css('--bar-light');
+  for (const v of views) {
+    const img = v.walk[frame % 4];
+    let x = ctxOf(v.cz); x.fillStyle = zoomBg; x.fillRect(0, 0, v.cz.width, v.cz.height);
+    x.drawImage(img, 0, 0, 32*SCALE_ZOOM, 32*SCALE_ZOOM);
+    x = ctxOf(v.cs); x.fillStyle = zoomBg; x.fillRect(0, 0, v.cs.width, v.cs.height);
+    x.drawImage(v.stand, 0, 0, 32*SCALE_ZOOM, 32*SCALE_ZOOM);
+    x = ctxOf(v.cb); x.fillStyle = zoomBg; x.fillRect(0, 0, BAR_W, BAR_H);
+    const w = 32*SCALE_BAR, y = BAR_H - w - 4;
+    const sprite = playing ? img : v.stand;
+    x.save();
+    if (v.dir < 0) { x.translate(v.x + w, y); x.scale(-1, 1); x.drawImage(sprite, 0, 0, w, w); }
+    else { x.drawImage(sprite, v.x, y, w, w); }
+    x.restore();
+  }
+}
+
+function step() {
+  frame = (frame + 1) % 4;
+  for (const v of views) {
+    // patas plantadas recuam 1 px do sprite por frame: a janela anda o mesmo
+    v.x += v.dir * SCALE_BAR;
+    if (v.x > BAR_W - 32*SCALE_BAR - 6) v.dir = -1;
+    if (v.x < 6) v.dir = 1;
+  }
+}
+
+function loop(t = 0) {
+  if (playing && t - last >= msPerFrame) { step(); draw(); last = t; }
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('speed').addEventListener('input', e => {
+  msPerFrame = +e.target.value; document.getElementById('speedv').textContent = msPerFrame + ' ms/frame';
+});
+function setPressed(on, off) { on.setAttribute('aria-pressed', 'true'); off.setAttribute('aria-pressed', 'false'); }
+const bd = document.getElementById('barDark'), bl = document.getElementById('barLight');
+bd.onclick = () => { barTheme = 'dark'; setPressed(bd, bl); draw(); };
+bl.onclick = () => { barTheme = 'light'; setPressed(bl, bd); draw(); };
+const pl = document.getElementById('play'), pa = document.getElementById('pause');
+pl.onclick = () => { playing = true; setPressed(pl, pa); };
+pa.onclick = () => { playing = false; setPressed(pa, pl); draw(); };
+if (!playing) setPressed(pa, pl);
+build();
+</script>

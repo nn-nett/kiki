@@ -1,0 +1,30 @@
+{
+  "name": "walk_contorno",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "frames": [
+    {
+      "file": "walk_contorno_0.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_contorno_1.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_contorno_2.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_contorno_3.png",
+      "duration": 130,
+      "airborne": false
+    }
+  ]
+}

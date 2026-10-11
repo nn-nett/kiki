@@ -1,0 +1,30 @@
+{
+  "name": "walk",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "frames": [
+    {
+      "file": "walk_0.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_1.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_2.png",
+      "duration": 130,
+      "airborne": false
+    },
+    {
+      "file": "walk_3.png",
+      "duration": 130,
+      "airborne": false
+    }
+  ]
+}

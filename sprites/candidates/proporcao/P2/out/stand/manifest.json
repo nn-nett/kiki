@@ -1,0 +1,15 @@
+{
+  "name": "stand",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "frames": [
+    {
+      "file": "stand_0.png",
+      "duration": 500,
+      "airborne": false
+    }
+  ]
+}

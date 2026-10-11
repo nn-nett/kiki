@@ -1,0 +1,41 @@
+{
+  "name": "stand",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "variants": {
+    "contorno": [
+      {
+        "filter": "outline",
+        "opts": {
+          "color": "G"
+        }
+      }
+    ]
+  },
+  "frames": [
+    {
+      "duration": 500,
+      "parts": [
+        {
+          "id": "legs",
+          "part": "legs_base",
+          "at": [
+            0,
+            19
+          ]
+        },
+        {
+          "id": "upper",
+          "part": "upper",
+          "at": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

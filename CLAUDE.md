@@ -8,7 +8,7 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 ## Estado do projeto
 
 - **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
-- Fotos reais em `./reference/` (15 fotos, incluindo câmera noturna, peitoral teal,
+- Fotos reais em `./reference/` (16 fotos, incluindo perfil com o potinho, incluindo câmera noturna, peitoral teal,
   suéter listrado, dormindo enrolada, deitada lambendo e de cima com bandana vermelha)
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
 - **Rabo confirmado: toquinho curto, preto, reto ou pra cima** (foto da bandana).
@@ -25,7 +25,12 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   pernas em `parts/32/legs_walk0-3.txt`), corpo desce 1px nos contatos, 130 ms/frame,
   esquerda por espelho. Previews em `sprites/previews/andando/`. No app, a janela deve
   andar ~1px do sprite por frame (as patas plantadas recuam 1px/frame) pra não patinar.
-- Pendência: cor real do potinho (paleta está terracota; perguntar na etapa "comendo").
+- Potinho (da foto `reference/kiki_perfil_potinho.jpg`): ração num pote baixo de cerâmica
+  bege-claro (pedra) e água numa vasilha escura (berinjela) — a paleta ainda está
+  terracota e precisa ser ajustada na etapa "comendo".
+- Proporção em ajuste (pedido do dono): pernas mais longas e corpo mais comprido —
+  variações P1/P2 em `sprites/candidates/proporcao/`; página animada de comparação em
+  https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
 
