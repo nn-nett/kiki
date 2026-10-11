@@ -29,8 +29,8 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   olhos; pelos brancos salpicados pela cabeça.
 - Tan: bochechas, sobrancelhas (pontinhos), garganta, peito (com mancha clara
   cremosa no centro), pernas e patas.
-- Olhos grandes com leve névoa azulada de idade (catarata senil) — usar a cor
-  E #4a4854 em vez de castanho-escuro: detalhe autêntico dela.
+- Olhos castanhos (o dono corrigiu: nada de catarata/névoa azulada; o azulado das
+  fotos é reflexo). Cor E #4a2c1e com 1 pixel de brilho B.
 - Corpo compacto e robusto, pernas finas.
 - Usa às vezes bandana/coleira vermelha (fotos), peitoral teal no passeio.
 

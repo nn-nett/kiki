@@ -200,7 +200,7 @@ então nas regiões marcadas como "exagero permitido" quem decide é a visão, n
 - **Prompts das rotas C/D** (dicas da pesquisa): "side view", "2d game sprite", "limited
   color palette", fundo liso; o primeiro resultado bom vira referência de estilo dos próximos.
 - **Avaliação:** folha com todos os candidatos lado a lado + foto, e nota de 1 a 5 por
-  critério: orelhas enormes/pontudas/abertas; focinho fino com grisalho; olho azulado
+  critério: orelhas enormes/pontudas/abertas; focinho fino com grisalho; olho castanho
   `E`; tan nos lugares certos (bochecha, sobrancelha, peito com mancha creme, pernas);
   corpo compacto e pernas finas; toquinho de rabo; legível a 2x nas duas taskbars;
   "parece a Kiara?".

@@ -16,7 +16,7 @@
       "W": { "hex": "#ddd5c9", "name": "branco-grisalho (pelos salpicados, mancha do peito)" }
     },
     "rosto": {
-      "E": { "hex": "#4a4854", "name": "olho com névoa azulada (idade)", "fonte": "olho #806f77" },
+      "E": { "hex": "#4a2c1e", "name": "olho castanho (cor real dela)", "fonte": "dono confirmou olho castanho; anel castanho na foto cd4860b2 (o azulado era reflexo)" },
       "e": { "hex": "#1b1820", "name": "contorno do olho" },
       "N": { "hex": "#121214", "name": "nariz" },
       "P": { "hex": "#d98d8d", "name": "língua/rosa" },
