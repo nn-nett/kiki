@@ -13,7 +13,7 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
 - **Rabo confirmado: toquinho curto, preto, reto ou pra cima** (foto da bandana).
   Abanar = toquinho mexe 1px + bumbum balança.
-- **Tamanho único: 32x32** (~11 cores: X K k D T t G W E B N). O dono descartou o 64
+- **Tamanho único: 32x32** (~12 cores: X K k D T t G W E B N p). O dono descartou o 64
   e achou o 16 e o 8 fracos ("só 32"). Ampliado 2x quando precisar de mais tamanho.
 - **Contorno grisalho (G)**: aprovado, mas o dono pediu pra trabalhar **sem contorno por
   enquanto** (previews e revisões sem borda). Continua disponível por filtro
@@ -33,8 +33,13 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   aplicada em `sprites/base/kiara_32.txt` e nas peças `sprites/parts/32/`.
 - Andar refeito com a perna inteira articulada (dianteira: ombro, cotovelo, pata;
   traseira: glúteo, joelho/jarrete, pata), sobre a P1: trote A (4 frames, `walk_a.json`)
-  e trote B (6 frames de 100 ms, `walk_b.json`, preferido pelo juiz Haiku). Aguardando
-  o dono escolher. O `walk.json` antigo (só patinhas) foi reprovado.
+  e trote B (6 frames de 100 ms, `walk_b.json`, preferido pelo juiz Haiku). **O dono
+  gostou do trote B** ("o trote b tá ótimo"). O `walk.json` antigo (só patinhas) foi reprovado.
+- Barriga (pedido do dono): 1 px mais funda e com a pele do ventre um pouco mais clara
+  que o pelo (cor nova `p` #5a4347, da dobra da barriga na foto de perfil). Aplicada a
+  versão 4 "curva" (pele na linha nova, subindo até a coxa) nas faixas de pernas
+  (`legs_base`, `legs_trotB0-5`) e na pose base; opções 1/2/3 em
+  `sprites/candidates/barriga/`. Aguardando o OK do dono pra fechar o "Andando".
 - Toquinho: o dono achou que ficou pequeno ("um tico maior"); opções em
   `sprites/candidates/rabo/`.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1

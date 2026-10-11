@@ -5,8 +5,9 @@ andando, ela parada, e ela passeando de um lado pro outro numa taskbar do
 Windows 11 em tamanho real (2x). Abre em qualquer navegador, inclusive no
 celular, sem internet.
 
-Cada entrada é "Nome|nota|pasta", onde a pasta é uma saída do rig.py (com
-manifest.json: ordem dos frames e duração de cada um).
+Cada entrada é "Nome|nota|pasta[|parada.png]", onde a pasta é uma saída do
+rig.py (com manifest.json: ordem dos frames e duração de cada um). O 4º campo,
+opcional, troca a pose parada daquele cartão (o padrão é a de --stand).
 
 Uso:
   python3 sprites/tools/preview_html.py --out kiara.html --stand sprites/base/kiara_32.png \
@@ -96,7 +97,7 @@ img { image-rendering: pixelated; image-rendering: crisp-edges; display: block; 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("entries", nargs="+", help='"Nome|nota|pasta do rig"')
+    ap.add_argument("entries", nargs="+", help='"Nome|nota|pasta do rig[|parada.png]"')
     ap.add_argument("--out", required=True)
     ap.add_argument("--stand", required=True, help="PNG da pose parada")
     ap.add_argument("--title", default="Kiara andando")
@@ -108,7 +109,11 @@ def main():
     stand_uri = data_uri(gif_bytes([upscale(stand, ZOOM)], [1000], bg), "image/gif")
     cards = []
     for entry in args.entries:
-        name, note, folder = entry.split("|", 2)
+        name, note, folder, *own = entry.split("|", 3)
+        card_stand = stand_uri
+        if own:
+            im = Image.open(own[0]).convert("RGBA")
+            card_stand = data_uri(gif_bytes([upscale(im, ZOOM)], [1000], bg), "image/gif")
         frames, durs = load_anim(folder)
         zoom = data_uri(gif_bytes([upscale(f, ZOOM) for f in frames], durs, bg), "image/gif")
         bar = data_uri(taskbar_walk(frames, durs, bg), "image/gif")
@@ -117,7 +122,7 @@ def main():
     <h2>{escape(name)}<small>{escape(note)}</small></h2>
     <div class="zoom">
       <figure><img src="{zoom}" alt="{escape(name)} andando, ampliada"><figcaption>andando</figcaption></figure>
-      <figure><img src="{stand_uri}" alt="Kiara parada, ampliada"><figcaption>parada</figcaption></figure>
+      <figure><img src="{card_stand}" alt="Kiara parada, ampliada"><figcaption>parada</figcaption></figure>
     </div>
     <img class="bar" src="{bar}" alt="{escape(name)} passeando na taskbar">
   </section>""")
