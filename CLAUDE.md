@@ -15,8 +15,9 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   Abanar = toquinho mexe 1px + bumbum balança.
 - **Tamanho único: 32x32** (~11 cores: X K k D T t G W E B N). O dono descartou o 64
   e achou o 16 e o 8 fracos ("só 32"). Ampliado 2x quando precisar de mais tamanho.
-- **Contorno grisalho (G) aprovado**: aplicado por filtro (`filters.py outline color=G`)
-  na saída final, pra não sumir na taskbar escura.
+- **Contorno grisalho (G)**: aprovado, mas o dono pediu pra trabalhar **sem contorno por
+  enquanto** (previews e revisões sem borda). Continua disponível por filtro
+  (`filters.py outline color=G`) pra saída final.
 - **Pose base: em pé, de lado** (substitui a sentada).
 - **Pose base APROVADA: `sprites/base/kiara_32.txt`** (e `_contorno.png`). Caminho:
   rascunho C2 (Canva) → retoque mínimo → olho castanho → testa preta → sobrancelha
@@ -30,8 +31,11 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   terracota e precisa ser ajustada na etapa "comendo".
 - **Proporção P1 aprovada** (pernas +1 px, corpo +2 px; `tools/proportion.py`): já
   aplicada em `sprites/base/kiara_32.txt` e nas peças `sprites/parts/32/`.
-- Andar em refação: o dono notou que só as patinhas mexiam (ombro, cotovelo e coxa
-  parados). Novo trote com a perna inteira articulada, sobre a P1.
+- Andar em refação: o dono notou que só as patinhas mexiam. Novo trote com a perna
+  inteira articulada (dianteira: ombro, cotovelo, pata; traseira: glúteo, joelho/jarrete,
+  pata), sobre a P1 — versões de 4 e 6 frames em paralelo.
+- Toquinho: o dono achou que ficou pequeno ("um tico maior"); opções em
+  `sprites/candidates/rabo/`.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
