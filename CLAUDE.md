@@ -33,15 +33,14 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   traseira: glúteo, joelho/jarrete, pata), sobre a P1: trote A (4 frames, `walk_a.json`)
   e trote B (6 frames de 100 ms, `walk_b.json`, preferido pelo juiz Haiku). **O dono
   gostou do trote B** ("o trote b tá ótimo"). O `walk.json` antigo (só patinhas) foi reprovado.
-- Barriga (pedido do dono): 1 px mais funda, toda preta e reta, nas faixas de pernas
-  (`legs_base`, `legs_trotB0-5`) e na pose base. A curva junto da coxa deixava um
-  "buraco branco" (o dono viu) e foi fechada. Em teste: +2 px (mais 1 linha, a 24),
-  `candidates/barriga/gordinha2_quadro.png`. O dono pediu contorno escuro (X) nos pixels
-  de baixo da barriga: opções +2/+1 com contorno em `candidates/barriga/contorno_barriga_*`.
-  As peças continuam em +1 sem contorno até o dono escolher (aplicar: linha 24 cols 12-16
-  vira K e, na última linha da barriga, K com vazio embaixo vira X). A pele
-  mais clara no ventre (cor `p`) foi testada e **reprovada** ("cancela"); saiu da paleta.
-  Histórico em `sprites/candidates/barriga/`.
+- Barriga (pedidos do dono): **2 px mais funda**, toda preta, reta, com borda X embaixo
+  (como as pernas), nas faixas de pernas (`legs_base`, `legs_trotB0-5`) e na pose base.
+  A pele mais clara no ventre (cor `p`) foi reprovada e saiu da paleta; a curva junto da
+  coxa deixava um buraco e foi fechada. Histórico em `sprites/candidates/barriga/`.
+- Ajustes finos (`sprites/candidates/ajustes/`): peito 1 px mais fundo e com a frente
+  maior (a barriga tinha ficado maior que o peito); orelha direita sem o pixel solto na
+  ponta e com borda dos dois lados (opção B; a A, mais fina, ficou no quadro); castanho
+  do alto da pata de trás de longe virou preto (fica atrás da barriga).
 - **Toquinho APROVADO: 1 px mais alto** (opção r1, 3 px de altura; "agora sim o rabinho
   tá perfeito"), já em `parts/32/upper.txt` e na pose base. Outras opções em
   `sprites/candidates/rabo/`.
