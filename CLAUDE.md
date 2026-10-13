@@ -40,7 +40,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   mais clara no ventre (cor `p`) foi testada e **reprovada** ("cancela"); saiu da paleta.
   Histórico em `sprites/candidates/barriga/`. Aguardando o OK do dono pra fechar o "Andando".
 - Toquinho: o dono achou que ficou pequeno ("um tico maior"); opções em
-  `sprites/candidates/rabo/`.
+  `sprites/candidates/rabo/`. Em teste: 1 px mais alto na vertical (r1), mostrado
+  andando (`teste_r1_andando.png`, `previews/andando/kiara_rabinho_offline.html`).
+  As peças ainda não mudaram: aplicar em `parts/32/upper.txt` (linha 12, cols 3-4 = `XK`)
+  se o dono aprovar.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
