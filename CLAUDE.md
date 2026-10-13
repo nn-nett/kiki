@@ -36,8 +36,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Barriga (pedido do dono): 1 px mais funda, toda preta e reta, nas faixas de pernas
   (`legs_base`, `legs_trotB0-5`) e na pose base. A curva junto da coxa deixava um
   "buraco branco" (o dono viu) e foi fechada. Em teste: +2 px (mais 1 linha, a 24),
-  `candidates/barriga/gordinha2_quadro.png`; aplicar com o script de encher a linha 24,
-  cols 12-16, se o dono aprovar. A pele
+  `candidates/barriga/gordinha2_quadro.png`. O dono pediu contorno escuro (X) nos pixels
+  de baixo da barriga: opções +2/+1 com contorno em `candidates/barriga/contorno_barriga_*`.
+  As peças continuam em +1 sem contorno até o dono escolher (aplicar: linha 24 cols 12-16
+  vira K e, na última linha da barriga, K com vazio embaixo vira X). A pele
   mais clara no ventre (cor `p`) foi testada e **reprovada** ("cancela"); saiu da paleta.
   Histórico em `sprites/candidates/barriga/`.
 - **Toquinho APROVADO: 1 px mais alto** (opção r1, 3 px de altura; "agora sim o rabinho
