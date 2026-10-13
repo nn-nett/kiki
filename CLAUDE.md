@@ -44,9 +44,13 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - **Toquinho APROVADO: 1 px mais alto** (opção r1, 3 px de altura; "agora sim o rabinho
   tá perfeito"), já em `parts/32/upper.txt` e na pose base. Outras opções em
   `sprites/candidates/rabo/`.
-- **Andando, versão final pra aprovação:** trote B (`anims/walk_b.json`) com P1, barriga
-  gordinha e rabinho novo. Previews em `sprites/previews/andando/`
-  (`kiara_andando_offline.html` abre offline). Falta só o OK explícito do dono pra marcar ✅.
+- **Andando APROVADO** ("já temos frames pra Kiki andando"): trote B (`anims/walk_b.json`)
+  com P1, barriga +2 px, peito mais fundo, rabinho +1 px. Previews em `sprites/previews/andando/`.
+- **Arquivos finais aprovados em `sprites/final/`**: a lista `aprovadas.json` diz quais
+  receitas estão aprovadas; `python3 sprites/tools/export_final.py` gera `final/frames/<anim>/`
+  (normal, esquerda, contorno, contorno_esquerda) e `final/kiara-sprites.png/.json` (células
+  32x32, durações, loop, `step_px` = px do sprite que a janela anda por frame, frames no ar).
+  Hoje: parada + andando. Aprovou uma animação nova → adicionar em `aprovadas.json` e rodar.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
@@ -79,7 +83,9 @@ Cada item: gerar em 32x32, fundo transparente → folha de revisão → mostrar 
 só marcar como ✅ com aprovação explícita.
 
 - [x] ✅ Pose base (em pé, vista lateral, 32x32) — `sprites/base/kiara_32.txt`
-- [ ] Andando (4–6 frames, esquerda/direita)
+- [x] ✅ Andando — trote B, 6 frames de 100 ms, esquerda por espelho (`anims/walk_b.json`)
+- [ ] Correndo (galope, pedido do dono; em desenho: `anims/run.json`)
+- [ ] Latindo (cabeça separada do corpo, língua rosa P; em desenho: `anims/latir.json`)
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
 - [ ] Comendo (3–4 frames, no potinho)
@@ -91,7 +97,8 @@ só marcar como ✅ com aprovação explícita.
 - [ ] Objeto: potinho de ração (~24x16, cheio/vazio)
 - [ ] Objeto: cocô (~8x8, com brilho de "fresquinho")
 - [ ] Skin: suéter preto com listras brancas (variante/overlay de todos os corpos)
-- [ ] Saída final: `kiara-sprites.png` + JSON de metadados (frames, durações, loops)
+- [ ] Saída final: `kiara-sprites.png` + JSON de metadados (frames, durações, loops) —
+  já sai parcial em `sprites/final/` a cada aprovação (`tools/export_final.py`)
 
 ## Decisões técnicas
 

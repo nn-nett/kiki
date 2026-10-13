@@ -1,0 +1,5 @@
+{
+  "_comment": "Animações aprovadas pelo dono. tools/export_final.py lê esta lista e gera final/frames/ + final/kiara-sprites.png/.json. step_px = quantos px do sprite a janela anda por frame (0 = parada).",
+  "parada": { "recipe": "stand", "step_px": 0, "aprovada": "pose base em pé" },
+  "andando": { "recipe": "walk_b", "step_px": 1, "aprovada": "trote B, barriga +2 px com contorno, peito mais fundo, rabinho +1 px, orelha e pata corrigidas" }
+}

@@ -1,0 +1,117 @@
+{
+  "out": "kiara-sprites",
+  "animations": {
+    "parada": {
+      "frames": [
+        "frames/parada/parada_0.png"
+      ],
+      "durations": [
+        500
+      ],
+      "loop": true
+    },
+    "parada_esquerda": {
+      "frames": [
+        "frames/parada/parada_esquerda_0.png"
+      ],
+      "durations": [
+        500
+      ],
+      "loop": true
+    },
+    "parada_contorno": {
+      "frames": [
+        "frames/parada/parada_contorno_0.png"
+      ],
+      "durations": [
+        500
+      ],
+      "loop": true
+    },
+    "parada_contorno_esquerda": {
+      "frames": [
+        "frames/parada/parada_contorno_esquerda_0.png"
+      ],
+      "durations": [
+        500
+      ],
+      "loop": true
+    },
+    "andando": {
+      "frames": [
+        "frames/andando/andando_0.png",
+        "frames/andando/andando_1.png",
+        "frames/andando/andando_2.png",
+        "frames/andando/andando_3.png",
+        "frames/andando/andando_4.png",
+        "frames/andando/andando_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    },
+    "andando_esquerda": {
+      "frames": [
+        "frames/andando/andando_esquerda_0.png",
+        "frames/andando/andando_esquerda_1.png",
+        "frames/andando/andando_esquerda_2.png",
+        "frames/andando/andando_esquerda_3.png",
+        "frames/andando/andando_esquerda_4.png",
+        "frames/andando/andando_esquerda_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    },
+    "andando_contorno": {
+      "frames": [
+        "frames/andando/andando_contorno_0.png",
+        "frames/andando/andando_contorno_1.png",
+        "frames/andando/andando_contorno_2.png",
+        "frames/andando/andando_contorno_3.png",
+        "frames/andando/andando_contorno_4.png",
+        "frames/andando/andando_contorno_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    },
+    "andando_contorno_esquerda": {
+      "frames": [
+        "frames/andando/andando_contorno_esquerda_0.png",
+        "frames/andando/andando_contorno_esquerda_1.png",
+        "frames/andando/andando_contorno_esquerda_2.png",
+        "frames/andando/andando_contorno_esquerda_3.png",
+        "frames/andando/andando_contorno_esquerda_4.png",
+        "frames/andando/andando_contorno_esquerda_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    }
+  }
+}

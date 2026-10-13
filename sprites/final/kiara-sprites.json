@@ -1,0 +1,262 @@
+{
+  "sheet": "kiara-sprites.png",
+  "cell": {
+    "w": 32,
+    "h": 32
+  },
+  "animations": {
+    "parada": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 500
+        }
+      ],
+      "step_px": 0,
+      "airborne_frames": []
+    },
+    "parada_esquerda": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 32,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 500
+        }
+      ],
+      "step_px": 0,
+      "airborne_frames": []
+    },
+    "parada_contorno": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 64,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 500
+        }
+      ],
+      "step_px": 0,
+      "airborne_frames": []
+    },
+    "parada_contorno_esquerda": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 96,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 500
+        }
+      ],
+      "step_px": 0,
+      "airborne_frames": []
+    },
+    "andando": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 128,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 160,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 192,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 224,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 288,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        }
+      ],
+      "step_px": 1,
+      "airborne_frames": []
+    },
+    "andando_esquerda": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 320,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 352,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 416,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 448,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 480,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        }
+      ],
+      "step_px": -1,
+      "airborne_frames": []
+    },
+    "andando_contorno": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 512,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 544,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 576,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 608,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 640,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 672,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        }
+      ],
+      "step_px": 1,
+      "airborne_frames": []
+    },
+    "andando_contorno_esquerda": {
+      "loop": true,
+      "frames": [
+        {
+          "x": 704,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 736,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 800,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 832,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        },
+        {
+          "x": 864,
+          "y": 0,
+          "w": 32,
+          "h": 32,
+          "duration_ms": 100
+        }
+      ],
+      "step_px": -1,
+      "airborne_frames": []
+    }
+  },
+  "_comment": "step_px: px do sprite que a janela anda por frame (negativo = pra esquerda); airborne_frames: frames com as patas fora do ch\u00e3o"
+}
