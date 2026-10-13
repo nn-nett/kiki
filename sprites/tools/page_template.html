@@ -1,4 +1,4 @@
-<title>Kiara andando</title>
+<title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
@@ -56,8 +56,8 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 
 <div class="wrap">
   <header>
-    <h1>Kiara andando</h1>
-    <p>Barriga +2 px com contorno, peito 1 px mais fundo, orelha direita sem o pixel solto e com borda, e o castanho do alto da pata de trás de longe escondido atrás da barriga. Compare com o antes. Embaixo de cada uma, ela passeia por uma taskbar do Windows 11 em tamanho real (2x).</p>
+    <h1>__TITLE__</h1>
+    <p>__INTRO__</p>
   </header>
 
   <div class="controls" role="group" aria-label="Controles da animação">
@@ -76,7 +76,7 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 
   <div class="foto">
     <img id="foto" alt="Foto da Kiara de perfil, em pé ao lado do potinho de ração">
-    <p>Referência de perfil: corpo compacto e robusto, pernas finas. Na foto de cima com a bandana vermelha, o toquinho é curto, preto e fica reto ou pra cima. O trote B tem 6 frames de 100 ms.</p>
+    <p>__FOTO_NOTA__</p>
   </div>
 </div>
 
@@ -106,7 +106,7 @@ async function build() {
       <canvas class="bar" width="${BAR_W}" height="${BAR_H}" aria-label="Kiara passeando na taskbar"></canvas>`;
     cards.appendChild(card);
     const [cz, cs, cb] = card.querySelectorAll('canvas');
-    views.push({ walk, stand, cz, cs, cb, x: 10, dir: 1, ms: v.ms, f: 0, last: 0 });
+    views.push({ walk, stand, cz, cs, cb, x: 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, f: 0, last: 0 });
   }
   draw(); loop();
 }
@@ -134,8 +134,8 @@ function draw() {
 
 function step(v) {
   v.f = (v.f + 1) % v.walk.length;
-  // patas plantadas recuam 1 px do sprite por frame: a janela anda o mesmo
-  v.x += v.dir * SCALE_BAR;
+  // patas plantadas recuam v.step px do sprite por frame: a janela anda o mesmo
+  v.x += v.dir * v.step * SCALE_BAR;
   if (v.x > BAR_W - 32*SCALE_BAR - 6) v.dir = -1;
   if (v.x < 6) v.dir = 1;
 }
@@ -144,7 +144,7 @@ function loop(t = 0) {
   if (playing) {
     let changed = false;
     for (const v of views) {
-      if (t - v.last >= v.ms / speed) { step(v); v.last = t; changed = true; }
+      if (t - v.last >= v.durs[v.f % v.durs.length] / speed) { step(v); v.last = t; changed = true; }
     }
     if (changed) draw();
   }

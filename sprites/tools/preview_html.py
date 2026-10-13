@@ -52,12 +52,12 @@ def load_anim(folder):
     return frames, durs
 
 
-def taskbar_walk(frames, durs, bg):
-    """Ela atravessa a barra e volta (espelhada), 1 px do sprite por frame."""
+def taskbar_walk(frames, durs, bg, step=1):
+    """Ela atravessa a barra e volta (espelhada), `step` px do sprite por frame."""
     w = frames[0].width * BAR_SCALE
     x, d, i = 6, 1, 0
     seq, seq_d = [], []
-    for _ in range(2 * ((BAR_W - w - 12) // BAR_SCALE)):
+    for _ in range(2 * ((BAR_W - w - 12) // (BAR_SCALE * step))):
         f = upscale(frames[i % len(frames)], BAR_SCALE)
         if d < 0:
             f = f.transpose(Image.FLIP_LEFT_RIGHT)
@@ -66,7 +66,7 @@ def taskbar_walk(frames, durs, bg):
         seq.append(c)
         seq_d.append(durs[i % len(durs)])
         i += 1
-        x += d * BAR_SCALE
+        x += d * step * BAR_SCALE
         if x > BAR_W - w - 6:
             d = -1
         if x < 6:
@@ -102,6 +102,7 @@ def main():
     ap.add_argument("--stand", required=True, help="PNG da pose parada")
     ap.add_argument("--title", default="Kiara andando")
     ap.add_argument("--intro", default="")
+    ap.add_argument("--step", type=int, default=1, help="px do sprite que ela anda por frame")
     args = ap.parse_args()
 
     bg = TASKBAR_LIGHT
@@ -116,7 +117,7 @@ def main():
             card_stand = data_uri(gif_bytes([upscale(im, ZOOM)], [1000], bg), "image/gif")
         frames, durs = load_anim(folder)
         zoom = data_uri(gif_bytes([upscale(f, ZOOM) for f in frames], durs, bg), "image/gif")
-        bar = data_uri(taskbar_walk(frames, durs, bg), "image/gif")
+        bar = data_uri(taskbar_walk(frames, durs, bg, args.step), "image/gif")
         cards.append(f"""
   <section class="card">
     <h2>{escape(name)}<small>{escape(note)}</small></h2>

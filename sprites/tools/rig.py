@@ -109,9 +109,8 @@ class Rig:
             })
         return resolved
 
-    def render_frame(self, parts, canvas):
-        """Desenha um frame. Retorna (imagem, máscaras por papel, avisos)."""
-        w, h = canvas
+    def origins(self, parts):
+        """Canto superior esquerdo de cada peça do frame, por id (resolve os encaixes)."""
         entries = {}
         for p in parts:
             pid = p.get("id", p["part"])
@@ -119,8 +118,7 @@ class Rig:
                 raise ValueError(f"id repetido no frame: '{pid}' (use \"id\" distintos)")
             entries[pid] = p
 
-        # posição do canto superior esquerdo de cada peça (encaixes podem vir
-        # em qualquer ordem, então resolve por dependência)
+        # encaixes podem vir em qualquer ordem, então resolve por dependência
         origin = {}
 
         def place(pid, chain=()):
@@ -151,13 +149,22 @@ class Rig:
             origin[pid] = (ax + dx - part.anchor[0], ay + dy - part.anchor[1])
             return origin[pid]
 
+        for pid in entries:
+            place(pid)
+        return origin
+
+    def render_frame(self, parts, canvas):
+        """Desenha um frame. Retorna (imagem, máscaras por papel, avisos)."""
+        w, h = canvas
+        origin = self.origins(parts)
+
         img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         owner = [[None] * w for _ in range(h)]
         warnings = []
         for p in parts:
             pid = p.get("id", p["part"])
             part = self.part(p["part"])
-            ox, oy = place(pid)
+            ox, oy = origin[pid]
             src = part.image.load()
             outside = 0
             for y in range(part.image.height):

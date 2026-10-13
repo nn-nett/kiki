@@ -117,7 +117,13 @@ só marcar como ✅ com aprovação explícita.
   grade e foto), `compare.py` (A/B pro juiz), `similarity.py` (nota 0–100 vs. foto),
   `normalize.py` (imagem de IA → sprite, via `unfake`), `photo2sprite.py` (rota B em
   qualquer tamanho), `tiers_board.py` (quadro 8/16/32), `animate.py`, `pack.py`,
-  `spritegen.py`, `recolor.py`, `sheet_extract.py`. Dependências: `sprites/requirements.txt`.
+  `spritegen.py`, `recolor.py`, `sheet_extract.py`, `tweak.py` (ajuste fino de pixels com
+  variantes, checagem de buracos/entalhes e aplicação), `preview_html.py` (HTML offline),
+  `page.py` + `page_template.html` (página animada do artifact), `export_final.py`.
+  Dependências: `sprites/requirements.txt`.
+- **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
+  localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,
+  perna de longe atrás da barriga, sem pixel solto). Usar sempre que ele apontar um detalhe.
 - Rede do sandbox: Figma e Canva geram, mas o download em resolução cheia e o upload
   de fotos são bloqueados; as miniaturas (200–256 px) bastam para 64x64.
 - Pipeline validado de ponta a ponta com sprites do FF1 (Black Mage) enviados
