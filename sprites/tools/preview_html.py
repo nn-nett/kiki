@@ -57,7 +57,10 @@ def taskbar_walk(frames, durs, bg, step=1):
     w = frames[0].width * BAR_SCALE
     x, d, i = 6, 1, 0
     seq, seq_d = [], []
-    for _ in range(2 * ((BAR_W - w - 12) // (BAR_SCALE * step))):
+    if step == 0:  # animação no lugar (latido, idle): um ciclo, no meio da barra
+        x = (BAR_W - w) // 2
+    n = 2 * len(frames) if step == 0 else 2 * ((BAR_W - w - 12) // (BAR_SCALE * step))
+    for _ in range(n):
         f = upscale(frames[i % len(frames)], BAR_SCALE)
         if d < 0:
             f = f.transpose(Image.FLIP_LEFT_RIGHT)
@@ -97,7 +100,7 @@ img { image-rendering: pixelated; image-rendering: crisp-edges; display: block; 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("entries", nargs="+", help='"Nome|nota|pasta do rig[|parada.png]"')
+    ap.add_argument("entries", nargs="+", help='"Nome|nota|pasta do rig[|parada.png[|passo]]"')
     ap.add_argument("--out", required=True)
     ap.add_argument("--stand", required=True, help="PNG da pose parada")
     ap.add_argument("--title", default="Kiara andando")
@@ -110,19 +113,20 @@ def main():
     stand_uri = data_uri(gif_bytes([upscale(stand, ZOOM)], [1000], bg), "image/gif")
     cards = []
     for entry in args.entries:
-        name, note, folder, *own = entry.split("|", 3)
+        name, note, folder, *own = entry.split("|", 4)
+        step = int(own[1]) if len(own) > 1 and own[1] else args.step
         card_stand = stand_uri
-        if own:
+        if own and own[0]:
             im = Image.open(own[0]).convert("RGBA")
             card_stand = data_uri(gif_bytes([upscale(im, ZOOM)], [1000], bg), "image/gif")
         frames, durs = load_anim(folder)
         zoom = data_uri(gif_bytes([upscale(f, ZOOM) for f in frames], durs, bg), "image/gif")
-        bar = data_uri(taskbar_walk(frames, durs, bg, args.step), "image/gif")
+        bar = data_uri(taskbar_walk(frames, durs, bg, step), "image/gif")
         cards.append(f"""
   <section class="card">
     <h2>{escape(name)}<small>{escape(note)}</small></h2>
     <div class="zoom">
-      <figure><img src="{zoom}" alt="{escape(name)} andando, ampliada"><figcaption>andando</figcaption></figure>
+      <figure><img src="{zoom}" alt="{escape(name)}, ampliada"><figcaption>animada</figcaption></figure>
       <figure><img src="{card_stand}" alt="Kiara parada, ampliada"><figcaption>parada</figcaption></figure>
     </div>
     <img class="bar" src="{bar}" alt="{escape(name)} passeando na taskbar">

@@ -1,0 +1,20 @@
+{
+  "name": "latir",
+  "canvas": [32, 32],
+  "loop": true,
+  "sequence": [0, 1, 2, 3, 1, 2, 3],
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 300, "parts": [
+      {"id": "legs", "part": "legs_base", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0]},
+      {"id": "head", "part": "head", "attach": "torso.pescoco", "offset": [0, 0]}
+    ]},
+    {"base": 0, "duration": 90, "set": {"head": {"part": "head_bark1", "offset": [0, 1]}}},
+    {"base": 0, "duration": 170, "set": {"head": {"part": "head_bark2", "offset": [1, 0]}}},
+    {"base": 0, "duration": 100, "set": {"head": {"part": "head_bark1", "offset": [0, 0]}}}
+  ]
+}

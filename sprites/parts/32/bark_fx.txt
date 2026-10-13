@@ -1,0 +1,21 @@
+# Kiara 32 — efeito de som do latido (opcional, só no frame "AU!")
+# @anchor 1,8
+# @role fx
+# encaixa em head.boca; 2 risquinhos diagonais em G (cinza: aparece na taskbar clara e na
+# escura), um acima do nariz e outro abaixo do queixo, sem encostar na cabeça.
+# São pixels separados do corpo de propósito: o checador de "pixel solto" acusa esses 4 px.
+# Não usar com a variante "contorno" (o filtro engrossaria os riscos).
+.G
+G.
+..
+..
+..
+..
+..
+..
+..
+..
+..
+..
+G.
+.G

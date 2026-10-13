@@ -67,7 +67,7 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
       <button id="barDark" aria-pressed="false">Taskbar escura</button>
     </span>
     <span class="seg" role="group" aria-label="Animação">
-      <button id="play" aria-pressed="true">Andando</button>
+      <button id="play" aria-pressed="true">Animada</button>
       <button id="pause" aria-pressed="false">Parada</button>
     </span>
   </div>
@@ -100,13 +100,13 @@ async function build() {
     card.className = 'card';
     card.innerHTML = `<h2>${v.nome} <small>${v.nota}</small></h2>
       <div class="zoom">
-        <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>andando</figcaption></figure>
+        <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>animada</figcaption></figure>
         <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>parada</figcaption></figure>
       </div>
       <canvas class="bar" width="${BAR_W}" height="${BAR_H}" aria-label="Kiara passeando na taskbar"></canvas>`;
     cards.appendChild(card);
     const [cz, cs, cb] = card.querySelectorAll('canvas');
-    views.push({ walk, stand, cz, cs, cb, x: 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, f: 0, last: 0 });
+    views.push({ walk, stand, cz, cs, cb, x: v.step === 0 ? (BAR_W - 32*SCALE_BAR) / 2 : 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, f: 0, last: 0 });
   }
   draw(); loop();
 }
