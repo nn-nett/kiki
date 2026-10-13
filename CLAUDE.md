@@ -22,10 +22,8 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - **Pose base APROVADA: `sprites/base/kiara_32.txt`** (e `_contorno.png`). Caminho:
   rascunho C2 (Canva) → retoque mínimo → olho castanho → testa preta → sobrancelha
   cinza na ponta (opção 3) → buracos fechados. Histórico em `sprites/candidates/base/`.
-- Animação "andando" pronta pra aprovação: trote em 4 frames (`anims/walk.json`,
-  pernas em `parts/32/legs_walk0-3.txt`), corpo desce 1px nos contatos, 130 ms/frame,
-  esquerda por espelho. Previews em `sprites/previews/andando/`. No app, a janela deve
-  andar ~1px do sprite por frame (as patas plantadas recuam 1px/frame) pra não patinar.
+- No app, a janela deve andar ~1px do sprite por frame (as patas plantadas recuam
+  1px/frame) pra não patinar; esquerda por espelho.
 - Potinho (da foto `reference/kiki_perfil_potinho.jpg`): ração num pote baixo de cerâmica
   bege-claro (pedra) e água numa vasilha escura (berinjela) — a paleta ainda está
   terracota e precisa ser ajustada na etapa "comendo".
@@ -38,12 +36,13 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Barriga (pedido do dono): 1 px mais funda, toda preta, em curva (encolhe junto da
   coxa), nas faixas de pernas (`legs_base`, `legs_trotB0-5`) e na pose base. A pele
   mais clara no ventre (cor `p`) foi testada e **reprovada** ("cancela"); saiu da paleta.
-  Histórico em `sprites/candidates/barriga/`. Aguardando o OK do dono pra fechar o "Andando".
-- Toquinho: o dono achou que ficou pequeno ("um tico maior"); opções em
-  `sprites/candidates/rabo/`. Em teste: 1 px mais alto na vertical (r1), mostrado
-  andando (`teste_r1_andando.png`, `previews/andando/kiara_rabinho_offline.html`).
-  As peças ainda não mudaram: aplicar em `parts/32/upper.txt` (linha 12, cols 3-4 = `XK`)
-  se o dono aprovar.
+  Histórico em `sprites/candidates/barriga/`.
+- **Toquinho APROVADO: 1 px mais alto** (opção r1, 3 px de altura; "agora sim o rabinho
+  tá perfeito"), já em `parts/32/upper.txt` e na pose base. Outras opções em
+  `sprites/candidates/rabo/`.
+- **Andando, versão final pra aprovação:** trote B (`anims/walk_b.json`) com P1, barriga
+  gordinha e rabinho novo. Previews em `sprites/previews/andando/`
+  (`kiara_andando_offline.html` abre offline). Falta só o OK explícito do dono pra marcar ✅.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
