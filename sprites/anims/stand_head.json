@@ -1,0 +1,15 @@
+{
+  "name": "stand_head",
+  "canvas": [32, 32],
+  "loop": true,
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}]
+  },
+  "frames": [
+    {"duration": 500, "parts": [
+      {"id": "legs", "part": "legs_base", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0]},
+      {"id": "head", "part": "head", "attach": "torso.pescoco"}
+    ]}
+  ]
+}
