@@ -51,6 +51,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   (normal, esquerda, contorno, contorno_esquerda) e `final/kiara-sprites.png/.json` (células
   32x32, durações, loop, `step_px` = px do sprite que a janela anda por frame, frames no ar).
   Hoje: parada + andando. Aprovou uma animação nova → adicionar em `aprovadas.json` e rodar.
+- **Cabeça separada** (pro latido e futuras expressões): `head.txt` (linhas 0-14, cols 16-31,
+  `@anchor 4,14`) + `torso.txt` (`@socket.pescoco 20,14`, com toco do pescoço escondido). `stand_head`
+  = `stand` pixel a pixel. Pra migrar uma receita: `upper` → `torso` e `head` com
+  `attach: "torso.pescoco"`. A cabeça tem `@role cabeca` (o suéter não pega nela).
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 
 ### Observações de anatomia (das fotos)
@@ -84,8 +88,8 @@ só marcar como ✅ com aprovação explícita.
 
 - [x] ✅ Pose base (em pé, vista lateral, 32x32) — `sprites/base/kiara_32.txt`
 - [x] ✅ Andando — trote B, 6 frames de 100 ms, esquerda por espelho (`anims/walk_b.json`)
-- [ ] Correndo (galope, pedido do dono; em desenho: `anims/run.json`)
-- [ ] Latindo (cabeça separada do corpo, língua rosa P; em desenho: `anims/latir.json`)
+- [ ] Correndo — galope 6 frames de 70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`), pra aprovação
+- [ ] Latindo — `anims/latir.json` (só cabeça, recomendado), `latir_tranco`, `latir_fx`; pra aprovação
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
 - [ ] Comendo (3–4 frames, no potinho)

@@ -1,7 +1,9 @@
-# Kiara 32 - pernas do galope (6 frames), frame 3: rascunho
+# Kiara 32 - pernas do galope (6 frames), frame 3: recolhido no ar: dianteiras dobradas pra tras, traseiras esticadas pra frente, nada no chao (airborne)
 # faixa das linhas 19-31 (19-20 ficam por baixo do corpo)
 # @anchor 0,0
 # @role pernas
+# barriga +2 px com borda X embaixo; peito 1 px mais fundo e com a frente maior (pedidos do dono)
+# pernas de longe (T) ficam atras da barriga/peito: sem castanho nas linhas <= 24 (traseira) e <= 23 (dianteira)
 ...KKKKKKKKKKKKKKKKKttWWtX......
 ...KKKKKKKKKKKKKKKKKtWWtX.......
 ...KKKKtKKKKKKKKKKKKKKtXX.......
