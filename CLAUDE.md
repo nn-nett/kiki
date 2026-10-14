@@ -99,9 +99,10 @@ só marcar como ✅ com aprovação explícita.
 
 - [x] ✅ Pose base (em pé, vista lateral, 32x32) — `sprites/base/kiara_32.txt`
 - [x] ✅ Andando — trote B, 6 frames de 100 ms, esquerda por espelho (`anims/walk_b.json`)
-- [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); **v2 pra aprovação**: tronco inclina por frame
-  (`torso_run_{estendido,frente_baixa,arqueando,recolhido,frente_alta,esticando}`), corpo estica (25 col.)
-  e encolhe (21), cabeça sobe/desce; 6×70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`, log em `run_log.md`).
+- [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); v2 inclinou o tronco; **v3 pra aprovação**:
+  dianteiras a 45° (sem passar do focinho), traseiras com extensão completa pra trás, recolhido em V
+  (patas quase se tocam), toquinho acompanha a coluna por pose; tronco por pose `torso_run_*`; cachorra
+  1 px à direita na corrida; 6×70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`, `run_log.md`).
   Também está na simulação como "em teste".
 - [x] ✅ Latindo — `anims/latir_tranco.json` (o dono escolheu "com tranco"; queixo do AU! afinado a pedido
   dele; confirmado: "o latido com tranco tá perfeito")

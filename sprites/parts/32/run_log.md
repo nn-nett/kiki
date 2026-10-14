@@ -1,74 +1,80 @@
-# Correndo / galope v2 (6 frames, tronco inclinando) 32x32 - log das rodadas
+# Correndo / galope v3 (6 frames, tronco inclinando + pernas e toquinho novos) 32x32 - log
 
-## v1 (reprovada) em uma linha
+## Histórico curto
 
-Galope rotativo com o `upper` inteiro rígido (só subia 1 px nos frames apoiados) e só as pernas mudando. O dono: "é
-assim que você acha que cachorro corre? kkk faltou o tronco inclinar na corrida". A v1 está no git (commit 04b1f9d) e
-renderizada em `scratchpad/run/final/run/`.
+- **v1 (reprovada)**: `upper` rígido, só as pernas mudavam. Dono: "faltou o tronco inclinar na corrida". Commit 04b1f9d.
+- **v2**: um tronco por pose (`torso_run_*`, cisalhamento em degraus), corpo estica (25 col.) e encolhe (21), frente
+  desce no pouso das dianteiras e sobe no das traseiras, cabeça só sobe e desce. O dono gostou do tronco. Commit 6f1ae48.
+- **v3 (esta)**: pedidos do dono sobre a v2: "as patas da frente tão muito à frente; as patas de trás não tão fiéis a
+  toda extensão que um cachorro tem ao correr; parece que as patinhas da frente e de trás quase tocam também" e "o rabo
+  do cachorro também acompanha a coluna, né, quando tá correndo". Referências: ciclos de corrida de cão realista, cães
+  cartoon e lobo.
 
-## Arquivos da v2
+## Arquivos
 
-- `torso_run_estendido.txt`, `torso_run_frente_baixa.txt`, `torso_run_arqueando.txt`, `torso_run_recolhido.txt`,
-  `torso_run_frente_alta.txt`, `torso_run_esticando.txt` (novos): o tronco inclinado de cada frame, tirado do
-  `torso.txt` (toquinho, garupa, costas, peito com a mancha W, toco do pescoço). `@socket.pescoco 20,14` em todos.
-- `legs_run0..5.txt` (reescritos): faixa das linhas 19-31 com o fundo do corpo inclinado (barriga e peito com borda X)
-  e as quatro pernas, casada com o tronco daquele frame.
-- `../../anims/run.json` (reescrita): `legs` em `at [0,19]`, `torso` (`torso_run_*`) e `head` (`head.txt`) encaixada
-  em `torso.pescoco`. 6 frames de 70 ms (420 ms o ciclo), `airborne` nos frames 0 e 3, variantes `contorno` (G) e
-  `esquerda` (mirror). `upper`, `torso`, `head`, `legs_base`, `legs_trotB*`, paleta e ferramentas não foram tocados.
-- Os `.txt` são a fonte editável. Foram gerados por um script de apoio (fora do repo, `scratchpad/run2/export.py` +
-  `lib.py`/`d5-d7.py`) e conferidos: o render do rig é igual, pixel a pixel, ao do gerador.
+- `torso_run_{estendido,frente_baixa,arqueando,recolhido,frente_alta,esticando}.txt`: mesmos troncos inclinados da v2,
+  agora com o toquinho desenhado por pose e no x do quadro (ver "Deslocamento").
+- `legs_run0..5.txt`: faixa das linhas 19-31 (fundo do corpo inclinado com borda X + pernas novas).
+- `../../anims/run.json`: legs em `at [0,19]`, torso com `offset [0, C]`, `head` em `torso.pescoco` com `offset [1, y]`.
+  6 frames de 70 ms (420 ms), `airborne` nos frames 0 e 3, variantes `contorno` (G) e `esquerda` (mirror).
+- Fonte editável: os `.txt`. Gerador de apoio fora do repo: `scratchpad/run3/v3.py` + `tails.py` + `export3.py`
+  (usa `scratchpad/run2/lib.py`). O render do rig bate pixel a pixel com o gerador.
+- Não foram tocados: `upper`, `torso`, `head`, `head_bark*`, `legs_base`, `legs_trotB*`, receitas stand/walk/latir,
+  paleta, ferramentas.
 
 Render: `python3 sprites/tools/rig.py sprites/anims/run.json --parts sprites/parts/32 --out <saída> --gif`.
 
-## Como o tronco inclina (sem rotação)
+## O que mudou na v3
 
-1. Base: `torso.txt` + um fundo de barril (linhas 21-24 da pose parada sem as pernas, barriga reta com X embaixo).
-2. Cisalhamento em degraus: cada coluna desce `dy` px. `dy` vem de 3 pontos de controle na pose parada: garupa (col. 5)
-   = R, meio (col. 12) = M, peito/pescoço (col. 19 em diante) = C, interpolado e arredondado. Dá degraus de 1 px a cada
-   ~4-7 colunas, no máximo 2 px entre garupa e peito. Arqueado = meio 1 px acima das pontas.
-3. Comprimento: repete (estica) ou tira (encolhe) colunas na col. 12 (só barriga/dorso), como o `proportion.py --body`;
-   a garupa anda `dxr` e o peito `dxc` (esticado: garupa 1 pra trás e peito 1 pra frente).
-4. Limpeza à mão: degraus das costas sem dente antes do pescoço, borda X da barriga/peito contínua, junção peito-perna
-   fechada com X, toco do pescoço aparado na nuca quando a cabeça desce 1 px.
-5. Cada peça `torso_run_*` é guardada normalizada no pescoço (o socket fica no 20,14 de sempre); o `offset` do torso na
-   receita é [dxc, C] e leva o pescoço pra posição do frame. Assim a cabeça acompanha o peito.
+### Dianteiras (estavam "muito à frente")
+Agora vão pra frente e pra baixo em diagonal de 45° (faixa `XttX`), com a pata embaixo da cabeça, no máximo na linha
+do focinho. Antes (F0/F4/F5) elas esticavam quase na horizontal e passavam do focinho. As duas dianteiras andam em
+paralelo, a de longe 3 colunas atrás e com a 1ª linha preta.
 
-Em vez de "abaixar a cachorra inteira" com um offset fixo, o abaixamento está no cisalhamento: garupa e peito só descem
-(0 a 2 px) em relação à pose parada, nunca sobem. A orelha só encosta na linha 0 no frame 4 (frente alta), igual à
-pose parada; nos outros fica 1-2 px abaixo.
+### Traseiras ("toda a extensão")
+- F0 (esticado no ar): diagonal longa e reta saindo da garupa, bem pra trás, com a pata no alto atrás do toquinho
+  (col. 0); a de longe em paralelo, 4 linhas abaixo.
+- F1: ainda esticadas pra trás (45°), juntas (de perto e de longe lado a lado, borda X em comum).
+- F5 (empurrão): plantadas em diagonal pra trás, do alto da coxa até a pata atrás do quadril (tan da linha 30 nas
+  col. 5 e 7).
+- F4 (pouso): embaixo do quadril, com o joelho pra frente (perna dobrada absorvendo o pouso), col. 7 e 9.
+- F2: vindo pra frente por baixo da barriga.
 
-| frame | pose | R/M/C (desce) | costas (garupa/meio/peito) | corpo (col.) | offset torso | offset cabeça | topo | no ar |
-|---|---|---|---|---|---|---|---|---|
-| 0 | estendido | 0/0/0 | 15/15/15 reto | 2-26 (25) | [1, 0] | [-1, 1] | 1 | sim |
-| 1 | dianteira pousa | 0/1/2 | 15/16/17 frente pra baixo | 2-26 (25) | [1, 2] | [-1, 0] | 2 | não |
-| 2 | dianteiras empurram | 1/0/2 | 16/15/17 começa a arquear | 3-25 (23) | [0, 2] | [0, 0] | 2 | não |
-| 3 | recolhido | 1/0/1 | 16/15/16 arqueado | 4-24 (21) | [-1, 1] | [1, 0] | 1 | sim |
-| 4 | traseiras pousam | 2/1/0 | 17/16/15 frente pra cima | 4-24 (21) | [-1, 0] | [1, 0] | 0 | não |
-| 5 | traseiras empurram | 1/1/0 | 16/16/15 voltando a esticar | 3-25 (23) | [0, 0] | [0, 1] | 1 | não |
+### Recolhido (patas se encontram)
+F3: traseiras pra frente e dianteiras dobradas pra trás formam um V embaixo da barriga; as patas se encontram no meio e
+a traseira de perto passa por baixo/na frente da dianteira de perto (cruzando). As pernas de longe ficam no meio do V
+(sem bolsão). No F2 as traseiras já chegam perto das dianteiras.
 
-Cabeça: o x dela fica sempre o da pose parada (offset x = -dxc) e só o y balança (topo 1, 2, 2, 1, 0, 1). Ela desce com
-o peito no pouso das dianteiras e sobe com ele no pouso das traseiras; no frame 0 fica 1 px abaixo do pescoço
-("projetada", em linha com as costas). Motivo do x fixo: com a cabeça andando junto com o peito, a variante com contorno
-passava do limite de 35% de pixels mudando entre frames (F4->F5 e F5->F0) e a cabeça do cachorro real é a parte mais
-estável do galope.
+### Toquinho acompanha a coluna
+Mesmo tamanho aprovado (3 px de comprimento, 2 de espessura, preto, borda X do lado de baixo/de trás), só degraus de
+pixel. Fica na peça do tronco, então viaja com a garupa no cisalhamento.
 
-## Pernas (faixas legs_run)
+| frame | pose | toquinho |
+|---|---|---|
+| 0 | esticado no ar | pra trás, levemente pra cima (ponta 1 px acima da base) |
+| 1 | frente baixa / garupa alta | 45° pra trás e pra cima, inclinado junto com a garupa |
+| 2 | arqueando | pra trás, reto (prolonga as costas) |
+| 3 | recolhido | pra trás e pra baixo (acompanha a curva) |
+| 4 | garupa baixa / frente alta | pra trás e pra baixo (prolonga a linha das costas) |
+| 5 | empurrão | pra trás, reto |
 
-- Estilo: perna de perto `t` com contorno X; de longe `T`, atrás da barriga/peito, com a 1ª linha preta (K): sem
-  castanho da perna de longe colado na barriga. A dianteira de perto também nasce preta (o castanho começa abaixo do
-  peito, como na pose parada). Diagonal a 45° = faixa de 2 px de tan (`XttX`), vertical = 1 px (`XtX`), 2:1 = degraus
-  de 2 px. Nada de diagonal de 1 px (o "arame" com xadrez de X da v1).
-- F0 estendido: dianteiras esticadas pra frente em paralelo (de perto até a col. 30, de longe 1 linha abaixo, até a
-  29), traseira de perto esticada pra trás até a col. 0, a de longe mais curta; nada toca o chão.
-- F1 dianteira pousa: dianteira de perto inclinada pra frente com a pata no chão (sola K na col. 24); a de longe
-  chegando no ar; traseiras ainda atrás, começando a dobrar.
-- F2 dianteiras empurram: de perto quase reta (recuou 2 px), de longe apoiada atrás (sola K na col. 17); traseiras
-  dobradas em "<" (joelho pra frente) vindo por baixo da barriga.
-- F3 recolhido: traseiras pra frente por baixo da barriga, dianteira de perto dobrada pra trás com a pata virada, a de
-  longe curta à frente; vão aberto entre o grupo de trás e o da frente (sem "cesto").
-- F4 traseiras pousam embaixo da barriga (tan da linha 30 nas col. 11 e 13), dianteiras se abrindo pra frente no ar.
-- F5 traseiras empurram (col. 9 e 11), dianteiras esticando pra frente.
+### Deslocamento e encaixe (mudou da v2)
+- A cachorra inteira está **1 px à direita** da pose parada em todos os frames (cabeça incluída), pra caber o toquinho
+  deitado pra trás e as traseiras esticadas até a col. 0. O focinho chega na col. 31.
+- O frame 5 andou mais 1 px (garupa na mesma coluna do frame 4): durante o empurrão a garupa não recua, então a perna
+  plantada gira 2 px de verdade.
+- Peças `torso_run_*` no x do quadro; só o y é normalizado no pescoço (`offset [0, C]`). `@socket.pescoco 20,14` em
+  todas (a simulação `sim_page.py` conta com o socket no lugar da pose parada) e a cabeça encaixa com `offset [1, y]`.
+  `sim_page.py --run run` confere as camadas com o rig: ok.
+
+| frame | R/M/C (desce) | corpo | toquinho | offset torso | offset cabeça | topo | no ar |
+|---|---|---|---|---|---|---|---|
+| 0 | 0/0/0 | col. 3-27 (25) | tras_cima | [0, 0] | [1, 1] | 1 | sim |
+| 1 | 0/1/2 | col. 3-27 (25) | diag | [0, 2] | [1, 0] | 2 | não |
+| 2 | 1/0/2 | col. 4-26 (23) | tras | [0, 2] | [1, 0] | 2 | não |
+| 3 | 1/0/1 | col. 5-25 (21) | tras_baixo | [0, 1] | [1, 0] | 1 | sim |
+| 4 | 2/1/0 | col. 5-25 (21) | tras_baixo | [0, 0] | [1, 0] | 0 | não |
+| 5 | 1/1/0 | col. 5-27 (23) | tras | [0, 0] | [1, 1] | 1 | não |
 
 ## Anti-patinação (conferido no render; linha 30 = tan, linha 31 = sola)
 
@@ -76,59 +82,46 @@ A janela anda 2 px do sprite por frame; pata plantada recua exatamente 2 px por 
 
 | perna | F0 | F1 | F2 | F3 | F4 | F5 |
 |---|---|---|---|---|---|---|
-| dianteira de perto | ar | tan 25, sola K 24 + XXX | tan 23, sola K 22 + XXX | ar | ar | ar |
-| dianteira de longe | ar | ar | tan 18, sola K 17 + XX | ar | ar | ar |
-| traseira de perto | ar | ar | ar | ar | tan 11, sola KK 11-12 | tan 9, sola KK 9-10 |
-| traseira de longe | ar | ar | ar | ar | T 13, sola X 13 + K 14 | T 11, sola X 11 + K 12 |
+| dianteira de perto | ar | tan 26, sola K 25 + XXX | tan 24, sola K 23 + XXX | ar | ar | ar |
+| dianteira de longe | ar | ar | tan 19, sola K 18 + XX | ar | ar | ar |
+| traseira de perto | ar | ar | ar | ar | tan 7, sola KK 7-8 | tan 5, sola KK 5-6 |
+| traseira de longe | ar | ar | ar | ar | T 9, sola X 9 + K 10 | T 7, sola X 7 + K 8 |
 
-## Rodada 1 (rascunho: blocos + fitas)
+## Rodadas da v3
 
-Cisalhamento em 3 blocos (garupa/meio/peito) e pernas por polilinha. A inclinação já lia (F1 frente pra baixo, F4 pra
-cima), mas o tronco virou um "tijolo em degraus", a cachorra ficava baixa demais nos frames no ar (abaixamento fixo) e as
-pernas diagonais de 1 px viraram arame com xadrez de X; o recolhido fechava um cesto. Mudei: cisalhamento interpolado
-por pontos de controle, frames no ar mais altos e frente ainda baixa no F2, pernas por runs explícitos (2 px nas
-diagonais, 1 px nas verticais).
-
-## Rodada 2 (buracos e leitura das pernas)
-
-`problems()` achou bolsões entre pernas que divergem (a borda X de uma fechava o vão da outra): F0 dianteiras, F1
-traseiras, F3 entre traseiras e dianteiras, F4 e F5 dianteiras. Redesenhei: F2 traseiras em "<", F3 com vão aberto entre
-os grupos, F1 traseira de longe mais vertical; 1ª linha das pernas de longe e da dianteira de perto em preto. Vãos de
-1 px que fecham embaixo viram X (junção escura entre as pernas).
-
-## Rodada 3 (entalhes, lint e contorno)
-
-Entalhes na borda: debaixo da barriga entre as traseiras (F0, F1, F2, F3), junção peito-dianteira (F0, F4, F5), dente
-nas costas antes do pescoço (F1, F3) e na nuca (toco do pescoço aparecendo quando a cabeça desce: F0, F5). Todos
-fechados. O lint da `run_contorno` deu aviso de >35% de pixels mudando (F4->F5 35%, F5->F0 37%) e o contorno G fechava
-um bolsão entre as traseiras no F0. Cabeça com x fixo + F1 sem abaixar a cabeça a mais: máximo 31% com contorno. Traseira
-de longe do F0 1 coluna pra frente. F0 com as duas dianteiras em paralelo (antes a de longe era um toco).
-
-## Rodada 4 (2x na taskbar clara + v1 x v2)
-
-Em 2x sobre #f3f3f3: dá pra ver o tronco descendo na frente (F1) e subindo (F4), o corpo comprido no F0 (25 col.) e
-curto no F3/F4 (21 col.), e a corcova das costas no F2/F3. Continua a Kiara: cabeça idêntica (orelhões, grisalho, olho
-castanho), mancha W do peito e toquinho viajando com o tronco. Perto x longe se distinguem pela cor (t x T) e pela
-ordem. Último ajuste: dianteira de longe do F3 era um pixel castanho solto embaixo do peito; virou uma perninha curta.
+1. **Pernas novas sobre os troncos da v2.** Dianteiras a 45° com a pata embaixo da cabeça, traseiras esticadas, patas
+   se encontrando no F3. Faltava espaço atrás da garupa (col. 2) pra esticar a traseira e deitar o toquinho, então
+   desloquei tudo 1 px pra direita. `problems()` achou bolsões no F1 (entre as traseiras) e no F2 (entre a traseira de
+   longe e as dianteiras): no F1 juntei as traseiras com borda X em comum e no F2 encurtei a traseira de longe, com o
+   vão aberto pra baixo.
+2. **Empurrão de verdade.** No F5 a traseira ficava quase reta (pata embaixo do quadril), porque a garupa recuava
+   enquanto a pata estava no chão. Passei o F5 1 px pra frente e as patas pra col. 5/7 (pouso em 7/9): a perna sai do
+   alto da coxa e vai pra trás. No F0 a traseira começa mais atrás na coxa (antes parecia sair da barriga).
+3. **Toquinho por pose** (pedido novo do dono): 5 desenhos (de pé, 45°, pra trás levemente pra cima, pra trás reto, pra
+   trás e pra baixo). O "45°" com 1 px de K ficou fino demais e ganhou mais 1 px de K. Fechados os entalhes novos (dente
+   da barriga no F2 e no F4, junção peito-dianteira no F4 e no F5, costas antes do pescoço no F3).
+4. **Leitura (8x e 2x na taskbar clara, v2 x v3).** No F3 a dianteira de perto era um toquinho dobrado; virou uma
+   perna dobrada pra trás que encontra a traseira (opção B de 4 testadas). No F4 a traseira reta parecia uma estaca;
+   ganhou o joelho pra frente (opção D). A simulação recusava as camadas com o socket andando, então o socket voltou
+   pro 20,14 e a cabeça leva o offset +1.
 
 ## Conferência final
 
-- Rig == gerador nos 6 frames.
+- Rig == gerador nos 6 frames; `sim_page.py --run run`: camadas recompõem walk, bark e run.
 - Lint: `run` e `run_esquerda` só com "silhueta some na taskbar escura" (esperado, 6 frames cada); `run_contorno`
-  "nenhum problema" (0 erros, 0 avisos).
-- `problems()`: 0 buracos e 0 pixels soltos em `run`, `run_esquerda` e `run_contorno`. Entalhes que sobraram: o
-  embaixo do toquinho (o mesmo da pose parada aprovada, (3,16) lá) e vãos entre pernas, longe da barriga (F1 (6,26),
-  F2 (10,28), F4 (22,28)). Nenhum na borda da barriga, do peito ou das costas.
-- Pés no chão: linha 31 em todos os frames apoiados (1, 2, 4, 5).
+  "nenhum problema" (0 erros, 0 avisos; maior mudança entre frames com contorno 31%).
+- `problems()`: 0 buracos e 0 pixels soltos em `run`, `run_esquerda` e `run_contorno`. Entalhes só entre pernas, longe
+  da barriga: F0 (1,27) e (26,30), F5 (26,29). Nenhum em volta do toquinho, na barriga, no peito ou nas costas (o
+  entalhe embaixo do toquinho de pé da pose parada sumiu, porque o toquinho agora deita).
+- Pernas de longe sem castanho colado na barriga; pés no chão (linha 31) nos frames 1, 2, 4 e 5.
 
 ## Pontos pro diretor
 
-- A inclinação é de 2 px (garupa x peito) nos extremos. Dá pra testar 3 px no F1/F4, mas as pernas ficam com 4 linhas
-  embaixo da barriga.
-- A cabeça não vai pra frente em x (fica no x da pose parada); o "projetada" do F0 é só ela 1 px mais baixa, em linha
-  com as costas. Com ela 1 px à frente no F0/F1 o contorno volta a dar aviso de 35-37%.
-- Nos frames 3 e 4 o pescoço fica 1 px mais grosso atrás (o toco aparece com borda X ao lado da borda da cabeça);
-  em 2x não se vê.
-- Mantive 6 frames de 70 ms: o ciclo lê inteiro e cada frame já muda 1 px de inclinação. Com 8 frames os passos de 1 px
-  ficariam repetidos (2 frames iguais de inclinação) e a anti-patinação a 2 px/frame pediria pernas mais compridas.
-- A dianteira de longe só toca o chão no F2 (como na v1).
+- Do F3 (patas da traseira lá na frente, no ar) pro F4 (pouso embaixo do quadril) a traseira volta ~9 px de uma vez.
+  É o preço do empurrão comprido no F5 com só 2 frames de apoio. Dá pra pousar mais à frente (col. 9/11 e 7/9), mas a
+  perna do empurrão volta a ficar quase reta.
+- "Pata atrás e acima do toquinho": a pata esticada do F0 fica atrás do toquinho (col. 0) e no alto (6 linhas acima do
+  chão), mas não acima da altura dele (isso desmontaria a perna em 32 px).
+- A cachorra ficou 1 px à direita da pose parada e o focinho encosta na borda (col. 31). Na troca parada -> correndo
+  ela pula 1 px; se incomodar, dá pra compensar no app.
+- O toquinho deitado muda a silhueta da garupa em todos os frames; o de pé (aprovado) segue na pose parada e no trote.
