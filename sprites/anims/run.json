@@ -11,12 +11,12 @@
     {"duration": 70, "airborne": true, "parts": [
       {"id": "legs", "part": "legs_run0", "at": [0, 19]},
       {"id": "torso", "part": "torso_run_estendido", "at": [0, 0], "offset": [0, 1]},
-      {"id": "head", "part": "head", "attach": "torso.pescoco", "offset": [1, 0]}
+      {"id": "head", "part": "head_run", "attach": "torso.pescoco", "offset": [2, 7]}
     ]},
-    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run1"}, "torso": {"part": "torso_run_frente_baixa", "offset": [0, 2]}, "head": {"offset": [1, 1]}}},
-    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run2"}, "torso": {"part": "torso_run_arqueando", "offset": [0, 2]}, "head": {"offset": [1, 2]}}},
-    {"base": 0, "airborne": true, "set": {"legs": {"part": "legs_run3"}, "torso": {"part": "torso_run_recolhido", "offset": [0, 1]}, "head": {"offset": [0, 2]}}},
-    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run4"}, "torso": {"part": "torso_run_frente_alta", "offset": [0, 0]}, "head": {"offset": [0, 2]}}},
-    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run5"}, "torso": {"part": "torso_run_esticando", "offset": [0, 1]}, "head": {"offset": [1, 0]}}}
+    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run1"}, "torso": {"part": "torso_run_frente_baixa", "offset": [0, 2]}, "head": {"offset": [2, 7]}}},
+    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run2"}, "torso": {"part": "torso_run_arqueando", "offset": [0, 2]}, "head": {"offset": [2, 6]}}},
+    {"base": 0, "airborne": true, "set": {"legs": {"part": "legs_run3"}, "torso": {"part": "torso_run_recolhido", "offset": [0, 1]}, "head": {"offset": [2, 7]}}},
+    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run4"}, "torso": {"part": "torso_run_frente_alta", "offset": [0, 0]}, "head": {"offset": [2, 7]}}},
+    {"base": 0, "airborne": false, "set": {"legs": {"part": "legs_run5"}, "torso": {"part": "torso_run_esticando", "offset": [0, 1]}, "head": {"offset": [2, 7]}}}
   ]
 }

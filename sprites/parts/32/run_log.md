@@ -1,4 +1,4 @@
-# Correndo / galope v4 (6 frames, corpo estica e encolhe bem mais) 32x32 - log
+# Correndo / galope v4 + cabeça de corrida (6 frames) 32x32 - log
 
 ## Histórico curto
 
@@ -11,14 +11,60 @@
   em `sprites/extern/refs_correr/`, só estudada, nenhum pixel copiado). O que faltava: o corpo esticar e encolher
   muito mais (bola de costas arqueadas no recolhido, comprido, baixo e reto no esticado), pernas curtas trabalhando
   embaixo do corpo, cabeça e rabo acompanhando.
+- **Cabeça de corrida (rodada atual)**: o dono está "entre a v3 e a v4" e pediu: "na corrida o cachorro deixa o
+  focinho esticado à frente, as orelhas meio que vão pra trás, e a cabeça desce pra ficar um pouco mais alinhada com o
+  corpo". Referência: cão em desenho 2D, 7 frames (`refs_correr/cao_desenho_*`), só estudada. Aplicada em duas bases
+  pro dono escolher: **v4 + cabeça** (`anims/run.json`, no repo) e **v3 + cabeça** (`anims/run_v3c.json`).
+
+## Cabeça de corrida (`head_run.txt`)
+
+Peça nova, 21x12, `@anchor 10,11` (garganta, atrás do queixo), `@role cabeca`. `head.txt` e `head_bark*` não mudaram.
+- Mesma cara da cabeça parada, copiada linha a linha: grisalho do focinho e do queixo, olho castanho com brilho B,
+  sobrancelha cinza, tan da bochecha e da garganta.
+- Focinho 1 col. mais comprido e mais horizontal, com o nariz na ponta, apontando pra frente e um pouco pra baixo.
+  Testei também +2 col. (H1): o focinho ficava comprido demais e cobria mais o peito.
+- Orelhas deitadas pra trás a ~30°, apontando pra garupa, e continuam grandes. A de perto é um triângulo de 5 linhas
+  com o tan por dentro e borda X dos dois lados. A de longe aparece na frente/em cima, escura, com um pixel D.
+  Antes testei orelhas finas em faixa (A, C): pareciam chifres, não as orelhas dela.
+- Posição: o alto do crânio fica 2-3 px acima da linha das costas no ombro e o focinho fica sempre na col. 31. A
+  cabeça só sobe ou desce 1 px por frame, acompanhando o tronco:
+  - v4 + cabeça: topo da cabeça (pontas das orelhas) nas linhas 11-12-11-11-10-11;
+  - v3 + cabeça: 10-11-11-11-10-10.
+  O corpo virou uma flecha.
+- O espaço que sobrou em cima (linhas 0-9) não foi usado. Subir o corpo no salto obrigaria a cabeça a pular mais de
+  1 px entre frames.
+- Pescoço: tirei o toco do pescoço dos `torso_run_*`, porque a cabeça baixa encosta direto nas costas. A raiz da
+  orelha formava um entalhe de 1 px com a linha das costas, fechado com K no tronco (1 px por frame).
+  Na v4 também saíram os remendos de nuca da cabeça antiga: (17,11) no F3 e (17,10) no F4.
+- Efeito colateral: com a cabeça baixa na frente do peito, a mancha clara do peito (W) fica escondida atrás do queixo
+  e do olho. A garganta e a bochecha tan aparecem no lugar.
+- Receita: `"part": "head_run"`; o offset da cabeça é `[origem_x + 10 - 20, origem_y + 11 - 14 - C]`.
+  - v4: [2,7], [2,7], [2,6], [2,7], [2,7], [2,7].
+  - v3: [2,7], [2,6], [2,6], [2,7], [2,7], [2,7].
+  `sim_page.py --run run` confere: "camadas recompõem walk, bark, run".
+
+### v3 + cabeça (`run_v3c`)
+- Peças da v3 tiradas do commit 171b643 (com o bumbum arredondado) numa pasta de peças à parte:
+  `scratchpad/run5/parts_v3c/`, com cópia do resto de `parts/32`, mais `head_run.txt` e o toco do pescoço tirado.
+- Receita no repo: `anims/run_v3c.json`, com os mesmos nomes de peça da v4 (`torso_run_*`, `legs_run*`). Por isso ela
+  só vale com `--parts scratchpad/run5/parts_v3c`. Os arquivos da v4 no repo não foram tocados por ela.
+- Render: `python3 sprites/tools/rig.py sprites/anims/run_v3c.json --parts <parts_v3c> --out <saída>`.
+
+### Conferência da cabeça de corrida (as duas versões)
+- Rig == gerador nos 6 frames das duas.
+- Lint: normal e esquerda só com "silhueta some na taskbar escura"; contorno "nenhum problema" nas duas.
+- `problems()`: 0 buracos e 0 pixels soltos nas três variantes das duas. Entalhes só entre as patas:
+  - v4: F0 (24,30);
+  - v3c: F0 (1,27) e (26,30), F5 (26,29).
+- Maior mudança entre frames com contorno: 29% na v4 e 30% na v3c.
 
 ## Arquivos
 
 - `torso_run_{estendido,frente_baixa,arqueando,recolhido,frente_alta,esticando}.txt` (reescritos): o tronco de cada
   pose, com o toquinho. x do quadro, y normalizado no pescoço; `@socket.pescoco 20,14` em todos.
 - `legs_run0..5.txt` (reescritos): linhas 19-31, fundo do corpo + pernas curtas.
-- `../../anims/run.json` (reescrita): legs `at [0,19]`, torso `offset [0, C]`, head em `torso.pescoco` com offset
-  próprio por frame. 6 frames de 70 ms (420 ms), `airborne` nos frames 0 e 3, variantes `contorno` e `esquerda`.
+- `../../anims/run.json` (reescrita): legs `at [0,19]`, torso `offset [0, C]`, cabeça (`head_run` desde a rodada da
+  cabeça de corrida) em `torso.pescoco` com offset próprio por frame. 6 frames de 70 ms (420 ms), `airborne` nos frames 0 e 3, variantes `contorno` e `esquerda`.
 - Gerador de apoio fora do repo: `scratchpad/run4/v4.py` + `export4.py` (usa `run2/lib.py` e os toquinhos de
   `run3/tails.py`). O render do rig bate pixel a pixel com o gerador. Fonte editável: os `.txt`.
 - Não foram tocados: `upper`, `torso`, `head`, `head_bark*`, `legs_base`, `legs_trotB*`, receitas stand/walk/latir,

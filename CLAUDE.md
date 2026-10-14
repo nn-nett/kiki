@@ -87,7 +87,10 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
   galope, freada com o corpo pra trás), montados no rig com as peças que já existem quando der, e
   a simulação passa a tocar a transição entre um estado e outro.
-- Galope v4 (referência de pixel art em `sprites/extern/refs_correr/`, gitignored): pronto, falta o OK.
+- Galope: o dono está "entre a v3 e a v4" e pediu a **cabeça de corrida** (focinho esticado, orelhas
+  deitadas pra trás, cabeça baixa na linha das costas; `parts/32/head_run.txt`). Duas opções pra ele
+  escolher: v4 + cabeça (`anims/run.json`, peças em `parts/32`) e v3 + cabeça (`anims/run_v3c.json`,
+  peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá). Refs em `sprites/extern/refs_correr/`.
 - Kiki deitada dormindo: **2 opções de frame pra validar** (`parts/32/dormir_A.txt` de barriga com o
   queixo na patinha; `dormir_B.txt` enrolada como na foto; receitas `anims/dormir_A/B.json`, log em
   `dormir_log.md`, previews em `sprites/previews/dormindo/`). Depois da escolha: respiração (2-3 frames).
