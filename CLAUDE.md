@@ -80,6 +80,18 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Corpo compacto e robusto, pernas finas.
 - Usa às vezes bandana/coleira vermelha (fotos), peitoral teal no passeio.
 
+## Próximos passos (to-dos do dono)
+
+- **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
+  andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
+  curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
+  galope, freada com o corpo pra trás), montados no rig com as peças que já existem quando der, e
+  a simulação passa a tocar a transição entre um estado e outro.
+- Galope v4 guiado pela referência de pixel art do dono (`sprites/extern/refs_correr/`, gitignored):
+  esticar/encolher bem mais o corpo (bola com costas arqueadas no recolhido, comprido e baixo no
+  esticado), pernas curtas trabalhando embaixo do corpo, cabeça e rabo acompanhando.
+- Kiki deitada dormindo: 2 opções de frame (A de barriga, B enrolada) em desenho pra validar.
+
 ## Fases
 
 1. **Fase 0 — Sprites**: spritesheet 32x32 gerado programaticamente (Python +
