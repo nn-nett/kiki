@@ -55,6 +55,11 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   `@anchor 4,14`) + `torso.txt` (`@socket.pescoco 20,14`, com toco do pescoço escondido). `stand_head`
   = `stand` pixel a pixel. Pra migrar uma receita: `upper` → `torso` e `head` com
   `attach: "torso.pescoco"`. A cabeça tem `@role cabeca` (o suéter não pega nela).
+- **Galeria da Kiara (tudo o que já foi aprovado): https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe**
+  — pedido do dono: mostrar sempre, "pra garantirmos que não estamos perdendo as coisas". Lê só os
+  arquivos finais (`final/kiara-sprites.png/.json` + `aprovadas.json`) e o checklist deste arquivo.
+  `export_final.py` refaz `sprites/final/galeria.html` (`tools/gallery.py`); depois de cada aprovação,
+  republicar o artifact com esse mesmo arquivo e mandar o link pro dono.
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
 - **Simulação "Kiara na taskbar"** (pedido do dono: andando e latindo ao acaso):
   https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y — `tools/sim_page.py` + `sim_template.html`

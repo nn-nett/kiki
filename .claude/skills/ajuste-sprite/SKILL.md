@@ -56,7 +56,10 @@ Coisas que o dono já ensinou (não repetir):
 - Lint: `python3 sprites/tools/lint.py --size 32 32 <saídas do rig>` — sem contorno, o único
   erro aceito é "silhueta some na taskbar escura"; a variante `_contorno` tem que passar limpa.
 - Animação aprovada pelo dono → adicionar em `sprites/final/aprovadas.json` (receita +
-  `step_px`) e rodar `python3 sprites/tools/export_final.py` (gera `sprites/final/`).
+  `step_px`) e rodar `python3 sprites/tools/export_final.py` (gera `sprites/final/` e refaz a
+  galeria `sprites/final/galeria.html`). Republique a galeria com a ferramenta Artifact usando
+  esse mesmo arquivo (mantém o link do `CLAUDE.md`) e mande o link pro dono: ele pediu pra ver
+  sempre o que já está guardado.
 - Atualizar `CLAUDE.md` (estado, decisão, checklist), commit pequeno com o motivo
   ("pedido do dono: ...") e push na branch da sessão.
 

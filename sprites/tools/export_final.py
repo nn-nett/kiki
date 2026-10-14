@@ -86,6 +86,8 @@ def main():
     meta["_comment"] = ("step_px: px do sprite que a janela anda por frame (negativo = pra esquerda); "
                         "airborne_frames: frames com as patas fora do chão")
     meta_path.write_text(json.dumps(meta, indent=2) + "\n")
+    # a galeria (página com tudo o que foi aprovado) é refeita junto
+    subprocess.run([sys.executable, str(TOOLS / "gallery.py")], check=True)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,233 @@
+<title>Galeria da Kiara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: cabeçalho com a prova de que está salvo (data, arquivos, contagem), uma faixa de
+   controles e uma grade de cartões, um por animação aprovada; no fim, o checklist da Fase 0. */
+:root {
+  --bg: #ebeaee;
+  --surface: #f8f8fa;
+  --ink: #17171b;          /* o preto K da Kiara */
+  --muted: #5e5b65;
+  --line: #d8d6dd;
+  --accent: #8a4f2c;       /* tan T */
+  --accent-ink: #ffffff;
+  --ok: #2f7a4b;
+  --chip: #e3ddd6;
+  --font-display: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131316; --surface: #1c1c21; --ink: #ecebef; --muted: #a7a4ae; --line: #2f2e36;
+    --accent: #c08452; --accent-ink: #17171b; --ok: #6cc28d; --chip: #2c2621; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131316; --surface: #1c1c21; --ink: #ecebef; --muted: #a7a4ae; --line: #2f2e36;
+  --accent: #c08452; --accent-ink: #17171b; --ok: #6cc28d; --chip: #2c2621; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 40px; display: grid; gap: 16px; }
+header h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 6vw, 42px); line-height: 1.1; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+header p { margin: 6px 0 0; color: var(--muted); max-width: 66ch; }
+.saved { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--ink); }
+.chip.ok { background: var(--ok); color: var(--accent-ink); }
+.saved a { color: var(--accent); font-weight: 700; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.controls label { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.controls input[type=range] { width: 120px; accent-color: var(--accent); }
+.controls input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 14px; padding: 6px 12px; background: transparent; color: var(--ink); border: 0; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card h2 { font-family: var(--font-display); font-weight: 500; font-size: 24px; margin: 0; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.card h2 .chip { font-family: var(--font-body); font-size: 12px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+.card canvas.strip { width: 100%; height: auto; border-radius: 8px; image-rendering: pixelated; display: block; }
+.frames { display: flex; flex-wrap: wrap; gap: 6px; }
+.frames figure { margin: 0; display: grid; justify-items: center; gap: 2px; }
+.frames canvas { width: 48px; height: 48px; image-rendering: pixelated; border-radius: 6px; border: 1px solid var(--line); }
+.frames figcaption { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
+dl div { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+dt { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+dd { margin: 0; font-family: var(--font-display); font-size: 18px; font-variant-numeric: tabular-nums; }
+code { font-size: 12.5px; overflow-wrap: anywhere; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 10px; }
+.panel h2 { font-family: var(--font-display); font-weight: 500; font-size: 22px; margin: 0; }
+.progress { height: 8px; border-radius: 999px; background: var(--chip); overflow: hidden; }
+.progress span { display: block; height: 100%; background: var(--ok); }
+ul.check { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+ul.check li { display: flex; gap: 8px; align-items: baseline; font-size: 14px; }
+ul.check li .box { flex: none; width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--line); transform: translateY(2px); }
+ul.check li.done .box { background: var(--ok); border-color: var(--ok); }
+ul.check li:not(.done) { color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Galeria da Kiara</h1>
+    <p>Tudo o que você já aprovou, lido direto do arquivo final que o app vai usar (a folha <code>kiara-sprites.png</code> com o <code>kiara-sprites.json</code>). Se aparece aqui, está guardado.</p>
+    <div class="saved" id="saved"></div>
+  </header>
+
+  <div class="controls" role="group" aria-label="Como mostrar">
+    <span class="seg" role="group" aria-label="Taskbar">
+      <button id="barLight" type="button" aria-pressed="true">Taskbar clara</button>
+      <button id="barDark" type="button" aria-pressed="false">Taskbar escura</button>
+    </span>
+    <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
+    <span class="seg" role="group" aria-label="Lado">
+      <button id="dirR" type="button" aria-pressed="true">Pra direita</button>
+      <button id="dirL" type="button" aria-pressed="false">Pra esquerda</button>
+    </span>
+    <label for="speed">Velocidade <input id="speed" type="range" min="25" max="200" step="25" value="100"> <span id="speedv">1x</span></label>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <section class="panel" aria-labelledby="h-check">
+    <h2 id="h-check">Checklist da Fase 0</h2>
+    <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+    <p class="note" id="checkSummary" style="margin:0;color:var(--muted);font-size:14px"></p>
+    <ul class="check" id="check"></ul>
+  </section>
+</div>
+
+<script>
+const DATA = __DATA__;
+const CELL = DATA.meta.cell, ZOOM = 2, STRIP_W = 150, STRIP_H = 44;
+const NOMES = { parada: 'Parada', andando: 'Andando', latindo: 'Latindo', correndo: 'Correndo', dormindo: 'Dormindo' };
+let dark = false, outline = false, left = false, speed = 1;
+const sheet = new Image();
+const views = [];
+
+function variant(key) { return key + (outline ? '_contorno' : '') + (left ? '_esquerda' : ''); }
+function anim(key, flip) { return DATA.meta.animations[key + (outline ? '_contorno' : '') + (flip ? '_esquerda' : '')]; }
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function bg() { return dark ? '#202020' : '#f3f3f3'; }
+
+function header() {
+  const n = DATA.aprovadas.length;
+  const frames = DATA.aprovadas.reduce((t, a) => t + DATA.meta.animations[a.key].frames.length, 0);
+  const el = document.getElementById('saved');
+  el.innerHTML = `<span class="chip ok">${n} ${n === 1 ? 'animação aprovada' : 'animações aprovadas'}</span>
+    <span class="chip">${frames} frames × 4 versões</span>
+    <span class="chip">atualizada em ${DATA.atualizada}</span>
+    <span class="chip"><a href="${DATA.repo}" target="_blank" rel="noopener">pasta no GitHub</a></span>`;
+}
+
+function build() {
+  const cards = document.getElementById('cards');
+  for (const a of DATA.aprovadas) {
+    const base = DATA.meta.animations[a.key];
+    const total = base.frames.reduce((t, f) => t + f.duration_ms, 0);
+    const card = document.createElement('section');
+    card.className = 'card';
+    card.innerHTML = `<h2>${NOMES[a.key] || a.key} <span class="chip ok">aprovada</span></h2>
+      <p></p>
+      <canvas class="strip" width="${STRIP_W * ZOOM}" height="${STRIP_H * ZOOM}" aria-label="${NOMES[a.key] || a.key} animando"></canvas>
+      <dl>
+        <div><dt>Frames</dt><dd>${base.frames.length}</dd></div>
+        <div><dt>Ciclo</dt><dd>${(total / 1000).toLocaleString('pt-BR')} s</dd></div>
+        <div><dt>Anda/frame</dt><dd>${base.step_px} px</dd></div>
+      </dl>
+      <div class="frames"></div>
+      <p>Arquivos: <code>sprites/final/frames/${a.key}/</code> · receita <code>anims/${a.receita}.json</code></p>`;
+    card.querySelector('p').textContent = a.nota;
+    cards.appendChild(card);
+    const v = { key: a.key, cv: card.querySelector('canvas.strip'), framesEl: card.querySelector('.frames'),
+                f: 0, last: 0, x: base.step_px ? 8 : (STRIP_W - CELL.w) / 2, dir: 1 };
+    views.push(v);
+    renderFrames(v);
+  }
+}
+
+function blit(ctx, fr, x, y, flip) {
+  ctx.save();
+  if (flip) { ctx.translate(x + CELL.w, y); ctx.scale(-1, 1); ctx.drawImage(sheet, fr.x, fr.y, fr.w, fr.h, 0, 0, CELL.w, CELL.h); }
+  else ctx.drawImage(sheet, fr.x, fr.y, fr.w, fr.h, x, y, CELL.w, CELL.h);
+  ctx.restore();
+}
+
+function renderFrames(v) {
+  const A = DATA.meta.animations[variant(v.key)];
+  v.framesEl.innerHTML = '';
+  A.frames.forEach((fr, i) => {
+    const fig = document.createElement('figure');
+    const c = document.createElement('canvas'); c.width = CELL.w; c.height = CELL.h;
+    const ctx = c.getContext('2d'); ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = bg(); ctx.fillRect(0, 0, CELL.w, CELL.h);
+    ctx.drawImage(sheet, fr.x, fr.y, fr.w, fr.h, 0, 0, CELL.w, CELL.h);
+    c.setAttribute('aria-label', `frame ${i + 1}`);
+    fig.appendChild(c);
+    const cap = document.createElement('figcaption'); cap.textContent = `${i + 1} · ${fr.duration_ms} ms`;
+    fig.appendChild(cap);
+    v.framesEl.appendChild(fig);
+  });
+}
+
+function draw(v) {
+  const ctx = v.cv.getContext('2d');
+  ctx.setTransform(ZOOM, 0, 0, ZOOM, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = bg(); ctx.fillRect(0, 0, STRIP_W, STRIP_H);
+  const base = DATA.meta.animations[v.key];
+  // anda de um lado pro outro quando a animação anda; senão fica no meio, virada pro lado escolhido
+  const flip = base.step_px ? v.dir < 0 : left;
+  const A = anim(v.key, flip);   // usa os frames _esquerda salvos (não espelha na hora): testa o arquivo final
+  blit(ctx, A.frames[v.f % A.frames.length], Math.round(v.x), STRIP_H - CELL.h - 4, false);
+}
+
+function loop(t) {
+  for (const v of views) {
+    const A = DATA.meta.animations[v.key];
+    const d = A.frames[v.f % A.frames.length].duration_ms / speed;
+    if (t - v.last >= d) {
+      v.last = t; v.f = (v.f + 1) % A.frames.length;
+      if (A.step_px) {
+        v.x += v.dir * A.step_px;
+        if (v.x > STRIP_W - CELL.w - 4) v.dir = -1;
+        if (v.x < 4) v.dir = 1;
+      }
+    }
+    draw(v);
+  }
+  requestAnimationFrame(loop);
+}
+
+function checklist() {
+  const items = DATA.checklist, done = items.filter(i => i.feito).length;
+  document.getElementById('bar').style.width = (100 * done / items.length) + '%';
+  document.getElementById('checkSummary').textContent = `${done} de ${items.length} itens aprovados.`;
+  const ul = document.getElementById('check');
+  for (const i of items) {
+    const li = document.createElement('li');
+    li.className = i.feito ? 'done' : '';
+    li.innerHTML = '<span class="box" aria-hidden="true"></span><span></span>';
+    li.lastChild.textContent = i.nome + (i.feito ? '' : ' (falta)');
+    ul.appendChild(li);
+  }
+}
+
+function pressed(on, off) { on.setAttribute('aria-pressed', 'true'); off.setAttribute('aria-pressed', 'false'); }
+const $ = id => document.getElementById(id);
+function refresh() { views.forEach(renderFrames); }
+$('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark')); refresh(); };
+$('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } refresh(); };
+$('outline').onchange = e => { outline = e.target.checked; refresh(); };
+$('dirR').onclick = () => { left = false; pressed($('dirR'), $('dirL')); refresh(); };
+$('dirL').onclick = () => { left = true; pressed($('dirL'), $('dirR')); refresh(); };
+$('speed').oninput = e => { speed = e.target.value / 100; $('speedv').textContent = speed + 'x'; };
+
+header(); checklist();
+sheet.onload = () => { build(); requestAnimationFrame(loop); };
+sheet.src = DATA.sheet;
+</script>
