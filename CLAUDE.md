@@ -118,6 +118,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   fotos novas `reference/kiki_dormindo_*.jpg`. Depois da escolha: respiração (2-3 frames) e a
   transição "subir no travesseiro" (plano no log).
 
+- **Expressões desacopladas** (ideia do dono): piscar (remendo pequeno de olho que encaixa em qualquer
+  cabeça por `@socket.olho`, vindo do olho fechado do dormir), latir (já existe) e ofegante (língua rosa pra
+  fora respirando, a partir da boca do latido). Cada expressão toca por cima de qualquer animação de corpo;
+  depois o export final passa a ter camadas (corpo sem cabeça + âncora da cabeça por frame + cabeças/olhos
+  por expressão) pro app compor. Em desenho.
+
 ## Fases
 
 1. **Fase 0 — Sprites**: spritesheet 32x32 gerado programaticamente (Python +
