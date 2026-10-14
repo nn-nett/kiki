@@ -47,7 +47,11 @@ def layer(rig, part_name, origin):
 def frame_spec(parts):
     """Do frame resolvido do rig pra {pernas, tronco, cabeça, offsets}."""
     by_role = {}
+    ov = None
     for p in parts:
+        if p["part"].startswith("olho"):
+            ov = p["part"]
+            continue
         role = "legs" if p["part"].startswith("legs") else (
             "head" if p["part"].startswith("head") else "torso")
         by_role[role] = p
@@ -59,6 +63,7 @@ def frame_spec(parts):
         "torsoOff": list(torso.get("offset", [0, 0])),
         "head": head.get("part", "head"),
         "headOff": list(head.get("offset", [0, 0])),
+        "ov": ov,
     }
 
 
@@ -77,7 +82,7 @@ def upper_to_layers(recipe):
     return recipe
 
 
-def compose(layers, spec):
+def compose(layers, spec, overlays=None, eye_pos=None):
     img = Image.new("RGBA", CANVAS, (0, 0, 0, 0))
     tx, ty = spec["torsoOff"]
     hx, hy = spec["headOff"]
@@ -86,6 +91,12 @@ def compose(layers, spec):
         src = layers[name]
         shifted = Image.new("RGBA", CANVAS, (0, 0, 0, 0))
         shifted.paste(src, (dx, dy), src)
+        img.alpha_composite(shifted)
+    if spec.get("ov"):
+        ov = overlays[spec["ov"]]
+        ex, ey = eye_pos[spec["head"]][spec["ov"]]
+        shifted = Image.new("RGBA", CANVAS, (0, 0, 0, 0))
+        shifted.paste(ov, (ex + tx + hx, ey + ty + hy), ov)
         img.alpha_composite(shifted)
     return img
 
@@ -99,26 +110,42 @@ def main():
     ap.add_argument("--au-head", default="head_bark2", help="cabeça do AU! (conta os latidos)")
     ap.add_argument("--run", default="", help="receita de corrida (opcional, entra marcada como teste)")
     ap.add_argument("--run-step", type=int, default=2, help="px do sprite por frame na corrida")
+    ap.add_argument("--blink", default="piscar", help="receita do piscar (remendo do olho), '' pra tirar")
+    ap.add_argument("--pant", default="ofegante", help="receita do ofegante parado, '' pra tirar")
+    ap.add_argument("--walkpant", default="andar_ofegante", help="receita do andar ofegante, '' pra tirar")
     args = ap.parse_args()
 
     rig = Rig(PARTS)
     recipes = {k: json.loads((ANIMS / f"{v}.json").read_text())
                for k, v in (("walk", args.walk), ("bark", args.bark), ("stand", args.stand),
-                            ("run", args.run)) if v}
+                            ("run", args.run), ("blink", args.blink), ("pant", args.pant),
+                            ("walkpant", args.walkpant)) if v and (ANIMS / f"{v}.json").exists()}
     walk_layers = upper_to_layers(recipes["walk"])
     resolved = {"walk": rig.resolve_frames(walk_layers), "bark": rig.resolve_frames(recipes["bark"]),
                 "stand": rig.resolve_frames(recipes["stand"])}
-    if "run" in recipes:
-        resolved["run"] = rig.resolve_frames(recipes["run"])
+    for extra in ("run", "blink", "pant", "walkpant"):
+        if extra in recipes:
+            resolved[extra] = rig.resolve_frames(recipes[extra])
 
     # posição de cada peça (sem offset) e as camadas 32x32
-    layers = {}
+    layers, origins, overlays = {}, {}, {}
     for frames in resolved.values():
         for fr in frames:
             parts = [{k: v for k, v in p.items() if k != "offset"} for p in fr["parts"]]
             for pid, origin in rig.origins(parts).items():
                 name = next(p["part"] for p in parts if p.get("id", p["part"]) == pid)
+                if name.startswith("olho"):
+                    overlays.setdefault(name, rig.part(name).image)
+                    continue
                 layers.setdefault(name, layer(rig, name, origin))
+                origins.setdefault(name, origin)
+    # onde o remendo de cada olho cai em cada cabeça (sem offsets): origem + socket - âncora
+    eye_pos = {}
+    for name, origin in origins.items():
+        sock = rig.part(name).sockets.get("olho")
+        if name.startswith("head") and sock:
+            eye_pos[name] = {ov: [origin[0] + sock[0] - rig.part(ov).anchor[0],
+                                  origin[1] + sock[1] - rig.part(ov).anchor[1]] for ov in overlays}
 
     specs = {k: [frame_spec(fr["parts"]) for fr in v] for k, v in resolved.items()}
     durs = {k: [fr["duration"] for fr in v] for k, v in resolved.items()}
@@ -126,13 +153,13 @@ def main():
 
     # prova: as camadas recompõem os frames do rig
     with tempfile.TemporaryDirectory() as tmp:
-        for key in [k for k in ("walk", "bark", "run") if k in recipes]:
+        for key in [k for k in ("walk", "bark", "run", "blink", "pant", "walkpant") if k in recipes]:
             name = recipes[key]["name"]
             rig.build(walk_layers if key == "walk" else recipes[key], tmp)
             man = json.loads((Path(tmp) / name / "manifest.json").read_text())
             for i, f in zip(seq[key], man["frames"]):
                 ref = Image.open(Path(tmp) / name / f["file"]).convert("RGBA")
-                got = compose(layers, specs[key][i])
+                got = compose(layers, specs[key][i], overlays, eye_pos)
                 if ref.tobytes() != got.tobytes():
                     raise SystemExit(f"camadas não batem com o rig em {name} frame {i}")
         rig.build(recipes["walk"], Path(tmp) / "orig")
@@ -140,7 +167,7 @@ def main():
             a = Image.open(Path(tmp) / "orig" / recipes["walk"]["name"] / f"{recipes['walk']['name']}_{i}.png")
             if a.convert("RGBA").tobytes() != compose(layers, specs["walk"][i]).tobytes():
                 raise SystemExit(f"torso+head não bate com upper no frame {i} do andar")
-    print("camadas conferidas: recompõem " + ", ".join(k for k in ("walk", "bark", "run") if k in recipes)
+    print("camadas conferidas: recompõem " + ", ".join(k for k in ("walk", "bark", "run", "blink", "pant", "walkpant") if k in recipes)
           + " pixel a pixel")
 
     palette = load_palette()
@@ -151,6 +178,14 @@ def main():
         "stand": specs["stand"][0],
         "run": ({"frames": specs["run"], "durs": durs["run"], "seq": seq["run"], "step": args.run_step}
                 if "run" in recipes else None),
+        "pant": ({"frames": specs["pant"], "durs": durs["pant"], "seq": seq["pant"]} if "pant" in recipes else None),
+        "walkpant": ({"frames": specs["walkpant"], "durs": durs["walkpant"], "seq": seq["walkpant"], "step": 1}
+                     if "walkpant" in recipes else None),
+        # piscar: só os frames com remendo (meio, fechado, meio), na ordem da receita
+        "blink": ([{"ov": specs["blink"][i]["ov"], "d": durs["blink"][i]} for i in seq["blink"]
+                   if specs["blink"][i]["ov"]] if "blink" in recipes else None),
+        "overlays": {k: png_uri(v) for k, v in overlays.items()},
+        "eyePos": eye_pos,
         "outline": "#%02x%02x%02x" % palette["G"],
         "taskbar": {"light": "#%02x%02x%02x" % TASKBAR_LIGHT, "dark": "#%02x%02x%02x" % TASKBAR_DARK},
     }

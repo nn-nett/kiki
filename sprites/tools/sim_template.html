@@ -54,7 +54,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .now { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .chip { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--ink); letter-spacing: .02em; }
 .chip.on { background: var(--accent); color: var(--accent-ink); }
-.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
 .stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
 .stat b { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 500; }
 .stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
@@ -72,7 +72,7 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 <div class="wrap">
   <header>
     <h1>Kiara na taskbar</h1>
-    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr. Toque nela pra ela latir. A corrida ainda está em teste (dá pra desligar); o resto já foi aprovado por você.</p>
+    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr, e depois de correr fica ofegante. Ela pisca sozinha de vez em quando, em qualquer coisa que estiver fazendo. Toque nela pra ela latir. Corrida, ofegante e piscar ainda estão em teste (dá pra desligar cada um); o resto você já aprovou.</p>
   </header>
 
   <div class="stage">
@@ -97,6 +97,8 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
     </span>
     <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
     <label for="runOn" id="runLabel"><input id="runOn" type="checkbox" checked> Correr (em teste)</label>
+    <label for="pantOn" id="pantLabel"><input id="pantOn" type="checkbox" checked> Ofegante (em teste)</label>
+    <label for="blinkOn" id="blinkLabel"><input id="blinkOn" type="checkbox" checked> Piscar (em teste)</label>
   </div>
 
   <div class="panels">
@@ -107,6 +109,7 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
         <div class="stat"><b id="sPx" class="tabular">0</b><span>px andados</span></div>
         <div class="stat"><b id="sBark" class="tabular">0</b><span>latidos</span></div>
         <div class="stat"><b id="sTurn" class="tabular">0</b><span>meias-voltas</span></div>
+        <div class="stat"><b id="sBlink" class="tabular">0</b><span>piscadas</span></div>
       </div>
       <ol class="log" id="log" aria-label="O que ela fez por último"></ol>
     </section>
@@ -129,11 +132,20 @@ const BRAIN = {
   andando:         { nome: 'andando',        dur: [2500, 7000], next: { parada: .35, andandoLatindo: .25, latindo: .15, meiaVolta: .10, correndo: .15 } },
   latindo:         { nome: 'latindo',        dur: null,         next: { parada: .5, andando: .5 } },
   andandoLatindo:  { nome: 'latindo andando', dur: null,        next: { andando: .6, parada: .4 } },
-  correndo:        { nome: 'correndo',       dur: [1200, 3000], next: { andando: .5, parada: .3, latindo: .2 }, teste: true },
+  correndo:        { nome: 'correndo',       dur: [1200, 3000], next: { ofegante: .5, andandoOfegante: .2, andando: .2, latindo: .1 }, teste: true },
+  ofegante:        { nome: 'ofegante',       dur: [2500, 5000], next: { parada: .5, andando: .3, andandoOfegante: .2 }, teste: true },
+  andandoOfegante: { nome: 'andando ofegante', dur: [2000, 4500], next: { andando: .6, parada: .4 }, teste: true },
 };
-const NOMES = { parada: 'ficar parada', andando: 'andar', latindo: 'latir parada', andandoLatindo: 'latir andando', meiaVolta: 'dar meia-volta e andar', correndo: 'correr' };
-const MOVE = { andando: 'walk', andandoLatindo: 'walk', correndo: 'run' };   // estados que andam pela barra
-let runOn = !!DATA.run;
+const NOMES = { parada: 'ficar parada', andando: 'andar', latindo: 'latir parada', andandoLatindo: 'latir andando', meiaVolta: 'dar meia-volta e andar', correndo: 'correr', ofegante: 'ficar ofegante', andandoOfegante: 'andar ofegante' };
+const MOVE = { andando: 'walk', andandoLatindo: 'walk', correndo: 'run', andandoOfegante: 'walkpant' };   // estados que andam pela barra
+let runOn = !!DATA.run, pantOn = !!DATA.pant, blinkOn = !!DATA.blink;
+// estados que só existem se a animação veio no DATA e a caixinha dela está ligada
+function enabled(k) {
+  if (k === 'correndo') return runOn;
+  if (k === 'ofegante') return pantOn;
+  if (k === 'andandoOfegante') return pantOn && !!DATA.walkpant;
+  return true;
+}
 
 const imgs = {};
 const off = document.createElement('canvas'); off.width = S; off.height = S;
@@ -143,14 +155,15 @@ const ctx = canvas.getContext('2d');
 
 let zoom = 2, speed = 1, running = true, dark = false, outline = false;
 let W = 200;                                       // largura do palco em px do sprite
-const dog = { x: 30, dir: 1, state: 'parada', until: 0, walkI: 0, walkT: 0, barkI: 0, barkT: 0, barkSeq: [], cycles: 0 };
-const stats = { px: 0, bark: 0, turn: 0 };
+const dog = { x: 30, dir: 1, state: 'parada', until: 0, walkI: 0, walkT: 0, barkI: 0, barkT: 0, barkSeq: [], cycles: 0,
+              pantI: 0, pantT: 0, blinkI: -1, blinkT: 0, nextBlink: 0 };
+const stats = { px: 0, bark: 0, turn: 0, blink: 0 };
 const AU_HEAD = DATA.bark.au;   // cabeça do AU! (boca mais aberta): conta um latido
 let pausedAt = 0;
 
 function rnd(a, b) { return a + Math.random() * (b - a); }
 function pick(weights) {
-  const ok = Object.entries(weights).filter(([k]) => k !== 'correndo' || runOn);
+  const ok = Object.entries(weights).filter(([k]) => enabled(k));
   const total = ok.reduce((t, [, w]) => t + w, 0);
   let r = Math.random() * total, acc = 0;
   for (const [k, w] of ok) { acc += w; if (r < acc) return k; }
@@ -176,6 +189,7 @@ function setState(name, now, why) {
   dog.until = b.dur ? now + rnd(...b.dur) / speed : Infinity;
   if (name === 'latindo') { dog.barkSeq = DATA.bark.seq.slice(); dog.cycles = Math.random() < .4 ? 2 : 1; startBark(now); }
   if (name === 'andandoLatindo') { dog.barkSeq = DATA.bark.seq.filter((f, i) => i > 0); dog.cycles = 1; startBark(now); }
+  if (name === 'ofegante') { dog.pantI = 0; dog.pantT = now; }
   document.getElementById('state').textContent = BRAIN[name].nome;
   document.getElementById('dir').textContent = dog.dir > 0 ? 'olhando pra direita' : 'olhando pra esquerda';
   log((why ? why + ': ' : '') + NOMES[name] + (MOVE[name] ? (dog.dir > 0 ? ' pra direita' : ' pra esquerda') : '') + (BRAIN[name].teste ? ' (em teste)' : ''));
@@ -190,6 +204,7 @@ function renderStats() {
   document.getElementById('sPx').textContent = stats.px;
   document.getElementById('sBark').textContent = stats.bark;
   document.getElementById('sTurn').textContent = stats.turn;
+  const sb = document.getElementById('sBlink'); if (sb) sb.textContent = stats.blink;
 }
 
 // ---------- monta o frame por camadas (pernas, tronco, cabeça), igual ao rig ----------
@@ -199,6 +214,10 @@ function compose(spec, headExtra = [0, 0]) {
   octx.drawImage(imgs[spec.legs], 0, 0);
   octx.drawImage(imgs[spec.torso], tx, ty);
   octx.drawImage(imgs[spec.head], tx + hx + headExtra[0], ty + hy + headExtra[1]);
+  // piscar: o mesmo remendo de olho encaixa em qualquer cabeça (posição do olho de cada cabeça)
+  const ov = dog.blinkI >= 0 ? DATA.blink[dog.blinkI].ov : null;
+  const pos = ov && DATA.eyePos[spec.head] && DATA.eyePos[spec.head][ov];
+  if (pos) octx.drawImage(imgs[ov], pos[0] + tx + hx + headExtra[0], pos[1] + ty + hy + headExtra[1]);
   if (outline) addOutline();
 }
 
@@ -221,6 +240,8 @@ function currentSpec() {
   switch (dog.state) {
     case 'andando': return [walk, [0, 0]];
     case 'correndo': return [DATA.run.frames[DATA.run.seq[dog.walkI % DATA.run.seq.length]], [0, 0]];
+    case 'andandoOfegante': return [DATA.walkpant.frames[DATA.walkpant.seq[dog.walkI % DATA.walkpant.seq.length]], [0, 0]];
+    case 'ofegante': return [DATA.pant.frames[DATA.pant.seq[dog.pantI % DATA.pant.seq.length]], [0, 0]];
     case 'latindo': return [bark(), [0, 0]];
     case 'andandoLatindo': {
       const b = bark();   // pernas e tronco do trote, cabeça do latido; o tranco vira um empurrãozinho da cabeça
@@ -255,6 +276,20 @@ function tick(now) {
       }
       countAU();
       d = DATA.bark.durs[dog.barkSeq[dog.barkI]] / speed;
+    }
+  }
+  if (dog.state === 'ofegante') {
+    let d = DATA.pant.durs[DATA.pant.seq[dog.pantI % DATA.pant.seq.length]] / speed;
+    while (now - dog.pantT >= d) { dog.pantT += d; dog.pantI++; d = DATA.pant.durs[DATA.pant.seq[dog.pantI % DATA.pant.seq.length]] / speed; }
+  }
+  // piscar: independente do estado, a cada 2,5-7 s
+  if (blinkOn && DATA.blink) {
+    if (dog.blinkI < 0 && now >= dog.nextBlink) { dog.blinkI = 0; dog.blinkT = now; stats.blink++; renderStats(); }
+    if (dog.blinkI >= 0) {
+      while (dog.blinkI >= 0 && now - dog.blinkT >= DATA.blink[dog.blinkI].d / speed) {
+        dog.blinkT += DATA.blink[dog.blinkI].d / speed; dog.blinkI++;
+        if (dog.blinkI >= DATA.blink.length) { dog.blinkI = -1; dog.nextBlink = now + rnd(2500, 7000) / speed; }
+      }
     }
   }
   if (now >= dog.until) setState(pick(BRAIN[dog.state].next), now);
@@ -343,9 +378,9 @@ function loop(now) {
 function renderRules() {
   const pct = v => Math.round(v * 100) + '%';
   const rows = Object.entries(BRAIN).map(([k, b]) => {
-    if (k === 'correndo' && !DATA.run) return '';
+    if ((k === 'correndo' && !DATA.run) || (k === 'ofegante' && !DATA.pant) || (k === 'andandoOfegante' && !DATA.walkpant)) return '';
     const dur = b.dur ? `${(b.dur[0] / 1000).toFixed(1)}–${(b.dur[1] / 1000).toFixed(1)} s` : (k === 'latindo' ? '1 ou 2 latidos duplos' : '1 latido duplo');
-    const next = Object.entries(b.next).filter(([n]) => n !== 'correndo' || DATA.run).map(([n, w]) => `${NOMES[n]} ${pct(w)}`).join(' · ');
+    const next = Object.entries(b.next).filter(([n]) => (n !== 'correndo' || DATA.run) && (n !== 'ofegante' || DATA.pant) && (n !== 'andandoOfegante' || DATA.walkpant)).map(([n, w]) => `${NOMES[n]} ${pct(w)}`).join(' · ');
     return `<tr><td>${b.nome}${b.teste ? ' <small>(em teste)</small>' : ''}</td><td class="num">${dur}</td><td>${next}</td></tr>`;
   }).join('');
   document.getElementById('rules').innerHTML = `<thead><tr><th>Estado</th><th>Dura</th><th>Depois, sorteia</th></tr></thead><tbody>${rows}</tbody>`;
@@ -366,6 +401,10 @@ $('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark'
 $('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } };
 $('outline').onchange = e => { outline = e.target.checked; };
 $('runOn').onchange = e => { runOn = e.target.checked; if (!runOn && dog.state === 'correndo') setState('andando', performance.now(), 'corrida desligada'); };
+$('pantOn').onchange = e => { pantOn = e.target.checked; if (!pantOn && (dog.state === 'ofegante' || dog.state === 'andandoOfegante')) setState('andando', performance.now(), 'ofegante desligado'); };
+$('blinkOn').onchange = e => { blinkOn = e.target.checked; if (!blinkOn) dog.blinkI = -1; };
+if (!DATA.pant) $('pantLabel').hidden = true;
+if (!DATA.blink) $('blinkLabel').hidden = true;
 if (!DATA.run) $('runLabel').hidden = true;
 canvas.addEventListener('click', e => {
   const r = canvas.getBoundingClientRect();
@@ -376,7 +415,7 @@ canvas.addEventListener('click', e => {
 window.addEventListener('resize', resize);
 
 // ---------- início ----------
-Promise.all(Object.entries(DATA.layers).map(([k, src]) => new Promise(ok => {
+Promise.all(Object.entries({ ...DATA.layers, ...(DATA.overlays || {}) }).map(([k, src]) => new Promise(ok => {
   const i = new Image(); i.onload = () => { imgs[k] = i; ok(); }; i.src = src;
 }))).then(() => {
   renderRules(); resize();

@@ -79,6 +79,9 @@ export dessa combinação (ou das camadas separadas) na sessão de sprites.
 - **Correndo** (galope, 6×70 ms, `step_px` 2): em revisão (cabeça de corrida sendo corrigida).
 - **Dormindo**: 4 opções esperando a escolha do dono (A/B sem travesseiro, C/D com travesseiro,
   estas num quadro 44x32 com o objeto `travesseiro`).
+- **Piscar** e **ofegante** (língua pra fora): expressões desacopladas, por cima de qualquer corpo
+  (remendo do olho / cabeça ofegante). Prévia https://claude.ai/artifact/NwRJaKgDuVaZGukfRDMjxw; já
+  aparecem na simulação como teste. Quando aprovadas, o export ganha camadas pro app compor.
 - **Transições** entre estados (parado → andando, andando → correndo, subir no travesseiro…).
 - Sentada/idle, comendo + potinho, saltando, reação ao toque, câmera noturna, passeio, cocô,
   suéter: ainda não feitos.

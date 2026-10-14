@@ -19,7 +19,7 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 - **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
-- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições.
+- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), piscar, ofegante, transições.
 - Pra regenerar os finais: `python3 sprites/tools/export_final.py` (lê `sprites/final/aprovadas.json`).
 
 ## Estado do projeto
@@ -84,7 +84,9 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   (cópia em `sprites/previews/simulacao/`). Monta os frames por camadas (pernas, tronco,
   cabeça; conferido pixel a pixel contra o rig), então ela late andando sem frames novos.
   O "cérebro" (estados, chances e tempos) é um rascunho pra Fase 1. Usa as animações aprovadas e,
-  marcada como teste, a corrida (`sim_page.py --run run`; caixa "Correr (em teste)" na página).
+  marcadas como teste (cada uma com caixa pra desligar): a corrida (`sim_page.py --run run`), o
+  ofegante (depois de correr: parada ofegante ou andando ofegante) e o piscar (sozinho a cada 2,5-7 s,
+  por cima de qualquer estado; o remendo cai em `eyePos[cabeça][olho]`). Tudo conferido pixel a pixel.
 
 ### Observações de anatomia (das fotos)
 
@@ -110,6 +112,9 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   pescoço"): rosto idêntico à `head.txt` (só as orelhas mudam), pescoço visível, cabeça só 3 px abaixo
   da pose parada (`parts/32/head_run.txt`). Duas opções: v4 + cabeça (`anims/run.json`) e v3 + cabeça
   (`anims/run_v3c.json`, peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá).
+  O dono escolheu a **v4 com essa orelha** e pediu cabeça mais baixa e pescoço mais longo: opções
+  "agora" (desce 3), **A** (desce 4, `anims/run_pescoco_A.json`) e **B** (desce 5, `run_pescoco_B.json`),
+  com troncos `torso_run_*_A/_B.txt`; esperando a escolha (ver `run_log.md`).
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.
@@ -118,11 +123,18 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   fotos novas `reference/kiki_dormindo_*.jpg`. Depois da escolha: respiração (2-3 frames) e a
   transição "subir no travesseiro" (plano no log).
 
-- **Expressões desacopladas** (ideia do dono): piscar (remendo pequeno de olho que encaixa em qualquer
-  cabeça por `@socket.olho`, vindo do olho fechado do dormir), latir (já existe) e ofegante (língua rosa pra
-  fora respirando, a partir da boca do latido). Cada expressão toca por cima de qualquer animação de corpo;
-  depois o export final passa a ter camadas (corpo sem cabeça + âncora da cabeça por frame + cabeças/olhos
-  por expressão) pro app compor. Em desenho.
+- **Expressões desacopladas** (ideia do dono) — **piscar e ofegante prontos pra aprovação**:
+  prévia https://claude.ai/artifact/NwRJaKgDuVaZGukfRDMjxw (cópia em `sprites/previews/expressoes/`).
+  - Piscar: remendos `olho_meio`/`olho_fechado` (`@anchor 1,0`, vindos do olho fechado do dormir) que
+    encaixam em `@socket.olho` de qualquer cabeça (7,9 em head/head_bark1/2/head_ofegante; 12,7 em
+    head_run). Receita `anims/piscar.json` (aberto 1,5 s, meio 60, fechado 110, meio 60).
+  - Ofegante: `head_ofegante1/2` (boca entreaberta como no latido, língua rosa P pendurada que desce 1 px
+    na expiração; o peito desce 1 px). `anims/ofegante.json` (2×130 ms) e `anims/andar_ofegante.json`
+    (trote B + cabeça ofegante). Log em `parts/32/expressoes_log.md`.
+  - Perguntas abertas do desenhista: ritmo (130 ms ofegante de quem correu ou 180-200 ms mais calmo);
+    "cara relaxada" = ofegante + olho meio fechado.
+  - Depois: o export final passa a ter camadas (corpo sem cabeça + âncora da cabeça por frame +
+    cabeças/olhos por expressão) pro app compor.
 
 ## Fases
 
