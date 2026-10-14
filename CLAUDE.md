@@ -5,6 +5,23 @@ com marcações castanhas (tan), orelhas em pé, porte pequeno. **Detalhe essenc
 pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 (ela é idosa). Vive na taskbar do Windows 11 e num overlay no Android.
 
+## Sprites prontos pra implementação (leia primeiro se for mexer no app)
+
+O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprovado; a Fase 0
+(sprites) continua em paralelo e os novos aprovados entram no mesmo lugar, no mesmo formato.
+
+- **Tudo pronto fica em `sprites/final/`** — guia completo em **`sprites/final/README.md`**
+  (formato do JSON, `step_px`, variantes, regras de desenho na tela).
+  - `kiara-sprites.png` (folha 32x32 por célula) + `kiara-sprites.json` (frames, durações, loop, passo).
+  - `frames/<anim>/` com os PNGs soltos.
+- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame) e `latindo` (com tranco). Cada uma em 4
+  versões: normal, `_esquerda`, `_contorno` (taskbar escura) e `_contorno_esquerda`.
+- **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe
+- **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
+  (`sprites/tools/sim_template.html`, objeto `BRAIN`).
+- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições.
+- Pra regenerar os finais: `python3 sprites/tools/export_final.py` (lê `sprites/final/aprovadas.json`).
+
 ## Estado do projeto
 
 - **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
