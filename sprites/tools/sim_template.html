@@ -72,7 +72,7 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 <div class="wrap">
   <header>
     <h1>Kiara na taskbar</h1>
-    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir e latir andando. Toque nela pra ela latir. Só usa animações que você já aprovou.</p>
+    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr. Toque nela pra ela latir. A corrida ainda está em teste (dá pra desligar); o resto já foi aprovado por você.</p>
   </header>
 
   <div class="stage">
@@ -96,6 +96,7 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
       <button id="barDark" type="button" aria-pressed="false">Taskbar escura</button>
     </span>
     <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
+    <label for="runOn" id="runLabel"><input id="runOn" type="checkbox" checked> Correr (em teste)</label>
   </div>
 
   <div class="panels">
@@ -124,12 +125,15 @@ const FOOT = 6;                                    // folga das patas até a bor
 
 // comportamento: duração (ms), chances do próximo estado
 const BRAIN = {
-  parada:          { nome: 'parada',         dur: [1500, 4000], next: { andando: .55, latindo: .25, parada: .20 } },
-  andando:         { nome: 'andando',        dur: [2500, 7000], next: { parada: .45, andandoLatindo: .30, latindo: .15, meiaVolta: .10 } },
+  parada:          { nome: 'parada',         dur: [1500, 4000], next: { andando: .50, latindo: .20, parada: .15, correndo: .15 } },
+  andando:         { nome: 'andando',        dur: [2500, 7000], next: { parada: .35, andandoLatindo: .25, latindo: .15, meiaVolta: .10, correndo: .15 } },
   latindo:         { nome: 'latindo',        dur: null,         next: { parada: .5, andando: .5 } },
   andandoLatindo:  { nome: 'latindo andando', dur: null,        next: { andando: .6, parada: .4 } },
+  correndo:        { nome: 'correndo',       dur: [1200, 3000], next: { andando: .5, parada: .3, latindo: .2 }, teste: true },
 };
-const NOMES = { parada: 'ficar parada', andando: 'andar', latindo: 'latir parada', andandoLatindo: 'latir andando', meiaVolta: 'dar meia-volta e andar' };
+const NOMES = { parada: 'ficar parada', andando: 'andar', latindo: 'latir parada', andandoLatindo: 'latir andando', meiaVolta: 'dar meia-volta e andar', correndo: 'correr' };
+const MOVE = { andando: 'walk', andandoLatindo: 'walk', correndo: 'run' };   // estados que andam pela barra
+let runOn = !!DATA.run;
 
 const imgs = {};
 const off = document.createElement('canvas'); off.width = S; off.height = S;
@@ -146,9 +150,11 @@ let pausedAt = 0;
 
 function rnd(a, b) { return a + Math.random() * (b - a); }
 function pick(weights) {
-  let r = Math.random(), acc = 0;
-  for (const [k, w] of Object.entries(weights)) { acc += w; if (r < acc) return k; }
-  return Object.keys(weights)[0];
+  const ok = Object.entries(weights).filter(([k]) => k !== 'correndo' || runOn);
+  const total = ok.reduce((t, [, w]) => t + w, 0);
+  let r = Math.random() * total, acc = 0;
+  for (const [k, w] of ok) { acc += w; if (r < acc) return k; }
+  return ok[0][0];
 }
 function clock(d = new Date()) { return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
 
@@ -163,16 +169,16 @@ function log(text) {
 
 function setState(name, now, why) {
   if (name === 'meiaVolta') { dog.dir *= -1; stats.turn++; name = 'andando'; }
-  const wasWalking = dog.state.startsWith('andando');
+  const was = MOVE[dog.state];
   dog.state = name;
-  if (name.startsWith('andando') && !wasWalking) dog.walkT = now;
+  if (MOVE[name] && MOVE[name] !== was) { dog.walkT = now; dog.walkI = 0; }
   const b = BRAIN[name];
   dog.until = b.dur ? now + rnd(...b.dur) / speed : Infinity;
   if (name === 'latindo') { dog.barkSeq = DATA.bark.seq.slice(); dog.cycles = Math.random() < .4 ? 2 : 1; startBark(now); }
   if (name === 'andandoLatindo') { dog.barkSeq = DATA.bark.seq.filter((f, i) => i > 0); dog.cycles = 1; startBark(now); }
   document.getElementById('state').textContent = BRAIN[name].nome;
   document.getElementById('dir').textContent = dog.dir > 0 ? 'olhando pra direita' : 'olhando pra esquerda';
-  log((why ? why + ': ' : '') + NOMES[name] + (name.startsWith('andando') ? (dog.dir > 0 ? ' pra direita' : ' pra esquerda') : ''));
+  log((why ? why + ': ' : '') + NOMES[name] + (MOVE[name] ? (dog.dir > 0 ? ' pra direita' : ' pra esquerda') : '') + (BRAIN[name].teste ? ' (em teste)' : ''));
   renderStats();
 }
 
@@ -214,6 +220,7 @@ function currentSpec() {
   const bark = () => DATA.bark.frames[dog.barkSeq[Math.min(dog.barkI, dog.barkSeq.length - 1)]];
   switch (dog.state) {
     case 'andando': return [walk, [0, 0]];
+    case 'correndo': return [DATA.run.frames[DATA.run.seq[dog.walkI % DATA.run.seq.length]], [0, 0]];
     case 'latindo': return [bark(), [0, 0]];
     case 'andandoLatindo': {
       const b = bark();   // pernas e tronco do trote, cabeça do latido; o tranco vira um empurrãozinho da cabeça
@@ -225,11 +232,14 @@ function currentSpec() {
 
 // ---------- tempo ----------
 function tick(now) {
-  if (dog.state === 'andando' || dog.state === 'andandoLatindo') {
-    const d = DATA.walk.durs[DATA.walk.seq[dog.walkI % DATA.walk.seq.length]] / speed;
+  const mv = MOVE[dog.state];
+  if (mv) {
+    const A = DATA[mv];
+    let d = A.durs[A.seq[dog.walkI % A.seq.length]] / speed;
     while (now - dog.walkT >= d) {
       dog.walkT += d; dog.walkI++;
-      dog.x += dog.dir * DATA.walk.step; stats.px += DATA.walk.step;
+      dog.x += dog.dir * A.step; stats.px += A.step;
+      d = A.durs[A.seq[dog.walkI % A.seq.length]] / speed;
       if (dog.x > W - S - 2) { dog.x = W - S - 2; dog.dir = -1; stats.turn++; log('chegou na ponta: meia-volta'); }
       if (dog.x < 2) { dog.x = 2; dog.dir = 1; stats.turn++; log('chegou na ponta: meia-volta'); }
     }
@@ -333,9 +343,10 @@ function loop(now) {
 function renderRules() {
   const pct = v => Math.round(v * 100) + '%';
   const rows = Object.entries(BRAIN).map(([k, b]) => {
+    if (k === 'correndo' && !DATA.run) return '';
     const dur = b.dur ? `${(b.dur[0] / 1000).toFixed(1)}–${(b.dur[1] / 1000).toFixed(1)} s` : (k === 'latindo' ? '1 ou 2 latidos duplos' : '1 latido duplo');
-    const next = Object.entries(b.next).map(([n, w]) => `${NOMES[n]} ${pct(w)}`).join(' · ');
-    return `<tr><td>${b.nome}</td><td class="num">${dur}</td><td>${next}</td></tr>`;
+    const next = Object.entries(b.next).filter(([n]) => n !== 'correndo' || DATA.run).map(([n, w]) => `${NOMES[n]} ${pct(w)}`).join(' · ');
+    return `<tr><td>${b.nome}${b.teste ? ' <small>(em teste)</small>' : ''}</td><td class="num">${dur}</td><td>${next}</td></tr>`;
   }).join('');
   document.getElementById('rules').innerHTML = `<thead><tr><th>Estado</th><th>Dura</th><th>Depois, sorteia</th></tr></thead><tbody>${rows}</tbody>`;
 }
@@ -354,6 +365,8 @@ for (const z of [1, 2, 3]) $('z' + z).onclick = () => { zoom = z; pressed($('z' 
 $('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark')); };
 $('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } };
 $('outline').onchange = e => { outline = e.target.checked; };
+$('runOn').onchange = e => { runOn = e.target.checked; if (!runOn && dog.state === 'correndo') setState('andando', performance.now(), 'corrida desligada'); };
+if (!DATA.run) $('runLabel').hidden = true;
 canvas.addEventListener('click', e => {
   const r = canvas.getBoundingClientRect();
   const px = (e.clientX - r.left) / zoom, py = (e.clientY - r.top) / zoom;

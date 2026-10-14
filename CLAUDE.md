@@ -60,7 +60,8 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y — `tools/sim_page.py` + `sim_template.html`
   (cópia em `sprites/previews/simulacao/`). Monta os frames por camadas (pernas, tronco,
   cabeça; conferido pixel a pixel contra o rig), então ela late andando sem frames novos.
-  O "cérebro" (estados, chances e tempos) é um rascunho pra Fase 1. Usa só animações aprovadas.
+  O "cérebro" (estados, chances e tempos) é um rascunho pra Fase 1. Usa as animações aprovadas e,
+  marcada como teste, a corrida (`sim_page.py --run run`; caixa "Correr (em teste)" na página).
 
 ### Observações de anatomia (das fotos)
 
@@ -93,8 +94,10 @@ só marcar como ✅ com aprovação explícita.
 
 - [x] ✅ Pose base (em pé, vista lateral, 32x32) — `sprites/base/kiara_32.txt`
 - [x] ✅ Andando — trote B, 6 frames de 100 ms, esquerda por espelho (`anims/walk_b.json`)
-- [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); v2 em desenho com o tronco inclinando e a coluna
-  esticando/encolhendo (`anims/run.json`, `torso_run*`, `legs_run*`), 2 px/frame
+- [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); **v2 pra aprovação**: tronco inclina por frame
+  (`torso_run_{estendido,frente_baixa,arqueando,recolhido,frente_alta,esticando}`), corpo estica (25 col.)
+  e encolhe (21), cabeça sobe/desce; 6×70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`, log em `run_log.md`).
+  Também está na simulação como "em teste".
 - [x] ✅ Latindo — `anims/latir_tranco.json` (o dono escolheu "com tranco"; queixo do AU! afinado a pedido
   dele; confirmado: "o latido com tranco tá perfeito")
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)

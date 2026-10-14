@@ -97,14 +97,19 @@ def main():
     ap.add_argument("--bark", default="latir_tranco")
     ap.add_argument("--stand", default="stand_head")
     ap.add_argument("--au-head", default="head_bark2", help="cabeça do AU! (conta os latidos)")
+    ap.add_argument("--run", default="", help="receita de corrida (opcional, entra marcada como teste)")
+    ap.add_argument("--run-step", type=int, default=2, help="px do sprite por frame na corrida")
     args = ap.parse_args()
 
     rig = Rig(PARTS)
     recipes = {k: json.loads((ANIMS / f"{v}.json").read_text())
-               for k, v in (("walk", args.walk), ("bark", args.bark), ("stand", args.stand))}
+               for k, v in (("walk", args.walk), ("bark", args.bark), ("stand", args.stand),
+                            ("run", args.run)) if v}
     walk_layers = upper_to_layers(recipes["walk"])
     resolved = {"walk": rig.resolve_frames(walk_layers), "bark": rig.resolve_frames(recipes["bark"]),
                 "stand": rig.resolve_frames(recipes["stand"])}
+    if "run" in recipes:
+        resolved["run"] = rig.resolve_frames(recipes["run"])
 
     # posição de cada peça (sem offset) e as camadas 32x32
     layers = {}
@@ -121,7 +126,7 @@ def main():
 
     # prova: as camadas recompõem os frames do rig
     with tempfile.TemporaryDirectory() as tmp:
-        for key in ("walk", "bark"):
+        for key in [k for k in ("walk", "bark", "run") if k in recipes]:
             name = recipes[key]["name"]
             rig.build(walk_layers if key == "walk" else recipes[key], tmp)
             man = json.loads((Path(tmp) / name / "manifest.json").read_text())
@@ -135,7 +140,8 @@ def main():
             a = Image.open(Path(tmp) / "orig" / recipes["walk"]["name"] / f"{recipes['walk']['name']}_{i}.png")
             if a.convert("RGBA").tobytes() != compose(layers, specs["walk"][i]).tobytes():
                 raise SystemExit(f"torso+head não bate com upper no frame {i} do andar")
-    print("camadas conferidas: recompõem o andar e o latido pixel a pixel")
+    print("camadas conferidas: recompõem " + ", ".join(k for k in ("walk", "bark", "run") if k in recipes)
+          + " pixel a pixel")
 
     palette = load_palette()
     data = {
@@ -143,6 +149,8 @@ def main():
         "walk": {"frames": specs["walk"], "durs": durs["walk"], "seq": seq["walk"], "step": 1},
         "bark": {"frames": specs["bark"], "durs": durs["bark"], "seq": seq["bark"], "au": args.au_head},
         "stand": specs["stand"][0],
+        "run": ({"frames": specs["run"], "durs": durs["run"], "seq": seq["run"], "step": args.run_step}
+                if "run" in recipes else None),
         "outline": "#%02x%02x%02x" % palette["G"],
         "taskbar": {"light": "#%02x%02x%02x" % TASKBAR_LIGHT, "dark": "#%02x%02x%02x" % TASKBAR_DARK},
     }
