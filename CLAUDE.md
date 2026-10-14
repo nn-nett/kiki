@@ -87,9 +87,7 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
   galope, freada com o corpo pra trás), montados no rig com as peças que já existem quando der, e
   a simulação passa a tocar a transição entre um estado e outro.
-- Galope v4 guiado pela referência de pixel art do dono (`sprites/extern/refs_correr/`, gitignored):
-  esticar/encolher bem mais o corpo (bola com costas arqueadas no recolhido, comprido e baixo no
-  esticado), pernas curtas trabalhando embaixo do corpo, cabeça e rabo acompanhando.
+- Galope v4 (referência de pixel art em `sprites/extern/refs_correr/`, gitignored): pronto, falta o OK.
 - Kiki deitada dormindo: **2 opções de frame pra validar** (`parts/32/dormir_A.txt` de barriga com o
   queixo na patinha; `dormir_B.txt` enrolada como na foto; receitas `anims/dormir_A/B.json`, log em
   `dormir_log.md`, previews em `sprites/previews/dormindo/`). Depois da escolha: respiração (2-3 frames).
@@ -113,11 +111,11 @@ só marcar como ✅ com aprovação explícita.
 
 - [x] ✅ Pose base (em pé, vista lateral, 32x32) — `sprites/base/kiara_32.txt`
 - [x] ✅ Andando — trote B, 6 frames de 100 ms, esquerda por espelho (`anims/walk_b.json`)
-- [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); v2 inclinou o tronco; **v3 pra aprovação**:
-  dianteiras a 45° (sem passar do focinho), traseiras com extensão completa pra trás, recolhido em V
-  (patas quase se tocam), toquinho acompanha a coluna por pose; tronco por pose `torso_run_*`; cachorra
-  1 px à direita na corrida; 6×70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`, `run_log.md`).
-  Também está na simulação como "em teste".
+- [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); v2 inclinou o tronco; v3 acertou pernas e
+  toquinho na coluna (+ bumbum arredondado no último frame); **v4 pra aprovação**, guiada pela referência
+  de pixel art do dono: corpo de 19 (bola, costas arqueadas) a 24 colunas (esticado), pernas curtas embaixo
+  do corpo, cabeça baixa no compacto/alta no esticado, bumbum arredondado em todos os frames; tronco por pose
+  `torso_run_*`, 6×70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`, `run_log.md`). Na simulação como teste.
 - [x] ✅ Latindo — `anims/latir_tranco.json` (o dono escolheu "com tranco"; queixo do AU! afinado a pedido
   dele; confirmado: "o latido com tranco tá perfeito")
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
