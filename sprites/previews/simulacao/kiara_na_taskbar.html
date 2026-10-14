@@ -1,0 +1,374 @@
+<title>Kiara na taskbar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: o palco (área de trabalho + taskbar do Windows 11) ocupa a largura toda no topo;
+   embaixo, uma faixa de controles e duas colunas (o que ela está fazendo + como ela decide),
+   que viram uma coluna só no celular. */
+:root {
+  --bg: #ebeaee;
+  --surface: #f8f8fa;
+  --ink: #17171b;          /* o preto K da Kiara */
+  --muted: #5e5b65;
+  --line: #d8d6dd;
+  --accent: #8a4f2c;       /* tan T */
+  --accent-ink: #ffffff;
+  --chip: #e3ddd6;
+  --font-display: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-ui: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131316; --surface: #1c1c21; --ink: #ecebef; --muted: #a7a4ae; --line: #2f2e36;
+    --accent: #c08452; --accent-ink: #17171b; --chip: #2c2621; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131316; --surface: #1c1c21; --ink: #ecebef; --muted: #a7a4ae; --line: #2f2e36;
+  --accent: #c08452; --accent-ink: #17171b; --chip: #2c2621; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 40px; display: grid; gap: 16px; }
+header h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 6vw, 42px); line-height: 1.1; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+header p { margin: 6px 0 0; color: var(--muted); max-width: 64ch; }
+.stage { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.stage canvas { display: block; width: 100%; image-rendering: pixelated; cursor: pointer; touch-action: manipulation; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.controls label { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.controls input[type=range] { width: 130px; accent-color: var(--accent); }
+.controls input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button, .btn { font: inherit; font-size: 14px; padding: 6px 12px; background: transparent; color: var(--ink); border: 0; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.btn { border: 1px solid var(--accent); color: var(--accent); border-radius: 8px; font-weight: 700; }
+.btn:hover { background: var(--accent); color: var(--accent-ink); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tabular { font-variant-numeric: tabular-nums; }
+.panels { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+@media (max-width: 720px) { .panels { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.panel h2 { font-family: var(--font-display); font-weight: 500; font-size: 20px; margin: 0; }
+.now { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--ink); letter-spacing: .02em; }
+.chip.on { background: var(--accent); color: var(--accent-ink); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.stat b { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 500; }
+.stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+ol.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; }
+ol.log li { display: flex; gap: 10px; }
+ol.log time { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.table-wrap { overflow-x: auto; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Kiara na taskbar</h1>
+    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir e latir andando. Toque nela pra ela latir. Só usa animações que você já aprovou.</p>
+  </header>
+
+  <div class="stage">
+    <canvas id="stage" aria-label="Área de trabalho do Windows 11 com a Kiara andando na barra de tarefas"></canvas>
+  </div>
+
+  <div class="controls" role="group" aria-label="Controles da simulação">
+    <button class="btn" id="bark" type="button">Latir agora</button>
+    <span class="seg" role="group" aria-label="Simulação">
+      <button id="play" type="button" aria-pressed="true">Rodando</button>
+      <button id="pause" type="button" aria-pressed="false">Pausada</button>
+    </span>
+    <label for="speed">Velocidade <input id="speed" type="range" min="50" max="300" step="25" value="100"> <span id="speedv" class="tabular">1x</span></label>
+    <span class="seg" role="group" aria-label="Tamanho">
+      <button id="z1" type="button" aria-pressed="false">1x</button>
+      <button id="z2" type="button" aria-pressed="true">2x</button>
+      <button id="z3" type="button" aria-pressed="false">3x</button>
+    </span>
+    <span class="seg" role="group" aria-label="Taskbar">
+      <button id="barLight" type="button" aria-pressed="true">Taskbar clara</button>
+      <button id="barDark" type="button" aria-pressed="false">Taskbar escura</button>
+    </span>
+    <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
+  </div>
+
+  <div class="panels">
+    <section class="panel" aria-labelledby="h-now">
+      <h2 id="h-now">Agora</h2>
+      <div class="now" aria-live="polite"><span class="chip on" id="state">parada</span><span class="chip" id="dir">olhando pra direita</span></div>
+      <div class="stats">
+        <div class="stat"><b id="sPx" class="tabular">0</b><span>px andados</span></div>
+        <div class="stat"><b id="sBark" class="tabular">0</b><span>latidos</span></div>
+        <div class="stat"><b id="sTurn" class="tabular">0</b><span>meias-voltas</span></div>
+      </div>
+      <ol class="log" id="log" aria-label="O que ela fez por último"></ol>
+    </section>
+    <section class="panel" aria-labelledby="h-rules">
+      <h2 id="h-rules">Como ela decide</h2>
+      <div class="table-wrap"><table id="rules"></table></div>
+      <p class="note">Cada vez que termina o que estava fazendo, ela sorteia o próximo comportamento com essas chances. Andando, ela vira ao chegar na ponta da barra. É um rascunho do "cérebro" da Fase 1: dá pra ajustar as chances e os tempos.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+const DATA = {"layers": {"legs_trotB0": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABV0lEQVR4nO2UoU/EMBjF3xZUs2YhIVnIBIgpgjvDP0BQ6LkFgTtJcvr0oecmCO4SDBrFHzBHEASBmahcutSRoT5Yu3XjDgKmv2TJ2n3te3v9UsDhcDgcDofD8c943UEUxe1PNyyyBABwdLECADzfLJDmJZRqvKF6/zfFie+KA50EhgwUWYLL29etTBRZgjQvAWBzAxSjKS5lDc7DyTkTISqrgR3TNQAttiiKWxLhPOwJ0ruUtbbxlCnNQBTFLUU2FBfnIc7233H30mhiXRFzHedhO2TMxO8Wrecza+HxwR44D6FU49EztrEQlSdljfV8BsYCa4P7tg9/hWbg/Pqx91f0JwBwdbL7Oc9Y0NLY1mRKNV6al6MpbJTA4v5pNPYxbE259REsTw8BTDcZYavzgS93U7chY0FLUS4f3jQjNqaOoXcR2c6TFnMeQojKo/uBRMZMdGvN+g9AUaRM4hFCEgAAAABJRU5ErkJggg==", "torso": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA20lEQVR4nGNgGAWjYBSMglEwwICRWgZxcfH85+Xlh/NfvnxKlNlM6IaIi0v/p9Qxnz9/ZNhcav9/c6k9QbNQXAnzBbGuRwboDv/8+SPDymxjON+3+yBWM1FCADkIKbGcFMCCzPn8+SMDLy8/RQbCALJnwqeexakOI1ioYTkDA8IzMIArWlGigFqWMzAwMFw+vZcodUyElZAG5sSpMLhL/oWz58Sp0NcBDAwMDKGu6gwMDAwMWgldDAwMkOigqwNgFl9bUMYQPvUsw7dvX6hW4I2CUTAKRsEooDoAAFRgPFl7Y1X4AAAAAElFTkSuQmCC", "head": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABPUlEQVR4nGNgoBBwcfH8FxeX/k+MOi4uHgx1TJQ6AAbExaWxWgCznJeXH6s+qjhgTpwKw5w4FQZclsDU0MwBMPD580cMMS4unv8hajw49VDVAQwMkKhATxOhruo41TNSw0Lk4E1ZdAev+pcvn6LYSXEIvHz5lBHZUmzRgE+cKlGAbDiuhAgTR88pFEcBDGArCzqrc+Ds8tYpcLGEvEqq2YvhCBheMKn9v5eO3P//////hxVW2BIoC01cggRkJBUZGBgYGI7tW8fAwMDAoGvqzMDFxfP/27cvjAwMVMyG6HEr/HgHgwjLL4Y//38zTOuohotfPr0XRT1NQgCWKENd1RmcZD0YbJ2dcKqlWSL8/Pkjw8psYzj/rawHPCEyMCDKA6qEADG1IQMDIlfQLBeMglEwCkbBKBgFo2AUkAMA/JFofm3oyC8AAAAASUVORK5CYII=", "legs_trotB1": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABY0lEQVR4nO2Ur0/EMBzFX+FUs2ZBLeTMiSmCw+BQFxRBzi2Ic0jC6elDz02Qc0iCIij+gDmCQmAuZHLpUkeGuHTX7bZ22QSmn6Ri/fF9r6/fDLBYLBaLxWKx/DNE/fC8aTm2YBL6AICTmxUA4PNxiSBOIURB2vYfjBVso684YEggCX0s1l+DTCShjyBOAWCYARklgMoE5zkYc2sF2uaa6zoDE1VcFQ3iFIy5RgF1jfN8b04nDig9IA8DwNXDO5EHGXNxefxbrXOe14aKEAURoiBZtqlEKXW0jV0ZEKIg8s0kstDrzyGi+QyMuZWIHF2FOc9rz2g0MJZmGn0xGuA8x935EYBdIhJKnVKuNdOQiT7dnmmfoWZANk/bD2n5/LEnHs1nrcaa6Jp4on5k2YYs1uj1N2TMRfT23Wfr4OcBsL3p6vq0pNQpTR3ddf7l/qLzrDY6tQiwvbUp7iaeNy3VBJq98gf9q68ydI9WRAAAAABJRU5ErkJggg==", "legs_trotB2": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABVklEQVR4nO2UrU/EMBjGnxLUsmZZQnIhCMwUwZ2ZQ6LQcwvi3MkLp9Gg5ybIuUswBIniD5gjCILAnJhcutSRYXgv3dathSPB9JdMrH2753k/VsDhcDgcDofD8c8w9WUyOWp2/WCeRgCAk8sbAMDr3RJJVkDKmuni93YV1GErDhgqkKcRZqv3X5nI0whJVgCAnQESpxIC6IkLUYHzwLjW3R8zsK8GrudTAMDF7TMjUyYBdU+Iqrc2Jt4yQJC4KnB++In7t7olojNBYpwHzVBsl+0QSlmzJCvweHXW+xNOjw/AeQApa6Z7KI7aKETVaqWVgb/AJuNRA1RKNZNFHAIAynKj7aXn+c0iDrGIw20LqJrr+RSe54/eLa0ZKMsNm63QO7B8eBkcJM4DXD99DAp8t87OAJkYjNZgije1xWoGPM9vTKXsYtsGY7Z0mPPgx9Whe0Q11Y35AhvzqN5YBqLpAAAAAElFTkSuQmCC", "legs_trotB3": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABS0lEQVR4nO2UsWrDMBCGf7edhA+RyZQsHTx1zZIXKH0Eb6ZDtoyBzJm7e/MQsgWyZCx9Bm+lQ8nQpZSMRkZbcScZubZkpYF20QfC+Djd/TrdCfB4PB6Px+Px/DOB/hNF4/rcgHkaAwBuHx4BAK/rJZKsgJRV0Od/cW7CPlyTAwMVyNMYs83hVyLyNEaSFQBgFXBSBYQonWwAMNscQMRBxK0xWwKOx49GqTqBKYFCTyBE2SxXroYciDjur7+we6uaJCYReqmJeG3y1+lcgRBl08lEHIvpCE+fl5CyCkxL7dV7SI9zkoC/xiggyQospiMA7d7oQ4iy8QUAxsJ6O58MjqBVgGK5f7EGsDE0AU4CXFjd3QDoNpzLNHQEKNXqy1hYMxZan+jV83tLiJRVkGQFtvMJhvb2lld1szoBEbf2QRSNa+Wr7ly36faffAMs5JxzumEsRwAAAABJRU5ErkJggg==", "legs_trotB4": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQ0lEQVR4nO2ULU/EMBjH/yWnmjULCUlDJkBMkfsAuFMEiTy3IPgGBPTpS5DnJggah7wvcOYsgiAwE5VLlzlSVJd19GV3R4LpL6nY0yfP/3lbgUgkEolEIpHIP0P6H5xn6tCAZZEDAC5ulwCA9+dHzFdbtG1DbP5HhwraGCsOBDpQFjnuXj73SqIscsxXWwDYLwGbuJQ1GEuDtuG9LwHvCKSsIWXtczHEbf4+cQCY2Iy6fTr49ek3Xj+aTsSVgBZjLB29zEYHpKy7Le5nPj07AWMp2rYhw2MLKkTV2UN/VnAE95fHv4KOQRcTGqEBpYl6e5ipoW15M3VWoe/7leo4lCbBUQTfAT3jv3ikbFiXsI8QFXnawCm+uDoHYC4nY2n3BoQwOuCqVoiKuHZgsf4yEtH+viX1wnmmdmk355miNBk1bxs/9EyjFcjk0lwAAAAASUVORK5CYII=", "legs_trotB5": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABKklEQVR4nO2Vq27DMBSG/0xDUa2oyJpCCoL2BH2BaKi4LBrYG1QaDt5UWBZQFe8NhsZGSgemgpKBQutEYVUGJltp5jg3UHI+ySBWdP7P5+QCMAzDMAzDMFfGq15IGZZjC2ZJBAC4f3wBAHxtn7Hc7FEUuWe7/2ZsoI2u4UBLB7IkwtPuMEgiSyIsN3sAGCZgCydSECJo3atzOv00ClhHULUnUs7i1XAiZVZXjIA+vQ7XbRMiwMPd2RR1hRRF7unVW4BImSdYF9Cte/vOkcazi4B6iKvNnQSaGFq4eqBeAovXj3+Bes71t4RIYTWftoq4uG1VxF8X1p/o9ZESIjAP8mgBLVHfS+MZAPspu47OjKCpzS7S9+OFyGikDMs+AlKGpe9PSt+fDP6H/ALgNZmBEvfZEgAAAABJRU5ErkJggg==", "legs_base": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABMUlEQVR4nO2UrW7DMBDH/x6MagVGVWmkSaN9hqlosAqLBsrK+xAbDguYxvoYfYDQotGCwsiRWZWhiy6JnY91Usn9JIM49t3v/AUIgiAIgiAID0bxjyha1fcGzNMYAPDy/gEAOH8dkGQFrK2Ua/zTvQldTE0OjKxAnsZIsqL51jqcLMHn/kkgT2Psvn9ag40pexKuvu7/IQHnFnB7Y0pvcKC/KsaUrTlDyVsCVD0lp4lah9gsb01QSsAbx9pKkdSYfEvAmLI5wV3r7esztA5hbaVcrRuUx5os8Ch6Am+fp6YiXsn1evHu5ZyKRwVccKk5TLm2/7IFx/0aQP/QzTqEZOt6joNgUQfBwvtM05UlEWsrlWQFjvs1huYBnoeI7zcF0Dr0noMoWtVULd0K3sf7u/wCBzKvJlY3FoIAAAAASUVORK5CYII=", "head_bark1": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABVklEQVR4nGNgoBBwcfH8FxeX/k+MOi4uHgx1TJQ6AAbExaWxWgCznJeXH6s+qjhgTpwKw5w4FQZclsDU0MwBMPD580cMMS4unv8hajw49VDVAQwMkKhATxOhruo41TNSw0Lk4E1ZdAev+pcvn6LYSXEIvHz5lBHZUmzRgE+cKlGAbDiuhAgTR88pFEcBDGArCzqrc+Ds8tYpcLGEvEqq2YvhCBheMKn9v5eO3P//////hxVW2BIoC01cggRkJBUZGBgYGI7tW8fAwMDAoGvqzMDFxfP/27cvjAwMVMyG6HEr/HgHgwjLL4Y//38zTOuohotfPr0XRT1NQgCWKENd1RmcZD0YbJ2dcKqlWSL8/Pkjw8psYzg/ZdEdht+/f8L57969oV4UEFMbdlbnMLCysjOwsrIz/PjxAy5Om+yABSyY1A53JM2y4SgYBaNgFIyCUTAKhiQAAPTLcD++He/qAAAAAElFTkSuQmCC", "head_bark2": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABZ0lEQVR4nGNgoBBwcfH8FxeX/k+MOi4uHgx1TJQ6AAbExaWxWgCznJeXH6s+qjhgTpwKw5w4FQZclsDU0MwBMPD580cMMS4unv8hajw49VDVAQwMkKhATxOhruo41TNSw0Lk4E1ZdAev+pcvn6LYSXEIvHz5lBHZUmzRgE+cKlGAbDiuhAgTR88pFEcBDGArCzqrc+Ds8tYpcLGEvEqq2YvhCBheMKn9v5eO3P//////hxVWsLICORRYaOISJCAjqcjAwMDAcGzfOriYrqkzAxcXz/9v374wUs0B6HEr/HgHgwjLL4Y//5kZpnVU49RHkxCAJcpQV3UGJ1kPBltnJ7icqa03w7dvX+BpgGaJ8PPnjwwrs43h/JRFdxh+//4J579794aRgYFKIUBMbcjAwMBwvLoSzlYvLmagmgPQSzck8J+BgYEhfOpZhmkd1QzHGX4xMDAw0C4bjoJRMApGwSgYBaNgSAIA1mR0yK/jWyEAAAAASUVORK5CYII="}, "walk": {"frames": [{"legs": "legs_trotB0", "torso": "torso", "torsoOff": [0, 0], "head": "head", "headOff": [0, 0]}, {"legs": "legs_trotB1", "torso": "torso", "torsoOff": [0, 1], "head": "head", "headOff": [0, 0]}, {"legs": "legs_trotB2", "torso": "torso", "torsoOff": [0, 0], "head": "head", "headOff": [0, 0]}, {"legs": "legs_trotB3", "torso": "torso", "torsoOff": [0, 0], "head": "head", "headOff": [0, 0]}, {"legs": "legs_trotB4", "torso": "torso", "torsoOff": [0, 1], "head": "head", "headOff": [0, 0]}, {"legs": "legs_trotB5", "torso": "torso", "torsoOff": [0, 0], "head": "head", "headOff": [0, 0]}], "durs": [100, 100, 100, 100, 100, 100], "seq": [0, 1, 2, 3, 4, 5], "step": 1}, "bark": {"frames": [{"legs": "legs_base", "torso": "torso", "torsoOff": [0, 0], "head": "head", "headOff": [0, 0]}, {"legs": "legs_base", "torso": "torso", "torsoOff": [0, 0], "head": "head_bark1", "headOff": [0, 1]}, {"legs": "legs_base", "torso": "torso", "torsoOff": [1, 0], "head": "head_bark2", "headOff": [0, 0]}, {"legs": "legs_base", "torso": "torso", "torsoOff": [0, 0], "head": "head_bark1", "headOff": [0, 0]}], "durs": [300, 90, 170, 100], "seq": [0, 1, 2, 3, 1, 2, 3], "au": "head_bark2"}, "stand": {"legs": "legs_base", "torso": "torso", "torsoOff": [0, 0], "head": "head", "headOff": [0, 0]}, "outline": "#a09287", "taskbar": {"light": "#f3f3f3", "dark": "#202020"}};
+const S = 32, BAR_H = 48, DESK_H = 66;           // em pixels do sprite
+const FOOT = 6;                                    // folga das patas até a borda de baixo da taskbar
+
+// comportamento: duração (ms), chances do próximo estado
+const BRAIN = {
+  parada:          { nome: 'parada',         dur: [1500, 4000], next: { andando: .55, latindo: .25, parada: .20 } },
+  andando:         { nome: 'andando',        dur: [2500, 7000], next: { parada: .45, andandoLatindo: .30, latindo: .15, meiaVolta: .10 } },
+  latindo:         { nome: 'latindo',        dur: null,         next: { parada: .5, andando: .5 } },
+  andandoLatindo:  { nome: 'latindo andando', dur: null,        next: { andando: .6, parada: .4 } },
+};
+const NOMES = { parada: 'ficar parada', andando: 'andar', latindo: 'latir parada', andandoLatindo: 'latir andando', meiaVolta: 'dar meia-volta e andar' };
+
+const imgs = {};
+const off = document.createElement('canvas'); off.width = S; off.height = S;
+const octx = off.getContext('2d', { willReadFrequently: true });
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+
+let zoom = 2, speed = 1, running = true, dark = false, outline = false;
+let W = 200;                                       // largura do palco em px do sprite
+const dog = { x: 30, dir: 1, state: 'parada', until: 0, walkI: 0, walkT: 0, barkI: 0, barkT: 0, barkSeq: [], cycles: 0 };
+const stats = { px: 0, bark: 0, turn: 0 };
+const AU_HEAD = DATA.bark.au;   // cabeça do AU! (boca mais aberta): conta um latido
+let pausedAt = 0;
+
+function rnd(a, b) { return a + Math.random() * (b - a); }
+function pick(weights) {
+  let r = Math.random(), acc = 0;
+  for (const [k, w] of Object.entries(weights)) { acc += w; if (r < acc) return k; }
+  return Object.keys(weights)[0];
+}
+function clock(d = new Date()) { return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+
+function log(text) {
+  const li = document.createElement('li');
+  li.innerHTML = `<time>${clock()}</time><span></span>`;
+  li.lastChild.textContent = text;
+  const ol = document.getElementById('log');
+  ol.prepend(li);
+  while (ol.children.length > 6) ol.lastChild.remove();
+}
+
+function setState(name, now, why) {
+  if (name === 'meiaVolta') { dog.dir *= -1; stats.turn++; name = 'andando'; }
+  const wasWalking = dog.state.startsWith('andando');
+  dog.state = name;
+  if (name.startsWith('andando') && !wasWalking) dog.walkT = now;
+  const b = BRAIN[name];
+  dog.until = b.dur ? now + rnd(...b.dur) / speed : Infinity;
+  if (name === 'latindo') { dog.barkSeq = DATA.bark.seq.slice(); dog.cycles = Math.random() < .4 ? 2 : 1; startBark(now); }
+  if (name === 'andandoLatindo') { dog.barkSeq = DATA.bark.seq.filter((f, i) => i > 0); dog.cycles = 1; startBark(now); }
+  document.getElementById('state').textContent = BRAIN[name].nome;
+  document.getElementById('dir').textContent = dog.dir > 0 ? 'olhando pra direita' : 'olhando pra esquerda';
+  log((why ? why + ': ' : '') + NOMES[name] + (name.startsWith('andando') ? (dog.dir > 0 ? ' pra direita' : ' pra esquerda') : ''));
+  renderStats();
+}
+
+function startBark(now) { dog.barkI = 0; dog.barkT = now; countAU(); }
+// conta um latido a cada frame de boca aberta (AU!)
+function countAU() { if (DATA.bark.frames[dog.barkSeq[dog.barkI]].head === AU_HEAD) { stats.bark++; renderStats(); } }
+
+function renderStats() {
+  document.getElementById('sPx').textContent = stats.px;
+  document.getElementById('sBark').textContent = stats.bark;
+  document.getElementById('sTurn').textContent = stats.turn;
+}
+
+// ---------- monta o frame por camadas (pernas, tronco, cabeça), igual ao rig ----------
+function compose(spec, headExtra = [0, 0]) {
+  octx.clearRect(0, 0, S, S);
+  const [tx, ty] = spec.torsoOff, [hx, hy] = spec.headOff;
+  octx.drawImage(imgs[spec.legs], 0, 0);
+  octx.drawImage(imgs[spec.torso], tx, ty);
+  octx.drawImage(imgs[spec.head], tx + hx + headExtra[0], ty + hy + headExtra[1]);
+  if (outline) addOutline();
+}
+
+function addOutline() {
+  const id = octx.getImageData(0, 0, S, S), a = id.data, src = new Uint8ClampedArray(a);
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(DATA.outline.slice(i, i + 2), 16));
+  const op = (x, y) => x >= 0 && y >= 0 && x < S && y < S && src[(y * S + x) * 4 + 3] > 0;
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    if (op(x, y)) continue;
+    if (op(x + 1, y) || op(x - 1, y) || op(x, y + 1) || op(x, y - 1)) {
+      const i = (y * S + x) * 4; a[i] = r; a[i + 1] = g; a[i + 2] = b; a[i + 3] = 255;
+    }
+  }
+  octx.putImageData(id, 0, 0);
+}
+
+function currentSpec() {
+  const walk = DATA.walk.frames[DATA.walk.seq[dog.walkI % DATA.walk.seq.length]];
+  const bark = () => DATA.bark.frames[dog.barkSeq[Math.min(dog.barkI, dog.barkSeq.length - 1)]];
+  switch (dog.state) {
+    case 'andando': return [walk, [0, 0]];
+    case 'latindo': return [bark(), [0, 0]];
+    case 'andandoLatindo': {
+      const b = bark();   // pernas e tronco do trote, cabeça do latido; o tranco vira um empurrãozinho da cabeça
+      return [{ ...walk, head: b.head, headOff: b.headOff }, b.torsoOff];
+    }
+    default: return [DATA.stand, [0, 0]];
+  }
+}
+
+// ---------- tempo ----------
+function tick(now) {
+  if (dog.state === 'andando' || dog.state === 'andandoLatindo') {
+    const d = DATA.walk.durs[DATA.walk.seq[dog.walkI % DATA.walk.seq.length]] / speed;
+    while (now - dog.walkT >= d) {
+      dog.walkT += d; dog.walkI++;
+      dog.x += dog.dir * DATA.walk.step; stats.px += DATA.walk.step;
+      if (dog.x > W - S - 2) { dog.x = W - S - 2; dog.dir = -1; stats.turn++; log('chegou na ponta: meia-volta'); }
+      if (dog.x < 2) { dog.x = 2; dog.dir = 1; stats.turn++; log('chegou na ponta: meia-volta'); }
+    }
+  } else { dog.walkT = now; }
+  if (dog.state === 'latindo' || dog.state === 'andandoLatindo') {
+    let d = DATA.bark.durs[dog.barkSeq[dog.barkI]] / speed;
+    while (now - dog.barkT >= d) {
+      dog.barkT += d; dog.barkI++;
+      if (dog.barkI >= dog.barkSeq.length) {
+        dog.cycles--;
+        if (dog.cycles > 0) { dog.barkI = dog.state === 'latindo' ? 1 : 0; }
+        else { setState(pick(BRAIN[dog.state].next), now); break; }
+      }
+      countAU();
+      d = DATA.bark.durs[dog.barkSeq[dog.barkI]] / speed;
+    }
+  }
+  if (now >= dog.until) setState(pick(BRAIN[dog.state].next), now);
+}
+
+// ---------- desenho ----------
+function resize() {
+  const cssW = canvas.parentElement.clientWidth;
+  W = Math.max(S + 8, Math.floor(cssW / zoom));
+  const H = DESK_H + BAR_H, dpr = window.devicePixelRatio || 1;
+  canvas.width = W * zoom * dpr; canvas.height = H * zoom * dpr;
+  canvas.style.height = (H * zoom) + 'px';
+  dog.x = Math.min(dog.x, W - S - 2);
+  draw();
+}
+
+function wallpaper(H) {
+  const g = ctx.createRadialGradient(W * .72, H * .9, 4, W * .72, H * .9, Math.max(W, H) * .9);
+  if (dark) { g.addColorStop(0, '#2a5d9c'); g.addColorStop(.45, '#14294a'); g.addColorStop(1, '#0a0f1a'); }
+  else { g.addColorStop(0, '#9cc3ee'); g.addColorStop(.5, '#cfe0f2'); g.addColorStop(1, '#e9eef5'); }
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+
+function taskbar(y) {
+  const t = DATA.taskbar;
+  ctx.fillStyle = dark ? t.dark : t.light; ctx.fillRect(0, y, W, BAR_H);
+  ctx.fillStyle = dark ? '#2b2b2b' : '#e0e0e0'; ctx.fillRect(0, y, W, 0.5);
+  const fg = dark ? '#ffffff' : '#1b1b1b';
+  const tray = W >= 150 ? 46 : 0;
+  const slots = Math.max(2, Math.min(7, Math.floor((W - 2 * tray - 8) / 26)));
+  const x0 = (W - slots * 26) / 2 + 1, cy = y + BAR_H / 2;
+  for (let i = 0; i < slots; i++) {
+    const x = x0 + i * 26;
+    if (i === 0) {          // botão Iniciar
+      ctx.fillStyle = dark ? '#4cc2ff' : '#0067c0';
+      for (const [dx, dy] of [[0, 0], [7, 0], [0, 7], [7, 7]]) ctx.fillRect(x + 6 + dx, cy - 7 + dy, 6, 6);
+    } else if (i === 1) {   // pesquisa
+      ctx.strokeStyle = fg; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(x + 11, cy - 1, 4.5, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x + 14.5, cy + 2.5); ctx.lineTo(x + 18, cy + 6); ctx.stroke();
+    } else {                // apps
+      const cores = ['#f2c14e', '#2a8bd8', '#3c3c3c', '#e2533c', '#56a35b'];
+      ctx.fillStyle = cores[(i - 2) % cores.length];
+      roundRect(x + 3, cy - 9, 18, 18, 4); ctx.fill();
+      if (i === 2) { ctx.fillStyle = '#fff6'; ctx.fillRect(x + 3, cy - 4, 18, 1.2); }
+      ctx.fillStyle = dark ? '#ffffff88' : '#00000055'; ctx.fillRect(x + 10, y + BAR_H - 5, 4, 1.4);
+    }
+  }
+  if (tray) {
+    const d = new Date();
+    ctx.fillStyle = fg; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.font = `600 7.5px ${getComputedStyle(document.body).getPropertyValue('--font-ui')}`;
+    ctx.fillText(d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), W - 8, cy - 5);
+    ctx.font = `400 7px ${getComputedStyle(document.body).getPropertyValue('--font-ui')}`;
+    ctx.fillText(d.toLocaleDateString('pt-BR'), W - 8, cy + 5);
+  }
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+
+function draw() {
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(zoom * dpr, 0, 0, zoom * dpr, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  wallpaper(DESK_H);
+  taskbar(DESK_H);
+  const [spec, extra] = currentSpec();
+  compose(spec, extra);
+  const x = Math.round(dog.x), y = DESK_H + BAR_H - FOOT - S;
+  ctx.save();
+  if (dog.dir < 0) { ctx.translate(x + S, y); ctx.scale(-1, 1); ctx.drawImage(off, 0, 0); }
+  else ctx.drawImage(off, x, y);
+  ctx.restore();
+}
+
+function loop(now) {
+  if (running) tick(now);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// ---------- regras na tabela (saem do mesmo objeto que o código usa) ----------
+function renderRules() {
+  const pct = v => Math.round(v * 100) + '%';
+  const rows = Object.entries(BRAIN).map(([k, b]) => {
+    const dur = b.dur ? `${(b.dur[0] / 1000).toFixed(1)}–${(b.dur[1] / 1000).toFixed(1)} s` : (k === 'latindo' ? '1 ou 2 latidos duplos' : '1 latido duplo');
+    const next = Object.entries(b.next).map(([n, w]) => `${NOMES[n]} ${pct(w)}`).join(' · ');
+    return `<tr><td>${b.nome}</td><td class="num">${dur}</td><td>${next}</td></tr>`;
+  }).join('');
+  document.getElementById('rules').innerHTML = `<thead><tr><th>Estado</th><th>Dura</th><th>Depois, sorteia</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+// ---------- controles ----------
+function pressed(on, ...offs) { on.setAttribute('aria-pressed', 'true'); offs.forEach(o => o.setAttribute('aria-pressed', 'false')); }
+const $ = id => document.getElementById(id);
+$('bark').onclick = () => setState('latindo', performance.now(), 'você pediu');
+$('play').onclick = () => {
+  if (!running) { const d = performance.now() - pausedAt; dog.walkT += d; dog.barkT += d; dog.until += d; }
+  running = true; pressed($('play'), $('pause'));
+};
+$('pause').onclick = () => { if (running) pausedAt = performance.now(); running = false; pressed($('pause'), $('play')); };
+$('speed').oninput = e => { speed = e.target.value / 100; $('speedv').textContent = (speed % 1 ? speed.toFixed(2).replace(/0$/, '') : speed) + 'x'; };
+for (const z of [1, 2, 3]) $('z' + z).onclick = () => { zoom = z; pressed($('z' + z), ...[1, 2, 3].filter(o => o !== z).map(o => $('z' + o))); resize(); };
+$('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark')); };
+$('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } };
+$('outline').onchange = e => { outline = e.target.checked; };
+canvas.addEventListener('click', e => {
+  const r = canvas.getBoundingClientRect();
+  const px = (e.clientX - r.left) / zoom, py = (e.clientY - r.top) / zoom;
+  const y = DESK_H + BAR_H - FOOT - S;
+  if (px >= dog.x - 4 && px <= dog.x + S + 4 && py >= y - 4 && py <= y + S + 4) setState('latindo', performance.now(), 'você tocou nela');
+});
+window.addEventListener('resize', resize);
+
+// ---------- início ----------
+Promise.all(Object.entries(DATA.layers).map(([k, src]) => new Promise(ok => {
+  const i = new Image(); i.onload = () => { imgs[k] = i; ok(); }; i.src = src;
+}))).then(() => {
+  renderRules(); resize();
+  const now = performance.now();
+  setState('andando', now, 'começou');
+  requestAnimationFrame(loop);
+});
+</script>

@@ -56,6 +56,11 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   = `stand` pixel a pixel. Pra migrar uma receita: `upper` → `torso` e `head` com
   `attach: "torso.pescoco"`. A cabeça tem `@role cabeca` (o suéter não pega nela).
 - Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
+- **Simulação "Kiara na taskbar"** (pedido do dono: andando e latindo ao acaso):
+  https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y — `tools/sim_page.py` + `sim_template.html`
+  (cópia em `sprites/previews/simulacao/`). Monta os frames por camadas (pernas, tronco,
+  cabeça; conferido pixel a pixel contra o rig), então ela late andando sem frames novos.
+  O "cérebro" (estados, chances e tempos) é um rascunho pra Fase 1. Usa só animações aprovadas.
 
 ### Observações de anatomia (das fotos)
 
