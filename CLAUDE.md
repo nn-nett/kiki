@@ -90,7 +90,8 @@ só marcar como ✅ com aprovação explícita.
 - [x] ✅ Andando — trote B, 6 frames de 100 ms, esquerda por espelho (`anims/walk_b.json`)
 - [ ] Correndo — v1 reprovada ("faltou o tronco inclinar"); v2 em desenho com o tronco inclinando e a coluna
   esticando/encolhendo (`anims/run.json`, `torso_run*`, `legs_run*`), 2 px/frame
-- [x] ✅ Latindo — `anims/latir_tranco.json` (o dono escolheu "com tranco"; queixo do AU! afinado a pedido dele)
+- [x] ✅ Latindo — `anims/latir_tranco.json` (o dono escolheu "com tranco"; queixo do AU! afinado a pedido
+  dele; confirmado: "o latido com tranco tá perfeito")
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
 - [ ] Comendo (3–4 frames, no potinho)
