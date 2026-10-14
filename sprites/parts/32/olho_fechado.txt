@@ -1,0 +1,9 @@
+# Kiara 32 — remendo do piscar: olho FECHADO (igual ao olho de dormir do dormir_A/B)
+# @anchor 1,0
+# @role olho
+# encaixa no @socket.olho da cabeça; mesma área do olho_meio (colunas 22-25, linhas 9-11 na pose parada)
+# pálpebra grisalha G (3 px) com a linha escura X embaixo (a ponta da frente sobe 1 px, no X que já existe);
+# o D da bochecha vira t e o K ao lado vira G (o D sozinho sob a linha parecia íris aberta)
+.GG.
+XXXK
+.tG.

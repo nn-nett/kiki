@@ -3,6 +3,7 @@
 # pra trás a ~35°, grandes, com o castanho dentro (a de trás) e a de frente escura por cima do crânio
 # @anchor 9,12
 # @role cabeca
+# @socket.olho 12,7
 # âncora = a mesma da head.txt (4,14) deslocada junto; com offset [0,0] o rosto fica exatamente onde fica na pose parada
 XXK..................
 XtttKK..XXK..........

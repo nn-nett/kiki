@@ -1,0 +1,20 @@
+{
+  "name": "piscar",
+  "canvas": [32, 32],
+  "loop": true,
+  "sequence": [0, 1, 2, 3],
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 1500, "parts": [
+      {"id": "legs", "part": "legs_base", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0]},
+      {"id": "head", "part": "head", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "duration": 60, "parts": [{"id": "olho", "part": "olho_meio", "attach": "head.olho"}]},
+    {"base": 1, "duration": 110, "set": {"olho": {"part": "olho_fechado"}}},
+    {"base": 1, "duration": 60}
+  ]
+}
