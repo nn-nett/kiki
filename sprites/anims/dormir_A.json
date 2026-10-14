@@ -1,0 +1,36 @@
+{
+  "name": "dormir_A",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "variants": {
+    "contorno": [
+      {
+        "filter": "outline",
+        "opts": {
+          "color": "G"
+        }
+      }
+    ],
+    "esquerda": [
+      "mirror"
+    ]
+  },
+  "frames": [
+    {
+      "duration": 1000,
+      "parts": [
+        {
+          "id": "corpo",
+          "part": "dormir_A",
+          "at": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -90,7 +90,9 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Galope v4 guiado pela referência de pixel art do dono (`sprites/extern/refs_correr/`, gitignored):
   esticar/encolher bem mais o corpo (bola com costas arqueadas no recolhido, comprido e baixo no
   esticado), pernas curtas trabalhando embaixo do corpo, cabeça e rabo acompanhando.
-- Kiki deitada dormindo: 2 opções de frame (A de barriga, B enrolada) em desenho pra validar.
+- Kiki deitada dormindo: **2 opções de frame pra validar** (`parts/32/dormir_A.txt` de barriga com o
+  queixo na patinha; `dormir_B.txt` enrolada como na foto; receitas `anims/dormir_A/B.json`, log em
+  `dormir_log.md`, previews em `sprites/previews/dormindo/`). Depois da escolha: respiração (2-3 frames).
 
 ## Fases
 
