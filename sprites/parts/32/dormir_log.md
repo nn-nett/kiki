@@ -81,3 +81,72 @@ G sai pelo filtro, variante `contorno`).
 - Respiração: 2-3 frames subindo 1 px o alto das costas/anca (A) ou o alto da bola (B), cabeça parada.
 - "zZz" opcional (G/W) em cima da cabeça, como peça separada (tipo `bark_fx`).
 - O papel é `corpo` (não `torso`), então o filtro do suéter não pega nessas peças ainda.
+
+---
+
+# Rodada 2: o travesseiro (C e D)
+
+O dono ainda não escolheu entre A e B. Ele mandou 6 fotos novas dela dormindo e sugeriu: "acho que ela precisa de
+um travesseiro pra ela subir e dormir". Padrão das fotos: cabeça quase sempre apoiada numa almofada bege ou no
+braço do sofá, patas da frente esticadas (às vezes uma por cima da almofada), orelhas relaxadas, uma meio em pé.
+
+## Arquivos
+
+- `travesseiro.txt`: almofada 24x8, `@role objeto`.
+- `dormir_C.txt`, `dormir_D.txt`: a cachorra, peça do tamanho do quadro (44x32), `@role corpo`.
+- Receitas `../../anims/dormir_C.json` e `dormir_D.json`: quadro **44x32**, travesseiro em `at [16,24]` e
+  a cachorra em `[0,0]` por cima. 1 frame de 1000 ms, loop, variantes `contorno` (outline G) e `esquerda` (mirror).
+- `../../palette.json`: grupo novo **`travesseiro`** no fim, sem mexer nos outros grupos:
+  - `Q` #d1c9bc claro: parte iluminada da almofada de `kiki_dormindo_de_lado_cobertor.jpg`;
+  - `q` #b29e8b médio e `Z` #96795f sombra/borda/costura: almofada de `kiki_dormindo_abracando_almofada.jpg`
+    (agrupamento de cores só na área da almofada).
+- Fotos usadas: `kiki_dormindo_abracando_almofada.jpg` (cor e jeito: peito, cabeça e pata esticada por cima),
+  `kiki_dormindo_de_lado_sofa.jpg` (patas esticadas, cabeça no encosto), `kiki_dormindo_cabeca_nas_patas_sofa.jpg`
+  (queixo nas patas), `kiki_dormindo_enrolada_colo.jpg` (bola com as orelhas em pé, pro D).
+
+## Decisões
+
+- **Travesseiro**: vista de lado, cantos arredondados, em cima claro (Q), lateral média (q) e borda Z dos dois
+  lados. A borda escura faz ele aparecer na taskbar clara; o miolo claro, na escura. Na linha do meio tem uma
+  costura pontilhada (Z a cada 3 px) e as pontinhas dos cantos saem 1 px pra fora, como almofada de verdade.
+  Testei 6 desenhos: liso, com costura cheia, com costura pontilhada e com dobra/afundado em cima. O liso parecia
+  um sabonete e o afundado um pão. O claro Q fica longe do W do focinho porque a borda Z separa os dois.
+- **Mesmo quadro e mesma posição do travesseiro nas duas** (44x32, travesseiro em [16,24]): assim a transição
+  usa o travesseiro parado e só a cachorra se mexe.
+- **C**: traseira deitada no chão como na A (anca, risco tan da coxa, canela no chão, toquinho). As costas sobem
+  até os ombros e a barriga sobe do chão (linha 31) até o travesseiro (linha 24) numa diagonal com borda X. O
+  vão entre a barriga e o travesseiro fica aberto embaixo, então não prende transparência. O peito afunda no alto
+  do travesseiro. A pata da frente vai esticada por cima dele (borda X, pata 2 px na ponta) e o queixo fica
+  apoiado nela. Cabeça e orelhas são iguais às da A (olho fechado).
+- **D**: a opção B inteira (mesma bola e mesma cabeça), deslocada +15,-6. Ela afunda 2 px no travesseiro (o alto
+  dele some debaixo dela, parece fofo) e a cabeça fica na beirada: queixo na quina, focinho pra fora. A patinha
+  encolhida da B virou a pata da frente esticada debaixo do queixo, com a ponta caindo pela beirada. Pra fechar
+  entalhes, coloquei 1 px X na traseira (que afunda no canto esquerdo) e tirei 1 px da ponta da pata.
+- Tamanho da cachorra igual ao das outras poses: o primeiro D1 encolhia a bola pra caber no travesseiro e ela
+  ficava parecendo filhote, então descartei. Na D, a traseira passa 2-3 px da quina esquerda.
+
+## Rodadas
+
+- Travesseiro: P1-P6 (acima), escolhida a P5 com a costura simétrica.
+- C1: buraco entre o pescoço e a cabeça (o corpo parava antes da nuca) e as costas retas. C2: corpo por baixo
+  da nuca, costas inclinadas, anca com dobra, 1 entalhe na nuca fechado.
+- D1 (bola encolhida, descartada), D2/D2b (a B por cima, afundando 1 px ou 2 px), D3 (sem/com pata),
+  D4 = D3 com pata e entalhes fechados.
+- Autocrítica no quadro (8x + 2x nas duas taskbars, ao lado das fotos): C lê "deitada com a cabeça no
+  travesseiro"; D lê "deitada em cima da almofada". O travesseiro bege não se mistura com a cachorra preta a 2x.
+
+## Conferência
+
+- `rig.py` = rascunho, pixel a pixel (0 diferença).
+- `lint.py --size 44 32`: normal e esquerda só com "silhueta some na taskbar escura" (sem contorno, esperado).
+  A borda visível no escuro já sobe pra 23% na C e 34% na D por causa do travesseiro. `_contorno`: limpas.
+- `problems()`: normal e esquerda com 0 buracos, 0 soltos e 0 entalhes (travesseiro e cachorra juntos). Nas
+  `_contorno` o filtro fecha 1 px entre as orelhas (C 27,10; D 33,13), igual à A/B e à pose em pé.
+
+## Pensando no "subir" (andando, subindo, deitando)
+
+- O travesseiro fica parado em [16,24] no quadro 44x32 e a cachorra em pé (32x32) chega pela esquerda andando.
+  Primeiro ela põe as patas da frente no alto plano do travesseiro (colunas 21-34, pé na linha 24, ou seja,
+  frente 7 px mais alta, corpo inclinado), depois puxa as de trás (pulinho de 1 frame no ar).
+- Já em cima, ela abaixa até a D (2 frames: senta e deita). Pra C, ela só sobe com a frente e deita a traseira
+  no chão. Os frames de transição reaproveitam pernas e tronco do trote B com o tronco inclinado, como na corrida.

@@ -1,0 +1,44 @@
+{
+  "name": "dormir_D",
+  "canvas": [
+    44,
+    32
+  ],
+  "loop": true,
+  "variants": {
+    "contorno": [
+      {
+        "filter": "outline",
+        "opts": {
+          "color": "G"
+        }
+      }
+    ],
+    "esquerda": [
+      "mirror"
+    ]
+  },
+  "frames": [
+    {
+      "duration": 1000,
+      "parts": [
+        {
+          "id": "travesseiro",
+          "part": "travesseiro",
+          "at": [
+            16,
+            24
+          ]
+        },
+        {
+          "id": "corpo",
+          "part": "dormir_D",
+          "at": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+# Kiara 32 — objeto: travesseiro (almofada bege fofinha, vista de lado), 24x8
+# @anchor 0,0
+# @role objeto
+# cores do grupo 'travesseiro' da paleta (amostradas das fotos): Q claro (em cima), q médio (lateral), Z sombra/borda/costura
+# costura no meio com as pontinhas dos cantos pra fora; borda Z dos dois lados (lê na taskbar clara), miolo claro (lê na escura)
+# posição nas receitas do dormir: at [16,24] num quadro 44x32 (base na linha 31); em cima plano nas colunas 5-18 (onde ela pisa ao subir)
+.....ZZZZZZZZZZZZZZ.....
+...ZZQQQQQQQQQQQQQQZZ...
+..ZQQQQQQQQQQQQQQQQQQZ..
+.ZQQQQQQQQQQQQQQQQQQQQZ.
+ZZqqZqqZqqZqqZqqZqqZqqZZ
+.ZqqqqqqqqqqqqqqqqqqqqZ.
+..ZqqqqqqqqqqqqqqqqqqZ..
+...ZZZZZZZZZZZZZZZZZZ...

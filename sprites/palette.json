@@ -43,6 +43,11 @@
       "v": { "hex": "#7d4426", "name": "potinho sombra/interior" },
       "C": { "hex": "#6e4a23", "name": "cocô" },
       "c": { "hex": "#8a5e2e", "name": "cocô claro" }
+    },
+    "travesseiro": {
+      "Q": { "hex": "#d1c9bc", "name": "almofada bege clara (luz em cima)", "fonte": "almofada bege ao fundo em kiki_dormindo_de_lado_cobertor.jpg, parte iluminada #d1c9bc" },
+      "q": { "hex": "#b29e8b", "name": "almofada bege média (lateral)", "fonte": "almofada de kiki_dormindo_abracando_almofada.jpg, tom médio #b29e8b" },
+      "Z": { "hex": "#96795f", "name": "almofada sombra/costura/borda", "fonte": "almofada de kiki_dormindo_abracando_almofada.jpg, dobras e borda de baixo #96795f" }
     }
   }
 }

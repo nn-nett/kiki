@@ -100,13 +100,13 @@ async function build() {
     card.className = 'card';
     card.innerHTML = `<h2>${v.nome} <small>${v.nota}</small></h2>
       <div class="zoom">
-        <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>animada</figcaption></figure>
-        <figure><canvas width="${32*SCALE_ZOOM}" height="${32*SCALE_ZOOM}"></canvas><figcaption>parada</figcaption></figure>
+        <figure><canvas width="${walk[0].width*SCALE_ZOOM}" height="${walk[0].height*SCALE_ZOOM}"></canvas><figcaption>animada</figcaption></figure>
+        <figure><canvas width="${stand.width*SCALE_ZOOM}" height="${stand.height*SCALE_ZOOM}"></canvas><figcaption>parada</figcaption></figure>
       </div>
       <canvas class="bar" width="${BAR_W}" height="${BAR_H}" aria-label="Kiara passeando na taskbar"></canvas>`;
     cards.appendChild(card);
     const [cz, cs, cb] = card.querySelectorAll('canvas');
-    views.push({ walk, stand, cz, cs, cb, x: v.step === 0 ? (BAR_W - 32*SCALE_BAR) / 2 : 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, f: 0, last: 0 });
+    views.push({ walk, stand, cz, cs, cb, x: v.step === 0 ? (BAR_W - walk[0].width*SCALE_BAR) / 2 : 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, f: 0, last: 0 });
   }
   draw(); loop();
 }
@@ -119,15 +119,16 @@ function draw() {
   for (const v of views) {
     const img = v.walk[v.f % v.walk.length];
     let x = ctxOf(v.cz); x.fillStyle = zoomBg; x.fillRect(0, 0, v.cz.width, v.cz.height);
-    x.drawImage(img, 0, 0, 32*SCALE_ZOOM, 32*SCALE_ZOOM);
+    x.drawImage(img, 0, 0, img.width*SCALE_ZOOM, img.height*SCALE_ZOOM);
     x = ctxOf(v.cs); x.fillStyle = zoomBg; x.fillRect(0, 0, v.cs.width, v.cs.height);
-    x.drawImage(v.stand, 0, 0, 32*SCALE_ZOOM, 32*SCALE_ZOOM);
+    x.drawImage(v.stand, 0, 0, v.stand.width*SCALE_ZOOM, v.stand.height*SCALE_ZOOM);
     x = ctxOf(v.cb); x.fillStyle = zoomBg; x.fillRect(0, 0, BAR_W, BAR_H);
-    const w = 32*SCALE_BAR, y = BAR_H - w - 4;
-    const sprite = playing ? img : v.stand;
+    const sprite0 = playing ? img : v.stand;
+    const w = sprite0.width*SCALE_BAR, h = sprite0.height*SCALE_BAR, y = BAR_H - h - 4;
+    const sprite = sprite0;
     x.save();
-    if (v.dir < 0) { x.translate(v.x + w, y); x.scale(-1, 1); x.drawImage(sprite, 0, 0, w, w); }
-    else { x.drawImage(sprite, v.x, y, w, w); }
+    if (v.dir < 0) { x.translate(v.x + w, y); x.scale(-1, 1); x.drawImage(sprite, 0, 0, w, h); }
+    else { x.drawImage(sprite, v.x, y, w, h); }
     x.restore();
   }
 }
@@ -136,7 +137,7 @@ function step(v) {
   v.f = (v.f + 1) % v.walk.length;
   // patas plantadas recuam v.step px do sprite por frame: a janela anda o mesmo
   v.x += v.dir * v.step * SCALE_BAR;
-  if (v.x > BAR_W - 32*SCALE_BAR - 6) v.dir = -1;
+  if (v.x > BAR_W - v.walk[0].width*SCALE_BAR - 6) v.dir = -1;
   if (v.x < 6) v.dir = 1;
 }
 

@@ -13,7 +13,8 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
 - **Rabo confirmado: toquinho curto, preto, reto ou pra cima** (foto da bandana).
   Abanar = toquinho mexe 1px + bumbum balança.
-- **Tamanho único: 32x32** (~11 cores: X K k D T t G W E B N). O dono descartou o 64
+- **Tamanho único: 32x32** (~11 cores da cachorra: X K k D T t G W E B N; objetos têm cores próprias).
+  Poses com objeto (travesseiro) usam quadro mais largo (44x32). O dono descartou o 64
   e achou o 16 e o 8 fracos ("só 32"). Ampliado 2x quando precisar de mais tamanho.
 - **Contorno grisalho (G)**: aprovado, mas o dono pediu pra trabalhar **sem contorno por
   enquanto** (previews e revisões sem borda). Continua disponível por filtro
@@ -91,9 +92,13 @@ pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
   deitadas pra trás, cabeça baixa na linha das costas; `parts/32/head_run.txt`). Duas opções pra ele
   escolher: v4 + cabeça (`anims/run.json`, peças em `parts/32`) e v3 + cabeça (`anims/run_v3c.json`,
   peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá). Refs em `sprites/extern/refs_correr/`.
-- Kiki deitada dormindo: **2 opções de frame pra validar** (`parts/32/dormir_A.txt` de barriga com o
-  queixo na patinha; `dormir_B.txt` enrolada como na foto; receitas `anims/dormir_A/B.json`, log em
-  `dormir_log.md`, previews em `sprites/previews/dormindo/`). Depois da escolha: respiração (2-3 frames).
+- Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
+  **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
+  chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.
+  Peças `parts/32/dormir_A-D.txt` + `travesseiro.txt` (24x8, `@role objeto`, cores novas Q/q/Z no grupo
+  `travesseiro` da paleta, tiradas das fotos); receitas `anims/dormir_A-D.json`; log `dormir_log.md`;
+  fotos novas `reference/kiki_dormindo_*.jpg`. Depois da escolha: respiração (2-3 frames) e a
+  transição "subir no travesseiro" (plano no log).
 
 ## Fases
 
