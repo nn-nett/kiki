@@ -1,0 +1,21 @@
+{
+  "name": "kiara-pixel-pal",
+  "version": "0.1.0",
+  "description": "Kiara, a Pinscher em pixel art, passeando na barra de tarefas do Windows 11",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.kiki.pixelpal",
+    "productName": "Kiara Pixel Pal",
+    "files": ["main.js", "preload.js", "renderer/**"],
+    "extraResources": [{ "from": "../sprites/final", "to": "sprites", "filter": ["kiara-sprites.png", "kiara-sprites.json"] }]
+  }
+}

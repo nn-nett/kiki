@@ -25,6 +25,13 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 ## Estado do projeto
 
 - **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
+  **e Fase 1 — Desktop em paralelo** (liberada pelo dono em 14/10/2026, com as animações já
+  aprovadas). App Electron em `desktop/` (ver `desktop/README.md`): faixa transparente em cima da
+  barra em cada monitor, cérebro da simulação (parada/andando/latindo), clique = late, passa de
+  um monitor pro outro, contorno automático com a barra escura, bandeja (mostrar/esconder, latir,
+  tamanho 1-3x, contorno, abrir com o Windows, sair). Lê `sprites/final/` direto: animação nova
+  exportada entra sozinha (ex.: `correndo`, `latindo_andando`). Testado em Linux virtual
+  (Xvfb, inclusive 2 monitores simulados); **falta o dono testar no Windows de verdade**.
 - Fotos reais em `./reference/` (16 fotos, incluindo perfil com o potinho, incluindo câmera noturna, peitoral teal,
   suéter listrado, dormindo enrolada, deitada lambendo e de cima com bandana vermelha)
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
@@ -195,7 +202,7 @@ só marcar como ✅ com aprovação explícita.
 ```
 reference/   # fotos reais da Kiara (o dono coloca)
 sprites/     # paleta, matrizes dos sprites, scripts de geração, previews
-desktop/     # Fase 1 (Electron) — ainda não iniciada
+desktop/     # Fase 1 (Electron) — em andamento: npm install && npm start
 android/     # Fase 2 (Kotlin) — ainda não iniciada
 ```
 
