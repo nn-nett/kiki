@@ -112,6 +112,90 @@
         100
       ],
       "loop": true
+    },
+    "latindo": {
+      "frames": [
+        "frames/latindo/latindo_0.png",
+        "frames/latindo/latindo_1.png",
+        "frames/latindo/latindo_2.png",
+        "frames/latindo/latindo_3.png",
+        "frames/latindo/latindo_4.png",
+        "frames/latindo/latindo_5.png",
+        "frames/latindo/latindo_6.png"
+      ],
+      "durations": [
+        300,
+        90,
+        170,
+        100,
+        90,
+        170,
+        100
+      ],
+      "loop": true
+    },
+    "latindo_esquerda": {
+      "frames": [
+        "frames/latindo/latindo_esquerda_0.png",
+        "frames/latindo/latindo_esquerda_1.png",
+        "frames/latindo/latindo_esquerda_2.png",
+        "frames/latindo/latindo_esquerda_3.png",
+        "frames/latindo/latindo_esquerda_4.png",
+        "frames/latindo/latindo_esquerda_5.png",
+        "frames/latindo/latindo_esquerda_6.png"
+      ],
+      "durations": [
+        300,
+        90,
+        170,
+        100,
+        90,
+        170,
+        100
+      ],
+      "loop": true
+    },
+    "latindo_contorno": {
+      "frames": [
+        "frames/latindo/latindo_contorno_0.png",
+        "frames/latindo/latindo_contorno_1.png",
+        "frames/latindo/latindo_contorno_2.png",
+        "frames/latindo/latindo_contorno_3.png",
+        "frames/latindo/latindo_contorno_4.png",
+        "frames/latindo/latindo_contorno_5.png",
+        "frames/latindo/latindo_contorno_6.png"
+      ],
+      "durations": [
+        300,
+        90,
+        170,
+        100,
+        90,
+        170,
+        100
+      ],
+      "loop": true
+    },
+    "latindo_contorno_esquerda": {
+      "frames": [
+        "frames/latindo/latindo_contorno_esquerda_0.png",
+        "frames/latindo/latindo_contorno_esquerda_1.png",
+        "frames/latindo/latindo_contorno_esquerda_2.png",
+        "frames/latindo/latindo_contorno_esquerda_3.png",
+        "frames/latindo/latindo_contorno_esquerda_4.png",
+        "frames/latindo/latindo_contorno_esquerda_5.png",
+        "frames/latindo/latindo_contorno_esquerda_6.png"
+      ],
+      "durations": [
+        300,
+        90,
+        170,
+        100,
+        90,
+        170,
+        100
+      ],
+      "loop": true
     }
   }
 }
