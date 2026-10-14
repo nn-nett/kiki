@@ -58,6 +58,36 @@ encosta na col. 0: 1-2 px pra trás cortariam o rabo. Como a cabeça desce menos
 **Receita.** `"part": "head_run"`; torso `offset [0, C]`; a cabeça encaixa em `torso.pescoco` com os offsets acima.
 `sim_page.py --run run` confere: "camadas recompõem walk, bark, run".
 
+### Opções A e B do pescoço (o dono escolheu "v4 com essa orelha")
+
+O dono escolheu a v4 com a `head_run` nova e pediu: "talvez a cabeça desça um pouco mais e o pescoço seja mais longo?".
+A v3c saiu de cena. O `run.json` não mudou (segue com a cabeça 3 px abaixo da pose parada) até o dono escolher.
+- `head_run` igual, sem nenhum pixel mudado. Pernas (`legs_run*`) iguais.
+- Receitas novas `anims/run_pescoco_A.json` e `run_pescoco_B.json`.
+- Troncos separados `torso_run_<pose>_A.txt` e `_B.txt`, feitos a partir dos troncos da v4 (3d7ab71) com o toco do
+  pescoço.
+
+| opção | cabeça (abaixo da pose parada) | rampa do pescoço | mancha do peito visível |
+|---|---|---|---|
+| agora (`run.json`) | 3 px, offset [1,3] | 1,5 col. por linha (~7 col.) | 5 px de W |
+| A | 4 px, offset [1,4] | 2,5 col. por linha (~10 col.) | 4 px de W |
+| B | 5 px, offset [1,5] | 3 col. por linha (~9 col.) | 2 px de W |
+
+- Nas duas o pescoço sai de mais atrás nas costas e fica 1 px mais fino onde encontra a cabeça (a linha de cima encosta
+  1 px abaixo da raiz da orelha, sem degrau).
+- A cabeça não foi pra frente: o focinho já está na col. 31.
+- A cabeça só acompanha o tronco (no máximo 1 px por frame). O alto do crânio fica nas linhas 10-11-11-10-9-10 (A) e
+  11-12-12-11-10-11 (B).
+- Quanto mais a cabeça desce, menos o pescoço sobe. Na B a rampa fica quase reta, continuando as costas, e o queixo
+  cobre mais o peito.
+- Conferência:
+  - Rig == gerador nos 6 frames das duas.
+  - Lint: normal e esquerda só com "silhueta some na taskbar escura"; contorno "nenhum problema" nas duas (maior
+    mudança entre frames com contorno: 30%).
+  - `problems()`: 0 buracos e 0 pixels soltos nas três variantes; entalhe só entre as patas da frente, F0 (24,30).
+  - `sim_page.py --run run_pescoco_A` e `--run run_pescoco_B`: "camadas recompõem walk, bark, run".
+- Gerador: `scratchpad/run7/v7.py` + `export7.py`. Quadro, recorte 14x e renders em `scratchpad/run7/`.
+
 ### v3 + cabeça (`run_v3c`)
 - Peças da v3 (commit 171b643, com o bumbum arredondado) em `sprites/candidates/correndo_v3c/parts/`: os
   `torso_run_*` com o pescoço novo e os `legs_run*` sem mudança.
