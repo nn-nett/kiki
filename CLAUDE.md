@@ -105,10 +105,11 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
   galope, freada com o corpo pra trás), montados no rig com as peças que já existem quando der, e
   a simulação passa a tocar a transição entre um estado e outro.
-- Galope: o dono está "entre a v3 e a v4" e pediu a **cabeça de corrida** (focinho esticado, orelhas
-  deitadas pra trás, cabeça baixa na linha das costas; `parts/32/head_run.txt`). Duas opções pra ele
-  escolher: v4 + cabeça (`anims/run.json`, peças em `parts/32`) e v3 + cabeça (`anims/run_v3c.json`,
-  peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá). Refs em `sprites/extern/refs_correr/`.
+- Galope: o dono está "entre a v3 e a v4" e pediu a **cabeça de corrida** (orelhas deitadas pra trás,
+  cabeça mais alinhada com o corpo). Corrigida a pedido dele ("mudou o tamanho do focinho", "cadê o
+  pescoço"): rosto idêntico à `head.txt` (só as orelhas mudam), pescoço visível, cabeça só 3 px abaixo
+  da pose parada (`parts/32/head_run.txt`). Duas opções: v4 + cabeça (`anims/run.json`) e v3 + cabeça
+  (`anims/run_v3c.json`, peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá).
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.

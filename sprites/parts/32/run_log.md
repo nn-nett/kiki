@@ -16,47 +16,61 @@
   corpo". Referência: cão em desenho 2D, 7 frames (`refs_correr/cao_desenho_*`), só estudada. Aplicada em duas bases
   pro dono escolher: **v4 + cabeça** (`anims/run.json`, no repo) e **v3 + cabeça** (`anims/run_v3c.json`).
 
-## Cabeça de corrida (`head_run.txt`)
+## Cabeça de corrida (`head_run.txt`), versão 2
 
-Peça nova, 21x12, `@anchor 10,11` (garganta, atrás do queixo), `@role cabeca`. `head.txt` e `head_bark*` não mudaram.
-- Mesma cara da cabeça parada, copiada linha a linha: grisalho do focinho e do queixo, olho castanho com brilho B,
-  sobrancelha cinza, tan da bochecha e da garganta.
-- Focinho 1 col. mais comprido e mais horizontal, com o nariz na ponta, apontando pra frente e um pouco pra baixo.
-  Testei também +2 col. (H1): o focinho ficava comprido demais e cobria mais o peito.
-- Orelhas deitadas pra trás a ~30°, apontando pra garupa, e continuam grandes. A de perto é um triângulo de 5 linhas
-  com o tan por dentro e borda X dos dois lados. A de longe aparece na frente/em cima, escura, com um pixel D.
-  Antes testei orelhas finas em faixa (A, C): pareciam chifres, não as orelhas dela.
-- Posição: o alto do crânio fica 2-3 px acima da linha das costas no ombro e o focinho fica sempre na col. 31. A
-  cabeça só sobe ou desce 1 px por frame, acompanhando o tronco:
-  - v4 + cabeça: topo da cabeça (pontas das orelhas) nas linhas 11-12-11-11-10-11;
-  - v3 + cabeça: 10-11-11-11-10-10.
-  O corpo virou uma flecha.
-- O espaço que sobrou em cima (linhas 0-9) não foi usado. Subir o corpo no salto obrigaria a cabeça a pular mais de
-  1 px entre frames.
-- Pescoço: tirei o toco do pescoço dos `torso_run_*`, porque a cabeça baixa encosta direto nas costas. A raiz da
-  orelha formava um entalhe de 1 px com a linha das costas, fechado com K no tronco (1 px por frame).
-  Na v4 também saíram os remendos de nuca da cabeça antiga: (17,11) no F3 e (17,10) no F4.
-- Efeito colateral: com a cabeça baixa na frente do peito, a mancha clara do peito (W) fica escondida atrás do queixo
-  e do olho. A garganta e a bochecha tan aparecem no lugar.
-- Receita: `"part": "head_run"`; o offset da cabeça é `[origem_x + 10 - 20, origem_y + 11 - 14 - C]`.
-  - v4: [2,7], [2,7], [2,6], [2,7], [2,7], [2,7].
-  - v3: [2,7], [2,6], [2,6], [2,7], [2,7], [2,7].
-  `sim_page.py --run run` confere: "camadas recompõem walk, bark, run".
+**Por que refiz.** Na primeira versão o dono reclamou: "acho que você mudou o tamanho do focinho; além disso ela tá
+parecendo que tem nanismo, kk. Cadê o pescoço?". Os problemas eram três:
+- o focinho tinha 1 col. a mais;
+- o crânio tinha 1 linha a menos em cima;
+- a cabeça descia 7 px e encostava direto nas costas, sem o toco do pescoço, cobrindo o peito.
+
+**A peça agora.** `head_run.txt`, 21x13, `@anchor 9,12`, `@role cabeca`. `head.txt` e `head_bark*` não mudaram.
+- Crânio e rosto copiados **pixel a pixel** das linhas 5-14 da `head.txt`: o mesmo focinho (grisalho G/W, nariz, boca,
+  queixo), o mesmo olho com brilho B, a mesma sobrancelha, bochecha e garganta. Mesma altura (10 linhas) e mesma
+  largura sem as orelhas. A âncora é a mesma (4,14) deslocada junto: com offset [0,0] o rosto cai exatamente onde
+  fica na pose parada.
+- Só as orelhas mudam: deitadas pra trás a ~35°, grandes.
+  - A de trás é um triângulo com o castanho dentro e borda X dos dois lados.
+  - A da frente fica escura (com um pixel D) por cima do crânio.
+  - Tirei dois pixels da base das orelhas em pé: o tan da linha 5 e o X da linha 6 viraram K, porque eram o pé das
+    orelhas antigas.
+- Comparação em `scratchpad/run6/cabecas.png` (14x, alinhadas pelo olho): a ponta do focinho (vermelho), o alto do
+  crânio (azul) e o queixo (verde) da nova batem com a original. A anterior passava 1 px do focinho.
+
+**Posição.**
+- A cabeça desce só 3 px em relação à pose parada (antes eram 7). Fica 1 col. à frente, com o focinho na col. 31.
+- Offsets da cabeça:
+  - v4: [1,3] em todos os frames;
+  - v3c: [1,3], [1,2], [1,2], [1,2], [1,3], [1,3].
+- O alto do crânio fica nas linhas 9-10-10-9-8-9 (v4) e 8-9-9-8-8-8 (v3c): no máximo 1 px por frame.
+- Com isso a mancha clara do peito volta a aparecer embaixo do queixo, com a garganta tan descendo do queixo pro peito.
+
+**Pescoço.**
+- O toco do pescoço voltou para os `torso_run_*` das duas versões.
+- Ganhou uma cunha preta da cernelha até a nuca, numa rampa de 2:3 (1,5 col. por linha), desenhada no tronco: a linha
+  das costas sobe dos ombros até a cabeça e as orelhas deitam por cima dela.
+- Os X do toco que ficaram por dentro do pescoço viraram K.
+- Os entalhes de 1 px na junção orelha/pescoço foram fechados com K.
+
+**Corpo.** Não deslizei o corpo pra trás. Na v4 (F0 e F1) e na v3, a garupa está na col. 3 e o toquinho de 3 px já
+encosta na col. 0: 1-2 px pra trás cortariam o rabo. Como a cabeça desce menos, o pescoço aparece sem isso.
+
+**Receita.** `"part": "head_run"`; torso `offset [0, C]`; a cabeça encaixa em `torso.pescoco` com os offsets acima.
+`sim_page.py --run run` confere: "camadas recompõem walk, bark, run".
 
 ### v3 + cabeça (`run_v3c`)
-- Peças da v3 tiradas do commit 171b643 (com o bumbum arredondado) numa pasta de peças à parte:
-  `scratchpad/run5/parts_v3c/`, com cópia do resto de `parts/32`, mais `head_run.txt` e o toco do pescoço tirado.
-- Receita no repo: `anims/run_v3c.json`, com os mesmos nomes de peça da v4 (`torso_run_*`, `legs_run*`). Por isso ela
-  só vale com `--parts scratchpad/run5/parts_v3c`. Os arquivos da v4 no repo não foram tocados por ela.
-- Render: `python3 sprites/tools/rig.py sprites/anims/run_v3c.json --parts <parts_v3c> --out <saída>`.
+- Peças da v3 (commit 171b643, com o bumbum arredondado) em `sprites/candidates/correndo_v3c/parts/`: os
+  `torso_run_*` com o pescoço novo e os `legs_run*` sem mudança.
+- Receita no repo: `anims/run_v3c.json`, com os mesmos nomes de peça da v4. Ela só vale com uma pasta de peças =
+  `parts/32` + `candidates/correndo_v3c/parts` por cima (montada em `scratchpad/run6/parts_v3c/`).
 
-### Conferência da cabeça de corrida (as duas versões)
-- Rig == gerador nos 6 frames das duas.
+### Conferência (as duas versões)
+- Rig == gerador nos 6 frames das duas. Faixas de pernas idênticas às de antes (conferido).
 - Lint: normal e esquerda só com "silhueta some na taskbar escura"; contorno "nenhum problema" nas duas.
 - `problems()`: 0 buracos e 0 pixels soltos nas três variantes das duas. Entalhes só entre as patas:
   - v4: F0 (24,30);
   - v3c: F0 (1,27) e (26,30), F5 (26,29).
-- Maior mudança entre frames com contorno: 29% na v4 e 30% na v3c.
+- Maior mudança entre frames com contorno: 31% (v4 e v3c).
 
 ## Arquivos
 
