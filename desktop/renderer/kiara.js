@@ -1,114 +1,230 @@
-// Kiara Pixel Pal — a cachorrinha em si: "cérebro" (máquina de estados) + desenho.
+// Kiara Pixel Pal — a cachorrinha em si: "cérebro" + desenho por camadas.
 //
-// Lê a folha de sprites e o JSON exportados em sprites/final/ (formato descrito em
-// sprites/final/README.md). Tudo em "px do sprite": a Kiara tem 32x32 e cada px do
-// sprite vira `scale` px de tela (sempre inteiro, sem suavização).
+// Cada quadro é MONTADO na hora (renderer/compose.js): corpo + cabeça + olho do piscar,
+// a partir das camadas exportadas em sprites/final/ (ver sprites/final/README.md, "Camadas").
+// Três relógios independentes:
+//   - corpo: parada, andando, latindo (com o tranco no tronco), ofegante parada
+//   - cabeça por cima do corpo: normal, "latir" (1 ou 2 latidos) ou "ofegante" (enquanto cansada)
+//   - piscar: sempre ligado, por cima de tudo, a cada 2,5-7 s
+// Tudo em "px do sprite": a Kiara tem 32x32 e cada px do sprite vira `scale` px de tela.
 
-const CELL = 32;
+const { CELL, compose } = window.KiaraCompose;
 
-// Cérebro: igual ao da simulação aprovada (sprites/tools/sim_template.html, objeto BRAIN).
-// dur = quanto tempo fica no estado (ms, sorteado entre os dois); null = até a animação acabar.
-// Estados cuja animação ainda não está na folha final são ignorados automaticamente
-// (ex.: "correndo" entra sozinho quando for aprovado e exportado).
+// ======================================================================================
+// CÉREBRO — todos os números de comportamento num lugar só (documentados no README).
+// Tempos em milissegundos; [a, b] = sorteado entre a e b.
+// ======================================================================================
 const BRAIN = {
-  parada:          { anim: 'parada',           dur: [1500, 4000], next: { andando: .50, latindo: .20, parada: .15, correndo: .15 } },
-  andando:         { anim: 'andando',          dur: [2500, 7000], next: { parada: .35, andandoLatindo: .25, latindo: .15, meiaVolta: .10, correndo: .15 } },
-  latindo:         { anim: 'latindo',          dur: null,         next: { parada: .5, andando: .5 } },
-  andandoLatindo:  { anim: 'latindo_andando',  dur: null,         next: { andando: .6, parada: .4 } },
-  correndo:        { anim: 'correndo',         dur: [1200, 3000], next: { ofegante: .5, andandoOfegante: .2, andando: .2, latindo: .1 } },
-  ofegante:        { anim: 'ofegante',         dur: [2500, 5000], next: { parada: .5, andando: .3, andandoOfegante: .2 } },
-  andandoOfegante: { anim: 'andando_ofegante', dur: [2000, 4500], next: { andando: .6, parada: .4 } },
+  // Corpo: quanto tempo fica em cada estado e o que pode vir depois (chances somam 1).
+  parada:  { dur: [2000, 5000], next: { andando: .55, latir: .20, meiaVolta: .15, parada: .10 } },
+  andando: { dur: [3000, 8000], next: { parada: .60, meiaVolta: .20, pararELatir: .20 } },
+  pausaAntesDeLatir: [400, 900],      // pausa curta parada antes de latir
+  // Latido: quantos AU! por vez e o intervalo mínimo entre um latido e outro.
+  latidos: { 1: .6, 2: .4 },
+  intervaloEntreLatidos: 6000,
+  latirAndandoMediaMs: 17000,         // andando, em média 1 latido a cada ~17 s
+  // Cansaço (no lugar da corrida, que ainda não foi aprovada): um medidor em segundos.
+  cansaco: {
+    sobeAndando: 1,                   // +1 por segundo andando
+    descendoParada: 0.5,              // -0,5 por segundo parada
+    limite: 20,                       // passou de ~20 s de caminhada somados: fica ofegante
+    ofeganteDur: [3000, 6000],
+    continuaAndando: .5,              // chance de ficar ofegante andando (senão para, ofegante)
+  },
+  // Piscar: intervalo vem do JSON (expressoes.piscar.intervalo_ms); este é o padrão se faltar.
+  piscarIntervalo: [2500, 7000],
 };
 
 const canvas = document.getElementById('stage');
 const ctx = canvas.getContext('2d');
+const cellCanvas = document.createElement('canvas');   // quadro 32x32 montado
+cellCanvas.width = CELL; cellCanvas.height = CELL;
+const cellCtx = cellCanvas.getContext('2d');
 
-let sheet = null;        // JSON da folha
-let sheetImg = null;     // imagem da folha
-let alpha = null;        // canal alfa da folha (pra saber se o mouse está em cima dela)
+let lib = null;          // camadas carregadas: { corpos, cabecas, expressoesCabeca, piscar }
 let settings = { scale: 2, contorno: false, neighbors: { left: false, right: false } };
 let W = 0;               // largura da faixa em px do sprite
 
 const dog = {
   active: false, crossing: false,
-  x: 40, dir: 1, state: 'parada', until: 0,
-  frameI: 0, frameT: 0, cycles: 0,
+  x: 40, dir: 1,
+  body: 'parada', bodyI: 0, bodyT: 0, until: 0,
+  barkFrames: 0,         // quantos frames do corpo "latindo" tocar (1 + 3 por latido)
+  head: null,            // expressão de cabeça: { name, i, t, end }
+  afterPause: null,      // 'latir' = a pausa atual termina num latido
+  lastBarkAt: -Infinity,
+  fatigue: 0,            // medidor de cansaço (s)
+  tiredUntil: 0,         // > agora = está ofegante
 };
-let blink = null;       // piscar: { frames, imgs, imgsEsq, intervalo } (expressão por cima de qualquer animação)
 const blinkClock = { i: -1, t: 0, next: 0 };
+let lastNow = 0;
 let lastDrawn = null;    // retângulo desenhado por último (pra limpar só ele)
+let lastCell = null;     // último quadro montado (pra saber se o mouse está em cima dela)
 let mouse = null;        // última posição do mouse (px CSS)
 let overDog = false;
 
 // ---------- utilidades ----------
 const rnd = (a, b) => a + Math.random() * (b - a);
-const hasAnim = (name) => !!(sheet && sheet.animations[name]);
-const available = (state) => state === 'meiaVolta' ? available('andando') : !!BRAIN[state] && hasAnim(BRAIN[state].anim);
+const isTired = (now) => now < dog.tiredUntil;
+const canBark = (now) => now - dog.lastBarkAt >= BRAIN.intervaloEntreLatidos;
+const hasBody = (name) => !!(lib && lib.corpos[name]);
+const hasHead = (name) => !!(lib && lib.expressoesCabeca[name]);
 
 function pick(weights) {
-  const ok = Object.entries(weights).filter(([k]) => available(k));
-  const total = ok.reduce((t, [, w]) => t + w, 0);
-  let r = Math.random() * total;
-  for (const [k, w] of ok) { if ((r -= w) < 0) return k; }
-  return ok.length ? ok[0][0] : 'parada';
+  const entries = Object.entries(weights);
+  let r = Math.random() * entries.reduce((t, [, w]) => t + w, 0);
+  for (const [k, w] of entries) { if ((r -= w) < 0) return k; }
+  return entries[0][0];
 }
+const pickBarks = () => Number(pick(BRAIN.latidos));
 
-// Nome da variante na folha: andando, andando_esquerda, andando_contorno, andando_contorno_esquerda...
-function animName(state = dog.state) {
-  let name = BRAIN[state].anim;
-  if (settings.contorno && hasAnim(name + '_contorno')) name += '_contorno';
-  if (dog.dir < 0 && hasAnim(name + '_esquerda')) name += '_esquerda';
-  return name;
-}
-const currentAnim = () => sheet.animations[animName()];
-
-// ---------- estados ----------
-function setState(name, now = performance.now()) {
-  if (name === 'meiaVolta') { dog.dir *= -1; name = 'andando'; }
-  if (!available(name)) name = 'parada';
-  dog.state = name;
-  dog.frameI = 0;
-  dog.frameT = now;
+// ---------- corpo ----------
+function setBody(name, now, until) {
+  if (!hasBody(name)) name = 'parada';
+  dog.body = name;
+  dog.bodyI = 0;
+  dog.bodyT = now;
   const b = BRAIN[name];
-  dog.until = b.dur ? now + rnd(...b.dur) : Infinity;
-  dog.cycles = name === 'latindo' && Math.random() < .4 ? 2 : 1;   // às vezes late duas vezes seguidas
+  dog.until = until !== undefined ? until : b ? now + rnd(...b.dur) : Infinity;
 }
 
-function bark() {
-  if (dog.active && !dog.crossing) setState('latindo');
+// Late parada: corpo "latindo" (preparação 300 ms → AU! → volta; 2º latido opcional).
+function barkStanding(now, n = pickBarks()) {
+  const frames = lib.corpos.latindo.frames.length;
+  setBody('latindo', now, Infinity);
+  dog.barkFrames = Math.min(frames, 1 + 3 * n);
+  dog.head = null;
+  dog.afterPause = null;
 }
 
-// ---------- tempo ----------
-function tick(now) {
-  if (!dog.active || dog.crossing) return;
-  let anim = currentAnim();
-  let d = anim.frames[dog.frameI].duration_ms;
-  while (now - dog.frameT >= d) {
-    dog.frameT += d;
-    dog.frameI++;
-    dog.x += anim.step_px || 0;   // as patas recuam isso por frame: andando assim ela não "patina"
-    if (dog.frameI >= anim.frames.length) {
-      dog.frameI = 0;
-      if (BRAIN[dog.state].dur === null && --dog.cycles <= 0) { setState(pick(BRAIN[dog.state].next), now); }
-    }
-    if (checkEdges()) return;
-    anim = currentAnim();
-    d = anim.frames[dog.frameI].duration_ms;
+// Late andando: só a cabeça late, as pernas continuam.
+function barkWalking(now, n = pickBarks()) {
+  const frames = lib.expressoesCabeca.latir.frames.length;
+  dog.head = { name: 'latir', i: 0, t: now, end: Math.min(frames, 3 * n) };
+}
+
+function startTired(now) {
+  dog.tiredUntil = now + rnd(...BRAIN.cansaco.ofeganteDur);
+  if (dog.body === 'andando' && Math.random() < BRAIN.cansaco.continuaAndando) {
+    dog.until = Math.max(dog.until, dog.tiredUntil);   // continua andando, ofegante
+    dog.head = { name: 'ofegante', i: 0, t: now };
+  } else {
+    restTired(now);
   }
-  if (now >= dog.until) setState(pick(BRAIN[dog.state].next), now);
+}
+
+// Ofegante parada: usa o corpo "ofegante" (peito mexendo) se existir; senão parada + cabeça ofegante.
+function restTired(now) {
+  if (hasBody('ofegante')) { setBody('ofegante', now, dog.tiredUntil); dog.head = null; }
+  else { setBody('parada', now, dog.tiredUntil); dog.head = { name: 'ofegante', i: 0, t: now }; }
+}
+
+function endTired(now) {
+  dog.tiredUntil = 0;
+  dog.fatigue = 0;
+  if (dog.head && dog.head.name === 'ofegante') dog.head = null;
+  if (dog.body === 'ofegante') setBody('parada', now);
+}
+
+function endBark(now) {
+  dog.lastBarkAt = now;
+  if (isTired(now)) {
+    if (dog.body === 'latindo') restTired(now);
+    else if (hasHead('ofegante')) dog.head = { name: 'ofegante', i: 0, t: now };
+  } else if (dog.body === 'latindo') {
+    setBody(Math.random() < .3 ? 'andando' : 'parada', now);
+  }
+}
+
+// O tempo do estado acabou: decide o próximo.
+function decide(now) {
+  if (dog.afterPause === 'latir') { barkStanding(now); return; }
+  const from = dog.body === 'andando' ? 'andando' : 'parada';
+  let next = pick(BRAIN[from].next);
+  if ((next === 'latir' || next === 'pararELatir') && !canBark(now)) next = 'parada';
+  switch (next) {
+    case 'latir': barkStanding(now); break;
+    case 'pararELatir':
+      setBody('parada', now, now + rnd(...BRAIN.pausaAntesDeLatir));
+      dog.afterPause = 'latir';
+      break;
+    case 'meiaVolta': dog.dir *= -1; setBody('andando', now); break;
+    default: setBody(next, now);
+  }
+}
+
+// Clique nela = late, no corpo em que estiver.
+function bark(now = performance.now()) {
+  if (!dog.active || dog.crossing || dog.body === 'latindo') return;
+  if (dog.head && dog.head.name === 'latir') return;
+  if (dog.body === 'andando') barkWalking(now);
+  else barkStanding(now);
+}
+
+// ---------- relógios ----------
+function tick(now) {
+  const dt = Math.min(1000, Math.max(0, now - lastNow));
+  lastNow = now;
+  if (!dog.active || dog.crossing || !lib) return;
+
+  // 1) corpo
+  let body = lib.corpos[dog.body];
+  let d = body.frames[dog.bodyI].duration_ms;
+  while (now - dog.bodyT >= d) {
+    dog.bodyT += d;
+    dog.bodyI++;
+    dog.x += (body.step_px || 0) * dog.dir;   // as patas recuam isso por frame: ela não "patina"
+    if (dog.body === 'latindo' && dog.bodyI >= dog.barkFrames) { dog.bodyI = 0; endBark(now); }
+    else if (dog.bodyI >= body.frames.length) dog.bodyI = 0;
+    if (checkEdges()) return;
+    body = lib.corpos[dog.body];
+    d = body.frames[dog.bodyI].duration_ms;
+  }
+
+  // 2) cabeça (não vale durante o corpo "latindo", que já tem a cabeça do latido)
+  if (dog.head && dog.body !== 'latindo') {
+    const ex = lib.expressoesCabeca[dog.head.name];
+    let hd = ex.frames[dog.head.i].duration_ms;
+    while (dog.head && now - dog.head.t >= hd) {
+      dog.head.t += hd;
+      dog.head.i++;
+      const end = dog.head.end || ex.frames.length;
+      if (dog.head.i >= end) {
+        if (ex.loop) dog.head.i = 0;
+        else { dog.head = null; endBark(now); break; }
+      }
+      hd = ex.frames[dog.head.i].duration_ms;
+    }
+  }
+
+  // 3) cansaço: sobe andando, desce parada; passou do limite, fica ofegante
+  const c = BRAIN.cansaco;
+  if (!isTired(now)) {
+    dog.fatigue = Math.max(0, dog.fatigue + (dog.body === 'andando' ? c.sobeAndando : -c.descendoParada) * dt / 1000);
+    if (dog.fatigue >= c.limite && dog.body !== 'latindo' && !dog.head && !dog.afterPause && hasHead('ofegante')) startTired(now);
+  }
+
+  // 4) latir andando, de vez em quando
+  if (dog.body === 'andando' && !dog.head && !isTired(now) && canBark(now) && Math.random() < dt / BRAIN.latirAndandoMediaMs) {
+    barkWalking(now);
+  }
+
+  if (dog.tiredUntil && now >= dog.tiredUntil) endTired(now);   // descansou: medidor zera
+  if (now >= dog.until) decide(now);
   tickBlink(now);
 }
 
-// Piscar: relógio próprio, independente do que o corpo está fazendo.
+// Piscar: relógio próprio, independente do resto.
 function tickBlink(now) {
-  if (!blink) return;
+  if (!lib.piscar) return;
   if (blinkClock.i < 0) {
     if (now >= blinkClock.next) { blinkClock.i = 0; blinkClock.t = now; }
     return;
   }
-  while (blinkClock.i >= 0 && now - blinkClock.t >= blink.frames[blinkClock.i].duration_ms) {
-    blinkClock.t += blink.frames[blinkClock.i].duration_ms;
-    if (++blinkClock.i >= blink.frames.length) { blinkClock.i = -1; blinkClock.next = now + rnd(...blink.intervalo); }
+  const fr = lib.piscar.frames;
+  while (blinkClock.i >= 0 && now - blinkClock.t >= fr[blinkClock.i].duration_ms) {
+    blinkClock.t += fr[blinkClock.i].duration_ms;
+    if (++blinkClock.i >= fr.length) { blinkClock.i = -1; blinkClock.next = now + rnd(...lib.piscar.intervalo); }
   }
 }
 
@@ -126,14 +242,22 @@ function checkEdges() {
   if (!settings.neighbors[side]) { turn(); return false; }
 
   dog.crossing = true;
-  window.kiki.leaveByEdge(side, dog.state).then((crossed) => {
+  window.kiki.leaveByEdge(side, dog.body).then((crossed) => {
     dog.crossing = false;
-    if (crossed) { dog.active = false; draw(); } else { turn(); dog.frameT = performance.now(); }
+    if (crossed) { dog.active = false; draw(); } else { turn(); dog.bodyT = performance.now(); }
   });
   return true;
 }
 
 // ---------- desenho ----------
+function currentCell() {
+  const corpo = lib.corpos[dog.body].frames[dog.bodyI];
+  let cabeca = null;
+  if (dog.head && dog.body !== 'latindo') cabeca = lib.expressoesCabeca[dog.head.name].frames[dog.head.i];
+  const olho = lib.piscar && blinkClock.i >= 0 ? lib.piscar.imgs[blinkClock.i] : null;
+  return compose(lib, { corpo, cabeca, olho, contorno: settings.contorno, esquerda: dog.dir < 0 });
+}
+
 function resize() {
   const dpr = window.devicePixelRatio || 1;
   canvas.width = Math.round(window.innerWidth * dpr);
@@ -155,15 +279,14 @@ function dogRect() {
 function draw() {
   if (lastDrawn) ctx.clearRect(lastDrawn.x, lastDrawn.y, lastDrawn.w, lastDrawn.h);
   lastDrawn = null;
-  if (!dog.active || !sheetImg) return;
-  const f = currentAnim().frames[dog.frameI];
-  const r = dogRect();   // patas na última linha da célula = encostadas no topo da barra
-  ctx.drawImage(sheetImg, f.x, f.y, f.w, f.h, r.x, r.y, r.w, r.h);
-  if (blink && blinkClock.i >= 0 && f.olho) {   // remendo do olho (null = a animação já mexe no olho)
-    const img = (dog.dir < 0 ? blink.imgsEsq : blink.imgs)[blinkClock.i], P = settings.scale;
-    ctx.drawImage(img, r.x + f.olho[0] * P, r.y + f.olho[1] * P, img.width * P, img.height * P);
-  }
+  lastCell = null;
+  if (!dog.active || !lib) return;
+  const cell = currentCell();
+  cellCtx.putImageData(new ImageData(cell.data, CELL, CELL), 0, 0);
+  const r = dogRect();   // patas na última linha da célula = na borda de baixo da faixa
+  ctx.drawImage(cellCanvas, 0, 0, CELL, CELL, r.x, r.y, r.w, r.h);
   lastDrawn = r;
+  lastCell = cell;
 }
 
 function loop(now) {
@@ -175,17 +298,15 @@ function loop(now) {
 
 // ---------- mouse ----------
 // A janela ocupa a largura toda da tela; só a Kiara deve "segurar" o clique.
-// Confere o pixel do sprite sob o mouse (com 1 px de folga, porque as pernas são finas).
+// Confere o pixel do quadro sob o mouse (com 1 px de folga, porque as pernas são finas).
 function isOverDog(mx, my) {
-  if (!dog.active || !alpha) return false;
+  if (!dog.active || !lastCell) return false;
   const dpr = window.devicePixelRatio || 1, P = settings.scale, r = dogRect();
   const sx = Math.floor((mx * dpr - r.x) / P), sy = Math.floor((my * dpr - r.y) / P);
-  if (sx < -1 || sy < -1 || sx > CELL || sy > CELL) return false;
-  const f = currentAnim().frames[dog.frameI];
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
     const px = sx + dx, py = sy + dy;
-    if (px < 0 || py < 0 || px >= f.w || py >= f.h) continue;
-    if (alpha[(f.y + py) * sheetImg.width + f.x + px] > 0) return true;
+    if (px < 0 || py < 0 || px >= CELL || py >= CELL) continue;
+    if (lastCell.data[(py * CELL + px) * 4 + 3] > 0) return true;
   }
   return false;
 }
@@ -208,57 +329,71 @@ function loadImage(url) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = () => reject(new Error('não carregou ' + url));
     img.src = url;
   });
+}
+
+// Imagem → { w, h, data } (pixels RGBA), o formato do compose.js.
+async function loadPixels(url) {
+  const img = await loadImage(url);
+  const c = document.createElement('canvas');
+  c.width = img.width; c.height = img.height;
+  const cx = c.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(img, 0, 0);
+  return { w: img.width, h: img.height, data: cx.getImageData(0, 0, img.width, img.height).data };
+}
+
+async function loadLayers(sheet, baseUrl) {
+  const url = (rel) => new URL(rel, baseUrl).href;
+  const cam = sheet.camadas;
+  const corpos = {};
+  for (const [name, c] of Object.entries(cam.corpos)) {
+    corpos[name] = { ...c, frames: await Promise.all(c.frames.map(async f => ({ ...f, img: await loadPixels(url(f.img)) }))) };
+  }
+  const cabecas = {};
+  for (const [name, h] of Object.entries(cam.cabecas)) cabecas[name] = { ...h, img: await loadPixels(url(h.img)) };
+  let piscar = null;
+  const p = sheet.expressoes && sheet.expressoes.piscar;
+  if (p) {
+    try {
+      piscar = { frames: p.frames, intervalo: p.intervalo_ms || BRAIN.piscarIntervalo, imgs: await Promise.all(p.frames.map(f => loadPixels(url(f.img)))) };
+    } catch { piscar = null; }   // sem os remendos ela só não pisca
+  }
+  return { corpos, cabecas, expressoesCabeca: cam.expressoes_cabeca || {}, piscar };
 }
 
 async function start() {
   const init = await window.kiki.init();
   if (!init) return;
-  sheet = init.sheet;
   settings = init.settings;
-  sheetImg = await loadImage(init.sheetUrl);
-  const piscar = sheet.expressoes && sheet.expressoes.piscar;
-  if (piscar) {
-    try {
-      const load = (f) => loadImage(new URL(f, init.baseUrl).href);
-      blink = {
-        frames: piscar.frames,
-        intervalo: piscar.intervalo_ms,
-        imgs: await Promise.all(piscar.frames.map(f => load(f.img))),
-        imgsEsq: await Promise.all(piscar.frames.map(f => load(f.img_esquerda || f.img))),
-      };
-      blinkClock.next = performance.now() + rnd(...blink.intervalo);
-    } catch { blink = null; }   // sem os remendos ela só não pisca
-  }
-
-  const c = document.createElement('canvas');
-  c.width = sheetImg.width; c.height = sheetImg.height;
-  const cx = c.getContext('2d', { willReadFrequently: true });
-  cx.drawImage(sheetImg, 0, 0);
-  const data = cx.getImageData(0, 0, c.width, c.height).data;
-  alpha = new Uint8Array(c.width * c.height);
-  for (let i = 0; i < alpha.length; i++) alpha[i] = data[i * 4 + 3];
+  lib = await loadLayers(init.sheet, init.baseUrl);
+  if (lib.piscar) blinkClock.next = performance.now() + rnd(...lib.piscar.intervalo);
 
   resize();
+  lastNow = performance.now();
   if (init.active) {
     dog.active = true;
     dog.x = Math.floor(rnd(CELL, Math.max(CELL + 1, W - 2 * CELL)));
     dog.dir = Math.random() < .5 ? 1 : -1;
-    setState('parada');
+    setBody('parada', lastNow);
   }
 
   window.kiki.onSettings((s) => { settings = s; resize(); });
-  window.kiki.onBark(bark);
-  window.kiki.onEnter(({ from, state }) => {
+  window.kiki.onBark(() => bark());
+  window.kiki.onEnter(({ from }) => {
+    const now = performance.now();
     dog.active = true;
     dog.dir = from === 'left' ? 1 : -1;
     dog.x = from === 'left' ? -CELL : W;
-    setState(BRAIN[state] && BRAIN[state].dur !== null && state !== 'parada' ? state : 'andando');
+    dog.head = null;
+    setBody('andando', now);
   });
 
   requestAnimationFrame(loop);
 }
 
 start();
+
+// Pra depurar (página de demonstração e testes): acesso ao estado por fora.
+window.kikiDebug = { dog, bark, BRAIN, blinkClock, setBody, barkStanding, barkWalking, startTired, isTired: () => isTired(performance.now()) };

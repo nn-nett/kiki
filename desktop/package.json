@@ -6,16 +6,34 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win portable"
+    "dist": "electron-builder --win portable",
+    "test": "node test/camadas.test.js && node test/layout.test.js"
   },
   "devDependencies": {
     "electron": "^33.2.1",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "pngjs": "^7.0.0"
   },
   "build": {
     "appId": "com.kiki.pixelpal",
     "productName": "Kiara Pixel Pal",
-    "files": ["main.js", "preload.js", "renderer/**"],
-    "extraResources": [{ "from": "../sprites/final", "to": "sprites", "filter": ["kiara-sprites.png", "kiara-sprites.json", "expressoes/**"] }]
+    "files": [
+      "main.js",
+      "layout.js",
+      "preload.js",
+      "renderer/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../sprites/final",
+        "to": "sprites",
+        "filter": [
+          "kiara-sprites.png",
+          "kiara-sprites.json",
+          "expressoes/**",
+          "camadas/**"
+        ]
+      }
+    ]
   }
 }

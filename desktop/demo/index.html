@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kiara na barra (demo)</title>
+  <style>
+    :root { --bar: 48px; }
+    body { margin: 0; font: 14px system-ui, sans-serif; background: #cfe0f2; height: 100vh; overflow: hidden; }
+    #taskbar { position: absolute; left: 0; right: 0; height: var(--bar); background: #f3f3f3; border-bottom: 1px solid #ddd; }
+    body.dark #taskbar { background: #202020; border-color: #333; }
+    body.bottom #taskbar { bottom: 0; border-top: 1px solid #ddd; border-bottom: 0; }
+    body:not(.bottom) #taskbar { top: 0; }
+    #taskbar .icons { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; gap: 10px; }
+    #taskbar .icons i { width: 24px; height: 24px; border-radius: 5px; background: #2a8bd8; display: block; }
+    #taskbar .icons i:nth-child(1) { background: #0067c0; } #taskbar .icons i:nth-child(3) { background: #f2c14e; }
+    iframe { position: absolute; left: 0; width: 100%; border: 0; background: transparent; }
+    #window { position: absolute; left: 10%; right: 30%; top: 90px; bottom: 140px; background: #fff; border-radius: 8px; box-shadow: 0 8px 30px #0003; padding: 16px; }
+    body.bottom #window { top: 30px; }
+    #panel { position: absolute; right: 16px; bottom: 16px; width: 25%; min-width: 230px; background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 8px 30px #0003; }
+    #panel button { margin: 3px 2px; } #state { font-family: monospace; white-space: pre; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div id="taskbar"><div class="icons"><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div id="window"><b>Uma janela qualquer</b><p>A Kiara pisa na fronteira entre a barra e as janelas.</p></div>
+  <iframe id="strip" src="faixa.html?scale=1" title="Faixa da Kiara"></iframe>
+  <div id="panel">
+    <div>
+      <button data-a="bark">Latir (clique)</button>
+      <button data-a="tired">Cansar agora</button>
+      <button data-a="walk">Andar</button>
+      <button data-a="turn">Meia-volta</button>
+    </div>
+    <div>
+      <button data-a="scale1">1x</button><button data-a="scale2">2x</button>
+      <button data-a="dark">Barra escura</button>
+      <button data-a="side">Barra em cima/embaixo</button>
+    </div>
+    <div id="state"></div>
+  </div>
+  <script>
+    const strip = document.getElementById('strip');
+    const BAR = 48;
+    let scale = 1, dark = false, bottom = false;
+    function place() {
+      const h = 32 * scale;
+      strip.style.height = h + 'px';
+      strip.style.top = bottom ? (innerHeight - BAR - h) + 'px' : (BAR - h) + 'px';   // patas na borda da barra
+      document.body.classList.toggle('dark', dark);
+      document.body.classList.toggle('bottom', bottom);
+      const w = strip.contentWindow;
+      if (w && w.setDemoSettings) w.setDemoSettings({ scale, contorno: dark, neighbors: { left: false, right: false } });
+    }
+    addEventListener('resize', place);
+    strip.addEventListener('load', place);
+    place();
+    document.getElementById('panel').addEventListener('click', (e) => {
+      const a = e.target.dataset.a, w = strip.contentWindow, k = w && w.kikiDebug;
+      if (!a || !k) return;
+      if (a === 'bark') k.bark();
+      if (a === 'tired') k.dog.fatigue = 999;
+      if (a === 'walk') k.setBody('andando', w.performance.now());
+      if (a === 'turn') k.dog.dir *= -1;
+      if (a === 'scale1') scale = 1;
+      if (a === 'scale2') scale = 2;
+      if (a === 'dark') dark = !dark;
+      if (a === 'side') bottom = !bottom;
+      place();
+    });
+    setInterval(() => {
+      const k = strip.contentWindow && strip.contentWindow.kikiDebug;
+      if (!k) return;
+      const d = k.dog;
+      document.getElementById('state').textContent =
+        `corpo: ${d.body}\ncabeça: ${d.head ? d.head.name : 'normal'}\npiscando: ${k.blinkClock.i >= 0 ? 'sim' : 'não'}\n` +
+        `cansaço: ${d.fatigue.toFixed(1)} s ${k.isTired() ? '(ofegante)' : ''}\nindo pra: ${d.dir > 0 ? 'direita' : 'esquerda'}`;
+    }, 200);
+  </script>
+</body>
+</html>

@@ -14,7 +14,7 @@ const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
 
-const CELL = 32;   // tamanho nativo do sprite (32x32)
+const layout = require('./layout');
 
 // ---------- onde estão os sprites ----------
 // Em desenvolvimento lê direto de sprites/final/ (o que a sessão de sprites exporta).
@@ -27,9 +27,14 @@ const SHEET_JSON = path.join(SPRITES_DIR, 'kiara-sprites.json');
 
 // ---------- preferências (salvas entre execuções) ----------
 const CONFIG_FILE = path.join(app.getPath('userData'), 'config.json');
-const DEFAULTS = { zoom: 2, contorno: 'auto', visivel: true };
+// zoom: 'auto' (barra em cima = o maior que cabe na barra; embaixo = 2x) ou 1/2/3 forçado.
+const DEFAULTS = { zoom: 'auto', contorno: 'auto', visivel: true, versao: 2 };
 let config = { ...DEFAULTS };
-try { config = { ...DEFAULTS, ...JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')) }; } catch { /* primeira vez */ }
+try {
+  const saved = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+  if (!saved.versao) delete saved.zoom;   // versão 1 salvava 2x fixo; agora o padrão é automático
+  config = { ...DEFAULTS, ...saved, versao: 2 };
+} catch { /* primeira vez */ }
 function saveConfig() {
   try { fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2)); } catch { /* sem problema */ }
 }
@@ -61,30 +66,10 @@ function useOutline() {
 }
 
 // ---------- geometria ----------
-// Px de tela (físicos) por px do sprite: sempre inteiro, pra não borrar o pixel art
-// mesmo com escala do Windows em 125%/150%.
-function pixelScale(display) {
-  return Math.max(1, Math.round(config.zoom * display.scaleFactor));
-}
-
-// A faixa fica com a base encostada no topo da barra de tarefas (fim da "área de trabalho").
-function stripBounds(display) {
-  const wa = display.workArea;
-  const height = Math.ceil(CELL * pixelScale(display) / display.scaleFactor);
-  return { x: wa.x, y: wa.y + wa.height - height, width: wa.width, height };
-}
-
-// Monitor colado à esquerda/direita deste (com alguma sobreposição vertical).
-function neighbor(display, side) {
-  const b = display.bounds;
-  return screen.getAllDisplays().find(d => {
-    if (d.id === display.id) return false;
-    const o = d.bounds;
-    const touches = side === 'right' ? o.x === b.x + b.width : o.x + o.width === b.x;
-    const overlap = o.y < b.y + b.height && o.y + o.height > b.y;
-    return touches && overlap;
-  }) || null;
-}
+// As contas de posição e tamanho ficam em layout.js (testadas em test/layout.test.js).
+const neighbor = (display, side) => layout.neighbor(screen.getAllDisplays(), display, side);
+const pixelScale = (display) => layout.pixelScale(display, config.zoom);
+const stripBounds = (display) => layout.stripBounds(display, config.zoom);
 
 function settingsFor(display) {
   return {
@@ -199,7 +184,10 @@ function buildTrayMenu() {
     { label: 'Latir!', click: () => windows.get(activeDisplayId)?.webContents.send('kiki:bark') },
     {
       label: 'Tamanho',
-      submenu: [1, 2, 3].map(z => ({ label: `${z}x`, type: 'radio', checked: config.zoom === z, click: () => setZoom(z) })),
+      submenu: [
+        { label: 'Automático (cabe na barra)', type: 'radio', checked: config.zoom === 'auto', click: () => setZoom('auto') },
+        ...[1, 2, 3].map(z => ({ label: `${z}x`, type: 'radio', checked: config.zoom === z, click: () => setZoom(z) })),
+      ],
     },
     {
       label: 'Contorno grisalho',

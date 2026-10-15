@@ -40,18 +40,17 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 ## Estado do projeto
 
 - **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
-  **e Fase 1 — Desktop em paralelo** (liberada pelo dono em 14/10/2026, com as animações já
-  aprovadas). App Electron em `desktop/` (ver `desktop/README.md`): faixa transparente em cima da
-  barra em cada monitor, cérebro da simulação (parada/andando/latindo/ofegante/andando ofegante,
-  piscar por cima de tudo pelo remendo do olho), clique = late, passa de
-  um monitor pro outro, contorno automático com a barra escura, bandeja (mostrar/esconder, latir,
-  tamanho 1-3x, contorno, abrir com o Windows, sair). Lê `sprites/final/` direto: animação nova
-  exportada entra sozinha (ex.: `correndo`, `latindo_andando`). Testado em Linux virtual
-  (Xvfb, inclusive 2 monitores simulados); **falta o dono testar no Windows de verdade**.
-  Branch que junta app + todos os sprites aprovados: `claude/pixel-pai-windows-bar-qx0qjl`
-  (em 15/10 trouxe piscar e ofegante da sessão de sprites `claude/charming-gates-tf2lki`).
-  Obs.: como no cérebro da simulação, ofegante só vem depois de correr, então só aparece
-  quando `correndo` for aprovado.
+  **e Fase 1 — Desktop em paralelo** (liberada pelo dono em 14/10/2026). App Electron em `desktop/`
+  (ver `desktop/README.md`), branch `claude/pixel-pai-windows-bar-qx0qjl` (junta app + sprites aprovados).
+  **16/10 (prompt `prompts/app_animacoes_compostas.md`):** desenho **por camadas** (`renderer/compose.js`:
+  corpo → cabeça → olho → contorno → espelho; teste `npm test` confere os 80 quadros com a folha, 100%
+  iguais) e cérebro de **dois níveis + piscar** (`BRAIN` em `renderer/kiara.js`): corpo parada/andando/
+  latindo/ofegante, cabeça por cima (latir 1-2x, ofegante enquanto cansada), piscar sempre. Combinações:
+  latir andando, ofegante andando, piscar latindo etc. **Cansaço** no lugar da corrida (20 s de caminhada
+  somados → ofegante 3-6 s). **Barra em cima** (como o dono usa): patas na borda de baixo da barra,
+  tamanho automático que cabe na barra (`layout.js`, testado). Demo no navegador `desktop/demo/`.
+  Corrida e dormir NÃO entram até serem aprovados. **Falta o dono testar no Windows** e aprovar o ritmo;
+  depois disso a simulação (`sim_template.html`) precisa ganhar o mesmo cérebro.
 - Fotos reais em `./reference/` (16 fotos, incluindo perfil com o potinho, incluindo câmera noturna, peitoral teal,
   suéter listrado, dormindo enrolada, deitada lambendo e de cima com bandana vermelha)
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.

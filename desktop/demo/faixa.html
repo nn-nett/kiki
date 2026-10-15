@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Faixa da Kiara (demo)</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+    canvas { position: absolute; left: 0; bottom: 0; image-rendering: pixelated; }
+    body.over { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <script>
+    // Faz o papel do preload.js + main.js do Electron, pra rodar no navegador.
+    const params = new URLSearchParams(location.search);
+    let settingsCb = null;
+    window.kiki = {
+      init: async () => {
+        const base = new URL('../../sprites/final/', location.href).href;
+        const sheet = await (await fetch(base + 'kiara-sprites.json')).json();
+        return { sheet, baseUrl: base, active: true,
+          settings: { scale: Number(params.get('scale') || 1), contorno: params.get('contorno') === '1', neighbors: { left: false, right: false } } };
+      },
+      setMouseOverDog: () => {},
+      leaveByEdge: async () => false,
+      onSettings: (fn) => { settingsCb = fn; },
+      onEnter: () => {},
+      onBark: () => {},
+    };
+    window.setDemoSettings = (s) => settingsCb && settingsCb(s);
+  </script>
+  <script src="../renderer/compose.js"></script>
+  <script src="../renderer/kiara.js"></script>
+</body>
+</html>
