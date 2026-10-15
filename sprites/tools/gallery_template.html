@@ -93,6 +93,7 @@ ul.check li:not(.done) { color: var(--muted); }
       <button id="barDark" type="button" aria-pressed="false">Taskbar escura</button>
     </span>
     <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
+    <label for="blinkOn"><input id="blinkOn" type="checkbox" checked> Piscar por cima</label>
     <span class="seg" role="group" aria-label="Lado">
       <button id="dirR" type="button" aria-pressed="true">Pra direita</button>
       <button id="dirL" type="button" aria-pressed="false">Pra esquerda</button>
@@ -127,7 +128,13 @@ ul.check li:not(.done) { color: var(--muted); }
 <script>
 const DATA = __DATA__;
 const CELL = DATA.meta.cell, ZOOM = 2, STRIP_W = 150, STRIP_H = 44;
-const NOMES = { parada: 'Parada', andando: 'Andando', latindo: 'Latindo', correndo: 'Correndo', dormindo: 'Dormindo' };
+const NOMES = { parada: 'Parada', andando: 'Andando', latindo: 'Latindo', correndo: 'Correndo', dormindo: 'Dormindo',
+                piscando: 'Piscando', ofegante: 'Ofegante', andando_ofegante: 'Andando ofegante' };
+// piscar desacoplado: o remendo do olho (final/expressoes/) cai em frames[i].olho de qualquer animação
+const PISCAR = DATA.meta.expressoes && DATA.meta.expressoes.piscar;
+const olhos = {};
+for (const [k, src] of Object.entries(DATA.olhos || {})) { const i = new Image(); i.src = src; olhos[k] = i; }
+let blinkOn = !!PISCAR, blinkI = -1, blinkT = 0, nextBlink = 1500;
 let dark = false, outline = false, left = false, speed = 1;
 const sheet = new Image();
 const views = [];
@@ -206,10 +213,28 @@ function draw(v) {
   // anda de um lado pro outro quando a animação anda; senão fica no meio, virada pro lado escolhido
   const flip = base.step_px ? v.dir < 0 : left;
   const A = anim(v.key, flip);   // usa os frames _esquerda salvos (não espelha na hora): testa o arquivo final
-  blit(ctx, A.frames[v.f % A.frames.length], Math.round(v.x), STRIP_H - CELL.h - 4, false);
+  const fr = A.frames[v.f % A.frames.length], x = Math.round(v.x), y = STRIP_H - CELL.h - 4;
+  blit(ctx, fr, x, y, false);
+  if (blinkOn && blinkI >= 0 && fr.olho) {
+    const p = PISCAR.frames[blinkI], img = olhos[flip ? p.img_esquerda : p.img];
+    ctx.drawImage(img, x + fr.olho[0], y + fr.olho[1]);
+  }
+}
+
+function blinkStep(t) {
+  if (!blinkOn) return;
+  if (blinkI < 0 && t >= nextBlink) { blinkI = 0; blinkT = t; }
+  while (blinkI >= 0 && t - blinkT >= PISCAR.frames[blinkI].duration_ms / speed) {
+    blinkT += PISCAR.frames[blinkI].duration_ms / speed; blinkI++;
+    if (blinkI >= PISCAR.frames.length) {
+      blinkI = -1;
+      const [a, b] = PISCAR.intervalo_ms; nextBlink = t + (a + Math.random() * (b - a)) / speed;
+    }
+  }
 }
 
 function loop(t) {
+  blinkStep(t);
   for (const v of views) {
     const A = DATA.meta.animations[v.key];
     const d = A.frames[v.f % A.frames.length].duration_ms / speed;
@@ -246,6 +271,8 @@ function refresh() { views.forEach(renderFrames); }
 $('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark')); refresh(); };
 $('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } refresh(); };
 $('outline').onchange = e => { outline = e.target.checked; refresh(); };
+$('blinkOn').onchange = e => { blinkOn = e.target.checked && !!PISCAR; blinkI = -1; nextBlink = 0; };
+if (!PISCAR) $('blinkOn').parentElement.hidden = true;
 $('dirR').onclick = () => { left = false; pressed($('dirR'), $('dirL')); refresh(); };
 $('dirL').onclick = () => { left = true; pressed($('dirL'), $('dirR')); refresh(); };
 $('speed').oninput = e => { speed = e.target.value / 100; $('speedv').textContent = speed + 'x'; };

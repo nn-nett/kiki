@@ -55,7 +55,9 @@ def mapa_uri(meta, approved):
                             sheet.crop((f["x"], f["y"], f["x"] + f["w"], f["y"] + f["h"])))
                            for i, f in enumerate(frames)]))
     buf = io.BytesIO()
-    spritemap(rows).save(buf, "PNG")
+    img = spritemap(rows)
+    img.save(buf, "PNG")
+    img.save(FINAL / "spritemap.png")  # o mesmo PNG solto, pra mandar junto e abrir fora da página
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
@@ -75,6 +77,10 @@ def main():
         "aprovadas": [{"key": k, "nota": v.get("aprovada", ""), "receita": v["recipe"]} for k, v in approved.items()],
         "checklist": checklist(),
         "mapa": mapa_uri(meta, approved),
+        # remendos do piscar (expressão desacoplada), lidos de final/expressoes/
+        "olhos": {f["img"]: "data:image/png;base64," + base64.b64encode((FINAL / f["img"]).read_bytes()).decode()
+                  for e in meta.get("expressoes", {}).values() for fr in e["frames"]
+                  for f in ({"img": fr["img"]}, {"img": fr["img_esquerda"]})},
         "atualizada": now.strftime("%d/%m/%Y %H:%M"),
         "repo": REPO_URL,
     }

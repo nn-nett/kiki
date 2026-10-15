@@ -72,7 +72,7 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 <div class="wrap">
   <header>
     <h1>Kiara na taskbar</h1>
-    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr, e depois de correr fica ofegante. Ela pisca sozinha de vez em quando, em qualquer coisa que estiver fazendo. Toque nela pra ela latir. Corrida, ofegante e piscar ainda estão em teste (dá pra desligar cada um); o resto você já aprovou.</p>
+    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr, e depois de correr fica ofegante. Ela pisca sozinha de vez em quando, em qualquer coisa que estiver fazendo. Toque nela pra ela latir. Só a corrida ainda está em teste (dá pra desligar); o resto você já aprovou.</p>
   </header>
 
   <div class="stage">
@@ -97,8 +97,8 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
     </span>
     <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
     <label for="runOn" id="runLabel"><input id="runOn" type="checkbox" checked> Correr (em teste)</label>
-    <label for="pantOn" id="pantLabel"><input id="pantOn" type="checkbox" checked> Ofegante (em teste)</label>
-    <label for="blinkOn" id="blinkLabel"><input id="blinkOn" type="checkbox" checked> Piscar (em teste)</label>
+    <label for="pantOn" id="pantLabel"><input id="pantOn" type="checkbox" checked> Ofegante</label>
+    <label for="blinkOn" id="blinkLabel"><input id="blinkOn" type="checkbox" checked> Piscar</label>
   </div>
 
   <div class="panels">
@@ -133,8 +133,8 @@ const BRAIN = {
   latindo:         { nome: 'latindo',        dur: null,         next: { parada: .5, andando: .5 } },
   andandoLatindo:  { nome: 'latindo andando', dur: null,        next: { andando: .6, parada: .4 } },
   correndo:        { nome: 'correndo',       dur: [1200, 3000], next: { ofegante: .5, andandoOfegante: .2, andando: .2, latindo: .1 }, teste: true },
-  ofegante:        { nome: 'ofegante',       dur: [2500, 5000], next: { parada: .5, andando: .3, andandoOfegante: .2 }, teste: true },
-  andandoOfegante: { nome: 'andando ofegante', dur: [2000, 4500], next: { andando: .6, parada: .4 }, teste: true },
+  ofegante:        { nome: 'ofegante',       dur: [2500, 5000], next: { parada: .5, andando: .3, andandoOfegante: .2 } },
+  andandoOfegante: { nome: 'andando ofegante', dur: [2000, 4500], next: { andando: .6, parada: .4 } },
 };
 const NOMES = { parada: 'ficar parada', andando: 'andar', latindo: 'latir parada', andandoLatindo: 'latir andando', meiaVolta: 'dar meia-volta e andar', correndo: 'correr', ofegante: 'ficar ofegante', andandoOfegante: 'andar ofegante' };
 const MOVE = { andando: 'walk', andandoLatindo: 'walk', correndo: 'run', andandoOfegante: 'walkpant' };   // estados que andam pela barra
