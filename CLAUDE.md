@@ -80,6 +80,12 @@ só marcar como ✅ com aprovação explícita.
 - Skin do suéter: decisão pendente (overlay vs. variante completa) — escolher a
   mais simples quando a pose base estiver aprovada.
 
+## Ferramentas (MCP)
+
+- **Stitch** (Google, design de telas) configurado em `.mcp.json` para todas
+  as sessões. A chave NÃO fica no repo: é lida da variável de ambiente
+  `STITCH_API_KEY` (nuvem: configurações do ambiente; PC: variável do sistema).
+
 ## Estrutura
 
 ```
