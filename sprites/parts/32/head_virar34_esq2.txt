@@ -1,0 +1,19 @@
+# Kiara 32 — virar v3 (rodada 3: cara de frente pelas fotos kiki_frente_*)
+# espelho da head_virar34_2 (3/4 indo pra esquerda)
+# @anchor 11,14
+# @role cabeca
+..XX..........KX
+..XKX........XKX
+..XDDX......XtDX
+..XDDDX.....XtDX
+...XtDKXXXXXttDX
+...XttKKKKKKttX.
+...XKKKKKKKKKKX.
+...XKKKKKKKKKK..
+...KtGKKKGtGKK..
+...KBEGKKGBEGK..
+..XXeEWGKGeEtK..
+.XXWGWWWWGGttX..
+.XNNNGWWWGttKX..
+..XNNNGGGttKX...
+...XGGGttXKKK...

@@ -159,3 +159,18 @@ f7 = `parada_esquerda` pixel a pixel. Prévia: `quadro.png` (A antes/depois, B a
 
 **Perguntas:** os passinhos de 1 px ficaram visíveis o bastante no tamanho real, ou subir 2 px nas traseiras? Na
 vista de frente, mostrar as traseiras dando o passo atrás das dianteiras?
+
+## 8. Rodada 3: cara de frente pelas fotos
+
+Fotos novas `reference/kiki_frente_deitada_1/2/3/_34.jpg` e `kiki_frente_sorrindo_peitoral.jpg`. Peças novas
+`head_virar_frente2`, `head_virar34_2` (+ `_esq2`) e `torso_virar_frente2`; receitas `virar_A3`/`virar_B3` = A2/B2
+com elas (mesma âncora e tamanho; só as linhas 1-20 dos frames com cabeça de frente/3/4 mudam).
+- Orelhas: por dentro eram castanhas; nas fotos são escuras (marrom quase preto) com a base castanha → `D` por
+  dentro, ponta `K`, base `t`. Na 3/4 também, pra fazer a ponte com a orelha de perfil (castanha, aprovada).
+- Testa: o grisalho desce no "stop" entre os olhos (G na linha 8); sobrancelha castanha com grisalho em volta, olho
+  castanho com brilho, bochecha e queixo continuam iguais (já batiam com as fotos).
+- Peito de frente: era castanho com mancha creme; nas fotos é faixa castanha embaixo do queixo, centro grisalho
+  e duas manchas castanhas dos lados (+ pintinha clara) → `torso_virar_frente2`.
+- Piscar: a cabeça de frente tem 2 olhos. O remendo `olho_meio`/`olho_fechado` encaixa nos dois (`@socket.olho 4,9`
+  e `@socket.olho2 9,9`; testado, sem buraco), mas o app hoje só desenha 1 olho por cabeça: precisa do `olho2` no
+  export pra piscar de frente. As cabeças espelhadas (`_esq2`) ficaram sem socket (usariam o remendo espelhado).

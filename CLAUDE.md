@@ -135,6 +135,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   Rodada 2 (15/10, dono: "a pata que levanta é a outra da frente, na parada"; "quando ela girar o corpo todo, as
   patas todas colaboram, não só uma"): `anims/virar_A2.json` (sobe a pata da frente de perto) e `virar_B2.json`
   (8 frames, as quatro patas dão passinhos de 1 px durante a meia-volta); peças `legs_virar2*`. Na mesma prévia.
+  Rodada 3 (15/10, com as fotos de frente `reference/kiki_frente_*.jpg` que o dono mandou): cara de frente refeita
+  (`head_virar_frente2`, `head_virar34_2`/`_esq2`, `torso_virar_frente2`): orelhas escuras por dentro (D, ponta K,
+  base t), ponto grisalho na testa, peito de frente com faixa tan sob o queixo, centro grisalho e laterais tan.
+  Receitas `virar_A3`/`virar_B3` (= A2/B2 com as peças novas). Antes/depois em `sprites/previews/virar/quadro_rodada3.png`.
+  A cabeça de frente tem dois olhos (`@socket.olho` 4,9 e `olho2` 9,9): o export do piscar ainda só põe um olho por
+  cabeça. Dúvida pro dono: escurecer também o dentro da orelha de perfil (hoje castanho, aprovado)?
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
