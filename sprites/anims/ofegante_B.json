@@ -1,0 +1,19 @@
+{
+  "name": "ofegante_B",
+  "_nota": "pedido do dono: o movimento fica no peito/barriga e no queixo; costas, rabo e pernas parados. Inspira: barriga e peito descem 1 px e a frente do peito vem 1 px, boca entreaberta. Expira: corpo normal, queixo desce mais.",
+  "canvas": [32, 32],
+  "loop": true,
+  "sequence": [0, 1],
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 130, "parts": [
+      {"id": "legs", "part": "legs_base_inspB", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0]},
+      {"id": "head", "part": "head_ofegante1", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "set": {"legs": {"part": "legs_base"}, "head": {"part": "head_ofegante2"}}}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "andar_ofegante_W2",
+  "_nota": "trote B + cabeça ofegante, respira a cada frame (boca abre e fecha num ritmo regular)",
+  "canvas": [32, 32],
+  "loop": true,
+  "sequence": [0, 1, 2, 3, 4, 5],
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 100, "parts": [
+      {"id": "legs", "part": "legs_trotB0", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0], "offset": [0, 0]},
+      {"id": "head", "part": "head_ofegante1", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "set": {"legs": {"part": "legs_trotB1"}, "torso": {"offset": [0, 1]}, "head": {"part": "head_ofegante2"}}},
+    {"base": 0, "set": {"legs": {"part": "legs_trotB2"}, "torso": {"offset": [0, 0]}, "head": {"part": "head_ofegante1"}}},
+    {"base": 0, "set": {"legs": {"part": "legs_trotB3"}, "torso": {"offset": [0, 0]}, "head": {"part": "head_ofegante2"}}},
+    {"base": 0, "set": {"legs": {"part": "legs_trotB4"}, "torso": {"offset": [0, 1]}, "head": {"part": "head_ofegante1"}}},
+    {"base": 0, "set": {"legs": {"part": "legs_trotB5"}, "torso": {"offset": [0, 0]}, "head": {"part": "head_ofegante2"}}}
+  ]
+}

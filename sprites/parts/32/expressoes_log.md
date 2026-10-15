@@ -129,3 +129,20 @@ Ofegante:
 - Conferência: 0 buracos, 0 pixels soltos, 0 entalhes novos; lint só com "silhueta some na taskbar escura"
   nas versões sem contorno; `sim_page.py` recompõe piscar/ofegante/andar ofegante pixel a pixel.
 - Spritemap e quadro em `sprites/previews/expressoes/`.
+
+## Revisão do ofegante (15/10, depois de aprovado)
+
+Dono: "ofegante, acho que tem coisa estranha aí: o movimento é mais no peito/torso/queixo, o resto não mexe tanto;
+andando ofegante tá estranho também". O que estava errado: na expiração o tronco inteiro descia 1 px (costas, rabo,
+garupa), e a linha da coxa piscava porque o tronco descido cobria a faixa das pernas.
+- Parada: costas, rabo e pernas parados. Inspira = `legs_base_inspA` (barriga e fundo do peito 1 px mais fundos)
+  ou `legs_base_inspB` (igual + a frente do peito 1 px pra fora nas linhas 21-22), com `head_ofegante1`;
+  expira = `legs_base` normal com `head_ofegante2` (queixo desce mais). Receitas `anims/ofegante_A.json` e
+  `ofegante_B.json`.
+- Andando: `anims/andar_ofegante_W1.json` (cabeça ofegante 1 fixa: a língua só balança com o passo) e
+  `andar_ofegante_W2.json` (alterna 1/2 a cada frame). Antes a boca abria só nos 2 frames em que o corpo desce, e a
+  língua pulava 2 px de uma vez.
+- Os finais (`sprites/final/`) seguem com a versão aprovada antes até o dono escolher; depois troca
+  `ofegante.json`/`andar_ofegante.json` pela escolhida e roda o `export_final.py`.
+- Quadros em `sprites/previews/expressoes/quadro_ofegante_peito.png` e `quadro_andar_ofegante.png`; spritemap em
+  `spritemap_ofegante.png`.
