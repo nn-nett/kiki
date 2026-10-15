@@ -1243,5 +1243,433 @@
       "expressao": "ofegante"
     }
   },
-  "_comment": "step_px: px do sprite que a janela anda por frame (negativo = pra esquerda); airborne_frames: frames com as patas fora do ch\u00e3o; olho: canto [x, y] do remendo do piscar na c\u00e9lula (null = a anima\u00e7\u00e3o j\u00e1 mexe no olho); expressoes.piscar: remendos e dura\u00e7\u00f5es, tocados por cima de qualquer anima\u00e7\u00e3o a cada intervalo_ms (sorteado entre os dois valores); boca: canto [x, y] do remendo do ofegante (null = a anima\u00e7\u00e3o j\u00e1 mexe na boca); expressoes.ofegante: remendos da boca em loop, no ritmo deles; os _contorno t\u00eam 1 px de folga (desenhe em boca - 1); composicoes: anima\u00e7\u00f5es que s\u00e3o um corpo + uma express\u00e3o tocando juntos, cada um no seu rel\u00f3gio"
+  "_comment": "step_px: px do sprite que a janela anda por frame (negativo = pra esquerda); airborne_frames: frames com as patas fora do chão; olho: canto [x, y] do remendo do piscar na célula (null = a animação já mexe no olho); expressoes.piscar: remendos e durações, tocados por cima de qualquer animação a cada intervalo_ms (sorteado entre os dois valores); boca: canto [x, y] do remendo do ofegante (null = a animação já mexe na boca); expressoes.ofegante: remendos da boca em loop, no ritmo deles; os _contorno têm 1 px de folga (desenhe em boca - 1); composicoes: animações que são um corpo + uma expressão tocando juntos, cada um no seu relógio",
+  "camadas": {
+    "_como_montar": "corpo em (0,0); cabeça em pescoco - ancora + off (off = cabeca_off do frame, ou o 'off' da expressão de cabeça que estiver tocando, no relógio dela); olho do piscar em posição da cabeça + olho; pra esquerda espelhe o quadro pronto; taskbar escura: contorno G (pixel vazio com vizinho opaco em cima/baixo/lados) antes de espelhar",
+    "corpos": {
+      "parada": {
+        "loop": true,
+        "step_px": 0,
+        "frames": [
+          {
+            "img": "camadas/corpo/parada_0.png",
+            "duration_ms": 500,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "andando": {
+        "loop": true,
+        "step_px": 1,
+        "frames": [
+          {
+            "img": "camadas/corpo/andando_0.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/andando_1.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              15
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/andando_2.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/andando_3.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/andando_4.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              15
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/andando_5.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "latindo": {
+        "loop": true,
+        "step_px": 0,
+        "frames": [
+          {
+            "img": "camadas/corpo/latindo_0.png",
+            "duration_ms": 300,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/latindo_1.png",
+            "duration_ms": 90,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head_bark1",
+            "cabeca_off": [
+              0,
+              1
+            ]
+          },
+          {
+            "img": "camadas/corpo/latindo_2.png",
+            "duration_ms": 170,
+            "pescoco": [
+              21,
+              14
+            ],
+            "cabeca": "head_bark2",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/latindo_3.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head_bark1",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/latindo_4.png",
+            "duration_ms": 90,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head_bark1",
+            "cabeca_off": [
+              0,
+              1
+            ]
+          },
+          {
+            "img": "camadas/corpo/latindo_5.png",
+            "duration_ms": 170,
+            "pescoco": [
+              21,
+              14
+            ],
+            "cabeca": "head_bark2",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/latindo_6.png",
+            "duration_ms": 100,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head_bark1",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "piscando": {
+        "loop": true,
+        "step_px": 0,
+        "frames": [
+          {
+            "img": "camadas/corpo/piscando_0.png",
+            "duration_ms": 1500,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/piscando_1.png",
+            "duration_ms": 60,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/piscando_2.png",
+            "duration_ms": 110,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/piscando_3.png",
+            "duration_ms": 60,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          }
+        ]
+      },
+      "ofegante": {
+        "loop": true,
+        "step_px": 0,
+        "frames": [
+          {
+            "img": "camadas/corpo/ofegante_0.png",
+            "duration_ms": 130,
+            "pescoco": [
+              20,
+              14
+            ],
+            "cabeca": "head_ofegante1",
+            "cabeca_off": [
+              0,
+              0
+            ]
+          },
+          {
+            "img": "camadas/corpo/ofegante_1.png",
+            "duration_ms": 130,
+            "pescoco": [
+              20,
+              15
+            ],
+            "cabeca": "head_ofegante2",
+            "cabeca_off": [
+              0,
+              -1
+            ]
+          }
+        ]
+      }
+    },
+    "cabecas": {
+      "head": {
+        "img": "camadas/cabeca/head.png",
+        "ancora": [
+          4,
+          14
+        ],
+        "olho": [
+          6,
+          9
+        ]
+      },
+      "head_bark1": {
+        "img": "camadas/cabeca/head_bark1.png",
+        "ancora": [
+          4,
+          14
+        ],
+        "olho": [
+          6,
+          9
+        ]
+      },
+      "head_bark2": {
+        "img": "camadas/cabeca/head_bark2.png",
+        "ancora": [
+          4,
+          14
+        ],
+        "olho": [
+          6,
+          9
+        ]
+      },
+      "head_ofegante1": {
+        "img": "camadas/cabeca/head_ofegante1.png",
+        "ancora": [
+          4,
+          14
+        ],
+        "olho": [
+          6,
+          9
+        ]
+      },
+      "head_ofegante2": {
+        "img": "camadas/cabeca/head_ofegante2.png",
+        "ancora": [
+          4,
+          14
+        ],
+        "olho": [
+          6,
+          9
+        ]
+      }
+    },
+    "expressoes_cabeca": {
+      "latir": {
+        "loop": false,
+        "frames": [
+          {
+            "cabeca": "head_bark1",
+            "off": [
+              0,
+              1
+            ],
+            "duration_ms": 90
+          },
+          {
+            "cabeca": "head_bark2",
+            "off": [
+              1,
+              0
+            ],
+            "duration_ms": 170
+          },
+          {
+            "cabeca": "head_bark1",
+            "off": [
+              0,
+              0
+            ],
+            "duration_ms": 100
+          },
+          {
+            "cabeca": "head_bark1",
+            "off": [
+              0,
+              1
+            ],
+            "duration_ms": 90
+          },
+          {
+            "cabeca": "head_bark2",
+            "off": [
+              1,
+              0
+            ],
+            "duration_ms": 170
+          },
+          {
+            "cabeca": "head_bark1",
+            "off": [
+              0,
+              0
+            ],
+            "duration_ms": 100
+          }
+        ]
+      },
+      "ofegante": {
+        "loop": true,
+        "frames": [
+          {
+            "cabeca": "head_ofegante1",
+            "off": [
+              0,
+              0
+            ],
+            "duration_ms": 130
+          },
+          {
+            "cabeca": "head_ofegante2",
+            "off": [
+              0,
+              0
+            ],
+            "duration_ms": 130
+          }
+        ]
+      }
+    }
+  }
 }

@@ -72,7 +72,7 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 <div class="wrap">
   <header>
     <h1>Kiara na taskbar</h1>
-    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11: ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr, e depois de correr fica ofegante. Ela pisca sozinha de vez em quando, em qualquer coisa que estiver fazendo. Toque nela pra ela latir. Só a corrida ainda está em teste (dá pra desligar); o resto você já aprovou.</p>
+    <p>Simulação de como a Kiara vai viver na barra de tarefas do Windows 11 (em cima da tela, como a sua: ela pisa na borda de baixo da taskbar, a fronteira com as janelas): ela decide sozinha, ao acaso, entre ficar parada, andar, latir, latir andando e correr, e depois de correr fica ofegante. Ela pisca sozinha de vez em quando, em qualquer coisa que estiver fazendo. Toque nela pra ela latir. Só a corrida ainda está em teste (dá pra desligar); o resto você já aprovou.</p>
   </header>
 
   <div class="stage">
@@ -94,6 +94,10 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
     <span class="seg" role="group" aria-label="Taskbar">
       <button id="barLight" type="button" aria-pressed="true">Taskbar clara</button>
       <button id="barDark" type="button" aria-pressed="false">Taskbar escura</button>
+    </span>
+    <span class="seg" role="group" aria-label="Posição da taskbar">
+      <button id="barTop" type="button" aria-pressed="true">Taskbar em cima</button>
+      <button id="barBottom" type="button" aria-pressed="false">Embaixo</button>
     </span>
     <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
     <label for="runOn" id="runLabel"><input id="runOn" type="checkbox" checked> Correr (em teste)</label>
@@ -124,7 +128,10 @@ td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 <script>
 const DATA = __DATA__;
 const S = 32, BAR_H = 48, DESK_H = 66;           // em pixels do sprite
-const FOOT = 6;                                    // folga das patas até a borda de baixo da taskbar
+const FOOT = 6;                                    // taskbar embaixo: folga das patas até a borda de baixo da tela
+// taskbar em cima (como a do dono): ela pisa na fronteira entre a taskbar e as janelas, a borda de baixo da taskbar
+let barTop = true;
+function dogY() { return barTop ? BAR_H - S : DESK_H + BAR_H - FOOT - S; }
 
 // comportamento: duração (ms), chances do próximo estado
 const BRAIN = {
@@ -320,7 +327,7 @@ function wallpaper(H) {
 function taskbar(y) {
   const t = DATA.taskbar;
   ctx.fillStyle = dark ? t.dark : t.light; ctx.fillRect(0, y, W, BAR_H);
-  ctx.fillStyle = dark ? '#2b2b2b' : '#e0e0e0'; ctx.fillRect(0, y, W, 0.5);
+  ctx.fillStyle = dark ? '#2b2b2b' : '#e0e0e0'; ctx.fillRect(0, barTop ? y + BAR_H - 0.5 : y, W, 0.5);   // linha da borda que encosta nas janelas
   const fg = dark ? '#ffffff' : '#1b1b1b';
   const tray = W >= 150 ? 46 : 0;
   const slots = Math.max(2, Math.min(7, Math.floor((W - 2 * tray - 8) / 26)));
@@ -361,11 +368,11 @@ function draw() {
   const dpr = window.devicePixelRatio || 1;
   ctx.setTransform(zoom * dpr, 0, 0, zoom * dpr, 0, 0);
   ctx.imageSmoothingEnabled = false;
-  wallpaper(DESK_H);
-  taskbar(DESK_H);
+  if (barTop) { ctx.save(); ctx.translate(0, BAR_H); wallpaper(DESK_H); ctx.restore(); taskbar(0); }
+  else { wallpaper(DESK_H); taskbar(DESK_H); }
   const [spec, extra] = currentSpec();
   compose(spec, extra);
-  const x = Math.round(dog.x), y = DESK_H + BAR_H - FOOT - S;
+  const x = Math.round(dog.x), y = dogY();
   ctx.save();
   if (dog.dir < 0) { ctx.translate(x + S, y); ctx.scale(-1, 1); ctx.drawImage(off, 0, 0); }
   else ctx.drawImage(off, x, y);
@@ -402,6 +409,8 @@ $('pause').onclick = () => { if (running) pausedAt = performance.now(); running 
 $('speed').oninput = e => { speed = e.target.value / 100; $('speedv').textContent = (speed % 1 ? speed.toFixed(2).replace(/0$/, '') : speed) + 'x'; };
 for (const z of [1, 2, 3]) $('z' + z).onclick = () => { zoom = z; pressed($('z' + z), ...[1, 2, 3].filter(o => o !== z).map(o => $('z' + o))); resize(); };
 $('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark')); };
+$('barTop').onclick = () => { barTop = true; pressed($('barTop'), $('barBottom')); };
+$('barBottom').onclick = () => { barTop = false; pressed($('barBottom'), $('barTop')); };
 $('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } };
 $('outline').onchange = e => { outline = e.target.checked; };
 $('runOn').onchange = e => { runOn = e.target.checked; if (!runOn && dog.state === 'correndo') setState('andando', performance.now(), 'corrida desligada'); };
@@ -413,7 +422,7 @@ if (!DATA.run) $('runLabel').hidden = true;
 canvas.addEventListener('click', e => {
   const r = canvas.getBoundingClientRect();
   const px = (e.clientX - r.left) / zoom, py = (e.clientY - r.top) / zoom;
-  const y = DESK_H + BAR_H - FOOT - S;
+  const y = dogY();
   if (px >= dog.x - 4 && px <= dog.x + S + 4 && py >= y - 4 && py <= y + S + 4) setState('latindo', performance.now(), 'você tocou nela');
 });
 window.addEventListener('resize', resize);

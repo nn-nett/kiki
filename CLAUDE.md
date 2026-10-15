@@ -21,7 +21,14 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   **`andando_ofegante` é uma composição** (`andando` + boca ofegante em relógios separados, aprovada em 15/10:
   "andando tá ok, perfeito"); não tem mais frames próprios — ver o README.
 - **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe (com spritemap: todos os
-  frames numerados, grade e régua de coordenadas, toque pra ampliar)
+  frames numerados, grade e régua de coordenadas, toque pra ampliar; e o "Montador por camadas")
+- **Componentizado (15/10, pedido do dono):** `final/camadas/` + `camadas` no JSON: corpo sem cabeça por frame
+  (com `pescoco`), cabeças soltas (normal, latido 1/2, ofegante 1/2, com `ancora` e `olho`) e expressões de cabeça
+  (latir, ofegante) pra pôr em qualquer corpo; o olho do piscar cai em qualquer cabeça. Três relógios
+  independentes (corpo, cabeça, piscar). `tools/export_camadas.py` gera e confere contra os 80 frames finais.
+- **Taskbar do dono fica EM CIMA da tela**: ela pisa na fronteira entre a taskbar e as janelas (patas na borda de
+  baixo da taskbar, corpo dentro dela). A 2x ela (64 px) é mais alta que a taskbar de 48 px (escala 100%): decidir
+  o tamanho na Fase 1. Simulação já tem "Taskbar em cima" (padrão).
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
 - **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições; o `ofegante`

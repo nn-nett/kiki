@@ -20,7 +20,7 @@ from zoneinfo import ZoneInfo
 
 from PIL import Image
 
-from common import SPRITES_DIR
+from common import SPRITES_DIR, load_palette
 from spritemap import spritemap
 
 FINAL = SPRITES_DIR / "final"
@@ -89,6 +89,12 @@ def main():
                        "composicao": v.get("composicao")} for k, v in approved.items()],
         "checklist": checklist(),
         "mapa": mapa_uri(meta, approved),
+        # camadas (corpo sem cabeça + cabeças) pro montador: o app monta igual
+        "camadasImgs": {f: "data:image/png;base64," + base64.b64encode((FINAL / f).read_bytes()).decode()
+                        for f in sorted({fr["img"] for c in meta.get("camadas", {}).get("corpos", {}).values()
+                                         for fr in c["frames"]} |
+                                        {h["img"] for h in meta.get("camadas", {}).get("cabecas", {}).values()})},
+        "contornoCor": "#%02x%02x%02x" % tuple(load_palette()["G"]),
         # remendos do piscar (expressão desacoplada), lidos de final/expressoes/
         # remendos das expressões (piscar, ofegante), lidos de final/expressoes/
         "olhos": {fr[k]: "data:image/png;base64," + base64.b64encode((FINAL / fr[k]).read_bytes()).decode()

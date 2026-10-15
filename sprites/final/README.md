@@ -15,6 +15,7 @@ Pra ver tudo animado: Galeria da Kiara, https://claude.ai/artifact/Cg5sdrUGvrXio
 | `aprovadas.json` | Lista das animações aprovadas e de qual receita (`sprites/anims/*.json`) cada uma sai. |
 | `expressoes/` | Remendos das expressões: piscar (`olho_meio`, `olho_fechado`, 4x3) e ofegante (`boca_ofegante1/2`, 5x5, e `_contorno` 7x7), cada um também em `_esquerda`. |
 | `spritemap.png` | Folha de revisão: todos os frames das versões normais, numerados, com grade e régua. |
+| `camadas/` | As mesmas animações em peças: `corpo/<anim>_<i>.png` (sem cabeça) e `cabeca/<nome>.png`. Ver "Camadas". |
 | `galeria.html` | Página com tudo animado, lida só destes arquivos (prova de que estão íntegros). |
 
 ## Animações aprovadas
@@ -121,7 +122,50 @@ O piscar não precisa de frames novos por animação: é um remendo pequeno do o
 - Conferido: parada + remendo = `piscando` pixel a pixel, e o remendo cai no olho certo em todos os
   frames de andando, latindo e ofegante (comparado com o rig). A galeria tem a caixa "Piscar por cima".
 
+## Camadas (corpo, cabeça e olho separados)
+
+Pedido do dono: "componentizar: a cabeça separada do corpo, o olho também, pra ela poder piscar em qualquer
+estado, tipo piscar enquanto late". Os frames inteiros continuam valendo; as camadas são pra combinar à vontade
+(latir andando, piscar latindo, ofegante andando...). Tudo em `camadas` no JSON:
+
+```json
+"camadas": {
+  "corpos": {
+    "andando": { "loop": true, "step_px": 1, "frames": [
+      { "img": "camadas/corpo/andando_0.png", "duration_ms": 100, "pescoco": [20, 14], "cabeca": "head", "cabeca_off": [0, 0] }, "..."
+    ] },
+    "parada": { "...": "..." }, "latindo": { "...": "..." }, "ofegante": { "...": "..." }
+  },
+  "cabecas": {
+    "head": { "img": "camadas/cabeca/head.png", "ancora": [4, 14], "olho": [6, 9] },
+    "head_bark1": { "...": "..." }, "head_bark2": { "...": "..." }, "head_ofegante1": { "...": "..." }, "head_ofegante2": { "...": "..." }
+  },
+  "expressoes_cabeca": {
+    "latir":    { "loop": false, "frames": [ { "cabeca": "head_bark1", "off": [0, 1], "duration_ms": 90 }, "..." ] },
+    "ofegante": { "loop": true,  "frames": [ { "cabeca": "head_ofegante1", "off": [0, 0], "duration_ms": 130 }, "..." ] }
+  }
+}
+```
+
+Montar um quadro (32x32, olhando pra direita), com 3 relógios independentes (corpo, expressão de cabeça, piscar):
+1. Desenhe o corpo do frame atual em (0, 0).
+2. Cabeça: a do frame (`cabeca` + `cabeca_off`) ou, se uma expressão de cabeça estiver tocando, a dela (`cabeca` +
+   `off`). Posição: `pescoco - ancora + off`.
+3. Piscar: se estiver piscando e a cabeça tiver `olho`, desenhe o remendo do olho (`expressoes.piscar`) em
+   `posição da cabeça + olho`.
+4. Taskbar escura: contorno G (#a09287) em todo pixel transparente que tem vizinho opaco em cima, embaixo ou dos
+   lados. Depois, se ela estiver indo pra esquerda, espelhe o quadro. Por fim amplie por inteiro sem suavizar.
+
+Conferido no export (`tools/export_camadas.py`): montar as camadas dá exatamente os frames aprovados, nas 4 versões
+(80 frames). A galeria tem um "Montador por camadas" que faz isso ao vivo.
+
 ## Regras de desenho na tela
+
+- **Taskbar em cima da tela (é como o dono usa):** ela pisa na fronteira entre a taskbar e as janelas, ou seja,
+  a última linha do sprite (as patas) fica na borda de baixo da taskbar e o corpo fica dentro da taskbar. A
+  simulação tem o botão "Taskbar em cima / Embaixo". Atenção ao tamanho: a taskbar do Windows 11 tem 48 px a 100%
+  de escala, e a Kiara ampliada 2x tem 64 px de altura; nessa combinação a cabeça passaria do topo da tela. Ver
+  na Fase 1 (1x cabe; com escala de 150% a taskbar tem 72 px e 2x cabe).
 
 - **Tamanho nativo 32x32.** Amplie só por inteiro (2x é o padrão pensado pra taskbar) e sempre
   sem suavização: `image-rendering: pixelated` no CSS / `imageSmoothingEnabled = false` no canvas.

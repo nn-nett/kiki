@@ -299,6 +299,8 @@ def main():
                         "deles; os _contorno têm 1 px de folga (desenhe em boca - 1); composicoes: animações que são "
                         "um corpo + uma expressão tocando juntos, cada um no seu relógio")
     meta_path.write_text(json.dumps(meta, indent=2) + "\n")
+    # camadas (corpo sem cabeça + cabeças + olho) pro app montar qualquer combinação
+    subprocess.run([sys.executable, str(TOOLS / "export_camadas.py")], check=True)
     # a galeria (página com tudo o que foi aprovado) é refeita junto
     subprocess.run([sys.executable, str(TOOLS / "gallery.py")], check=True)
 

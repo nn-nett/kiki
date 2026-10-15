@@ -70,6 +70,10 @@ ul.check li .box { flex: none; width: 14px; height: 14px; border-radius: 3px; bo
 ul.check li.done .box { background: var(--ok); border-color: var(--ok); }
 ul.check li:not(.done) { color: var(--muted); }
 .mapa p { margin: 0; color: var(--muted); font-size: 14px; }
+.montador p { margin: 0; color: var(--muted); font-size: 14px; }
+.montador .ctrl { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.montador .ctrl small { color: var(--muted); font-size: 12px; margin-right: 4px; }
+.montador canvas { width: 100%; height: auto; image-rendering: pixelated; border-radius: 8px; }
 .mapa button { padding: 0; border: 1px solid var(--line); border-radius: 8px; background: #f3f3f3; cursor: zoom-in; overflow: hidden; }
 .mapa button:focus-visible, .lb button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .mapa img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
@@ -102,6 +106,17 @@ ul.check li:not(.done) { color: var(--muted); }
   </div>
 
   <div class="cards" id="cards"></div>
+
+  <section class="panel montador" aria-labelledby="h-mont" id="montador">
+    <h2 id="h-mont">Montador por camadas</h2>
+    <p>Corpo, cabeça e olho são peças separadas, cada uma no seu ritmo: escolha um corpo e o que a cabeça faz. É assim que o app monta (latir andando, piscar latindo, ofegante andando...), lendo <code>camadas</code> do JSON.</p>
+    <div class="ctrl">
+      <span><small>Corpo</small><span class="seg" role="group" aria-label="Corpo" id="mCorpo"></span></span>
+      <span><small>Cabeça</small><span class="seg" role="group" aria-label="Cabeça" id="mCabeca"></span></span>
+      <label for="mBlink"><input id="mBlink" type="checkbox" checked> Piscar</label>
+    </div>
+    <canvas id="mont" width="300" height="88" aria-label="Kiara montada por camadas"></canvas>
+  </section>
 
   <section class="panel mapa" aria-labelledby="h-mapa">
     <h2 id="h-mapa">Spritemap</h2>
@@ -243,8 +258,88 @@ function blinkStep(t) {
   }
 }
 
+// ---------- montador por camadas (corpo + cabeça + olho, cada um no seu relógio) ----------
+const CAM = DATA.meta.camadas;
+const camImgs = {};
+for (const [k, src] of Object.entries(DATA.camadasImgs || {})) { const i = new Image(); i.src = src; camImgs[k] = i; }
+const MNOMES = { parada: 'parada', andando: 'andando', latindo: 'latindo', ofegante: 'ofegante', corpo: 'a do corpo', latir: 'latir', ofeg: 'ofegante' };
+const mont = { corpo: 'andando', expr: 'latir', f: 0, last: 0, x: 8, dir: 1, ei: 0, et: 0, blink: true };
+const mOff = document.createElement('canvas'); mOff.width = CELL.w; mOff.height = CELL.h;
+const MW = 150, MH = 44;
+function addOutline(c) {
+  const id = c.getImageData(0, 0, mOff.width, mOff.height), a = id.data, src = new Uint8ClampedArray(a), W = mOff.width, H = mOff.height;
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(DATA.contornoCor.slice(i, i + 2), 16));
+  const op = (x, y) => x >= 0 && y >= 0 && x < W && y < H && src[(y * W + x) * 4 + 3] > 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (op(x, y) || !(op(x + 1, y) || op(x - 1, y) || op(x, y + 1) || op(x, y - 1))) continue;
+    const i = (y * W + x) * 4; a[i] = r; a[i + 1] = g; a[i + 2] = b; a[i + 3] = 255;
+  }
+  c.putImageData(id, 0, 0);
+}
+function montHead(fr) {   // a cabeça do corpo, ou a da expressão que estiver tocando
+  if (mont.expr === 'corpo' || mont.ei < 0) return [fr.cabeca, fr.cabeca_off];
+  const e = CAM.expressoes_cabeca[mont.expr === 'ofeg' ? 'ofegante' : mont.expr].frames[mont.ei];
+  return [e.cabeca, e.off];
+}
+function montDraw() {
+  const body = CAM.corpos[mont.corpo], fr = body.frames[mont.f % body.frames.length];
+  const c = mOff.getContext('2d', { willReadFrequently: true });
+  c.clearRect(0, 0, mOff.width, mOff.height);
+  c.drawImage(camImgs[fr.img], 0, 0);
+  const [hn, off] = montHead(fr), h = CAM.cabecas[hn];
+  const hx = fr.pescoco[0] - h.ancora[0] + off[0], hy = fr.pescoco[1] - h.ancora[1] + off[1];
+  c.drawImage(camImgs[h.img], hx, hy);
+  if (mont.blink && PISCAR && blinkI >= 0 && h.olho) c.drawImage(olhos[PISCAR.frames[blinkI].img], hx + h.olho[0], hy + h.olho[1]);
+  if (outline) addOutline(c);
+  const cv = $('mont'), ctx = cv.getContext('2d');
+  ctx.setTransform(cv.width / MW, 0, 0, cv.height / MH, 0, 0); ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = bg(); ctx.fillRect(0, 0, MW, MH);
+  const flip = body.step_px ? mont.dir < 0 : left, x = Math.round(mont.x), y = MH - CELL.h - 4;
+  ctx.save();
+  if (flip) { ctx.translate(x + CELL.w, y); ctx.scale(-1, 1); ctx.drawImage(mOff, 0, 0); } else ctx.drawImage(mOff, x, y);
+  ctx.restore();
+}
+function montStep(t) {
+  const body = CAM.corpos[mont.corpo];
+  while (t - mont.last >= body.frames[mont.f % body.frames.length].duration_ms / speed) {
+    mont.last += body.frames[mont.f % body.frames.length].duration_ms / speed; mont.f = (mont.f + 1) % body.frames.length;
+    if (body.step_px) {
+      mont.x += mont.dir * body.step_px;
+      if (mont.x > MW - CELL.w - 4) mont.dir = -1;
+      if (mont.x < 4) mont.dir = 1;
+    } else mont.x = (MW - CELL.w) / 2;
+  }
+  if (mont.expr !== 'corpo') {
+    const E = CAM.expressoes_cabeca[mont.expr === 'ofeg' ? 'ofegante' : mont.expr];
+    const d = () => mont.ei < 0 ? 500 / speed : E.frames[mont.ei].duration_ms / speed;   // latir: pausa de 0,5 s entre latidos
+    while (t - mont.et >= d()) {
+      mont.et += d();
+      mont.ei = mont.ei < 0 ? 0 : mont.ei + 1;
+      if (mont.ei >= E.frames.length) mont.ei = E.loop ? 0 : -1;
+    }
+  }
+  if (t - mont.last > 1000) mont.last = t;
+  if (t - mont.et > 1000) mont.et = t;
+}
+function montButtons() {
+  const corpos = Object.keys(CAM.corpos).filter(k => k !== 'piscando');
+  const fill = (el, keys, cur, set) => {
+    el.innerHTML = '';
+    for (const k of keys) {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = MNOMES[k] || k;
+      b.setAttribute('aria-pressed', String(k === cur));
+      b.onclick = () => { set(k); [...el.children].forEach(c => c.setAttribute('aria-pressed', String(c === b))); };
+      el.appendChild(b);
+    }
+  };
+  fill($('mCorpo'), corpos, mont.corpo, k => { mont.corpo = k; mont.f = 0; });
+  fill($('mCabeca'), ['corpo', 'latir', 'ofeg'], mont.expr, k => { mont.expr = k; mont.ei = 0; });
+  $('mBlink').onchange = e => { mont.blink = e.target.checked; };
+}
+
 function loop(t) {
   blinkStep(t);
+  if (CAM) { montStep(t); montDraw(); }
   for (const v of views) {
     if (v.expr) {
       while (t - v.exprT >= v.expr.frames[v.exprI].duration_ms / speed) {
@@ -305,6 +400,7 @@ $('lbTamanho').onclick = () => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lb').hidden) $('lbFechar').click(); });
 
 header(); checklist();
+if (CAM) montButtons(); else $('montador').hidden = true;
 sheet.onload = () => { build(); requestAnimationFrame(loop); };
 sheet.src = DATA.sheet;
 </script>
