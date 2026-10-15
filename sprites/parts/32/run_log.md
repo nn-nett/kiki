@@ -290,3 +290,38 @@ medidas da pose parada; v4, `run_c3`/`run_c4` e as opções de pescoço não for
   da `head_run` intactas; só cores da paleta.
 - **A simulação ainda não toca a v5**: `sim_page.py` monta as camadas num quadro fixo de 32x32 e recusa o quadro de
   40 ("camadas não batem com o rig"). Pra testar na simulação, o `sim_page.py` precisa usar o `canvas` da receita.
+
+### Pescoço mais longo nos dois galopes (v4 e v5, +2 e +4 px)
+
+Pedido do dono: "aumenta o pescoço nos dois galopes pra nós ver". Arquivos novos; nenhuma peça ou receita
+existente mudou.
+- **Como foi feito**: a `head_run` (sem mudar nenhum pixel) vai N px pra frente. O corpo é cisalhado só na frente:
+  - da coluna hx+8 pra frente (dentro do pescoço, embaixo da cabeça), as linhas até o queixo andam N px junto com
+    a cabeça;
+  - as 3 linhas logo abaixo do queixo andam N-1, N-2, N-3, com o corte antes da mancha do peito, pra ela andar
+    inteira;
+  - o resto (peito de baixo, barriga, pernas, garupa, toquinho) fica parado;
+  - as colunas novas são pelo preto (K).
+- **O que muda na figura**: o pescoço fica N px mais comprido em cima (linha das costas reta até a orelha) e
+  embaixo. A garganta castanha e a frente do peito viram uma diagonal mais deitada, do queixo até o peito.
+- **Retoques automáticos** no pescoço que ficou à mostra: X de dentro virou K (no v4 havia um X do toco do pescoço)
+  e os entalhes de 1 px sob a orelha foram fechados com K.
+- **Cabeça**: mexe igual à versão original (no máximo 1 px por frame), só que N px mais à frente.
+- **Pernas e patas** (linhas 24-31): idênticas às originais, então a anti-patinação continua a mesma.
+- Receitas (o `@socket.pescoco` de cada tronco fica onde a cabeça encaixa, offset [0,0]):
+
+| receita | quadro | peças novas |
+|---|---|---|
+| `anims/run_v4_pescoco2.json` | 34x32 | `torso_run_<pose>_p2`, `legs_run0-5_p2` |
+| `anims/run_v4_pescoco4.json` | 36x32 | `torso_run_<pose>_p4`, `legs_run0-5_p4` |
+| `anims/galope_v5_pescoco2.json` | 42x32 | `torso_galope_<pose>_p2`, `legs_galope1_p2`, `legs_galope2_p2` (as outras pernas são as da v5) |
+| `anims/galope_v5_pescoco4.json` | 44x32 | `torso_galope_<pose>_p4`, `legs_galope0-5_p4` |
+
+- **Conferência**:
+  - rig == desenho nos 6 frames das 4 receitas;
+  - `problems()`: 0 buracos e 0 pixels soltos nas 3 variantes (normal, esquerda, contorno); entalhes só entre as
+    patas, os mesmos das originais;
+  - lint: normal e esquerda só com "silhueta some na taskbar escura"; contorno sem nenhum problema.
+- A simulação continua sem rodar quadros mais largos que 32.
+- Gerador fora do repo: `scratchpad/galope_v5/neck.py` + `export_neck.py`. Quadro e spritemap em
+  `scratchpad/galope_v5/pescoco/`.

@@ -1,0 +1,176 @@
+{
+  "name": "galope_v5_pescoco4",
+  "canvas": [
+    44,
+    32
+  ],
+  "loop": true,
+  "sequence": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "variants": {
+    "contorno": [
+      {
+        "filter": "outline",
+        "opts": {
+          "color": "G"
+        }
+      }
+    ],
+    "esquerda": [
+      "mirror"
+    ]
+  },
+  "frames": [
+    {
+      "duration": 70,
+      "airborne": true,
+      "parts": [
+        {
+          "id": "legs",
+          "part": "legs_galope0_p4",
+          "at": [
+            0,
+            19
+          ]
+        },
+        {
+          "id": "torso",
+          "part": "torso_galope_esticado_p4",
+          "at": [
+            0,
+            0
+          ],
+          "offset": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "head",
+          "part": "head_run",
+          "attach": "torso.pescoco",
+          "offset": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "base": 0,
+      "airborne": false,
+      "set": {
+        "legs": {
+          "part": "legs_galope1_p4"
+        },
+        "torso": {
+          "part": "torso_galope_pouso_frente_p4",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "head": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 0,
+      "airborne": false,
+      "set": {
+        "legs": {
+          "part": "legs_galope2_p4"
+        },
+        "torso": {
+          "part": "torso_galope_apoio_frente_p4",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "head": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 0,
+      "airborne": true,
+      "set": {
+        "legs": {
+          "part": "legs_galope3_p4"
+        },
+        "torso": {
+          "part": "torso_galope_recolhido_p4",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "head": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 0,
+      "airborne": false,
+      "set": {
+        "legs": {
+          "part": "legs_galope4_p4"
+        },
+        "torso": {
+          "part": "torso_galope_pouso_tras_p4",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "head": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 0,
+      "airborne": false,
+      "set": {
+        "legs": {
+          "part": "legs_galope5_p4"
+        },
+        "torso": {
+          "part": "torso_galope_empurrao_p4",
+          "offset": [
+            0,
+            0
+          ]
+        },
+        "head": {
+          "offset": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

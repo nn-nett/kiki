@@ -158,6 +158,9 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   (`anims/galope_v5.json`, peças `legs_galope0-5` + `torso_galope_*`, seção v5 no `run_log.md`, fonte editável no
   scratch do desenhista). Comparação com a v4 em https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1. A simulação
   ainda não roda quadros mais largos que 32 (`sim_page.py` precisa usar o `canvas` da receita).
+  Depois: "aumenta o pescoço nos dois galopes pra nós ver" → pescoço +2 e +4 px na v5 e na v4 (`head_run` igual, só
+  mais pra frente; peito/barriga/pernas/rabo iguais): `anims/galope_v5_pescoco2/4.json` (42/44 px) e
+  `anims/run_v4_pescoco2/4.json` (34/36 px), peças com sufixo `_p2`/`_p4`. Os seis na página da corrida.
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.
