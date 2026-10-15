@@ -209,3 +209,19 @@ O peito fica na mesma coluna no apoio das dianteiras (F1->F2) e a garupa na mesm
 - 6 frames mantidos: a referência usa 6 poses e o ciclo lê; com 8, as mudanças de forma por frame ficariam menores.
 - A cabeça agora sobe e desce 3 px no ciclo (v3: 2). O pescoço engrossa 1 px atrás na bola e no pouso das traseiras
   (a cabeça fica 1 px à frente do toco); em 2x não aparece.
+
+### Corpo mais comprido (15/10)
+
+Pedido do dono: "na corrida aumenta uns 3-4 pixels pro corpo". Feito com `tools/alongar.py` (sem redesenho): em cada
+frame o tronco é cortado numa coluna só de pelo preto (costas e barriga retas ali, sem perna embaixo) e essa coluna é
+repetida N vezes; abaixo da barriga a parte da frente só anda N px. Pernas, peito, pescoço e cabeça ficam iguais.
+- Receitas `anims/run_c3.json` (quadro 35x32) e `anims/run_c4.json` (36x32), peças `*_c3`/`*_c4` (tronco e pernas).
+- Corte por frame (coluna do quadro): 10, 11, 14, 14, 12, 15.
+- Frame recolhido (f3): as pernas se cruzam embaixo da barriga, então não há coluna só de tronco. Acerto à mão nas
+  linhas 25-28 de `legs_run3_c3/_c4`: as patas de trás ficam e as da frente andam junto com o peito, com borda X
+  própria. De quebra resolve a queixa antiga de que as patas da frente e de trás "quase se tocam".
+- Conferência: 0 buracos, 0 pixels soltos; entalhes só entre as patas (f0 e o vão novo do f3); lint só com "silhueta
+  some na taskbar escura" nas versões sem contorno.
+- Quadro em `sprites/previews/correndo/corpo_quadro.png`, spritemap em `spritemap_correndo.png`.
+- Ainda com o pescoço "agora" (cabeça desce 3); dá pra repetir em cima das opções A/B do pescoço quando o dono escolher.
+- Quadro mais largo que 32: no app, alinhar as células pelo centro de baixo (a corrida "cresce" pros dois lados).

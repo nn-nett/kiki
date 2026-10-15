@@ -16,15 +16,25 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   (formato do JSON, `step_px`, variantes, regras de desenho na tela).
   - `kiara-sprites.png` (folha 32x32 por célula) + `kiara-sprites.json` (frames, durações, loop, passo).
   - `frames/<anim>/` com os PNGs soltos.
-- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame), `latindo` (com tranco), `piscando`,
-  `ofegante` e `andando_ofegante`. Cada uma em 4 versões: normal, `_esquerda`, `_contorno` (taskbar escura)
-  e `_contorno_esquerda`. O **piscar também sai solto** (remendo do olho em `final/expressoes/` + `olho`
-  por frame no JSON) pra tocar por cima de qualquer animação — ver o README.
+- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame), `latindo` (com tranco), `piscando` e
+  `ofegante` (parada; em revisão). Cada uma em 4 versões: normal, `_esquerda`, `_contorno` (taskbar escura)
+  e `_contorno_esquerda`. **Expressões soltas** em `final/expressoes/` pra tocar por cima de qualquer corpo,
+  cada uma no seu relógio: piscar (`olho` por frame) e boca ofegante (`boca` por frame).
+  **`andando_ofegante` é uma composição** (`andando` + boca ofegante em relógios separados, aprovada em 15/10:
+  "andando tá ok, perfeito"); não tem mais frames próprios — ver o README.
 - **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe (com spritemap: todos os
-  frames numerados, grade e régua de coordenadas, toque pra ampliar)
+  frames numerados, grade e régua de coordenadas, toque pra ampliar; e o "Montador por camadas")
+- **Componentizado (15/10, pedido do dono):** `final/camadas/` + `camadas` no JSON: corpo sem cabeça por frame
+  (com `pescoco`), cabeças soltas (normal, latido 1/2, ofegante 1/2, com `ancora` e `olho`) e expressões de cabeça
+  (latir, ofegante) pra pôr em qualquer corpo; o olho do piscar cai em qualquer cabeça. Três relógios
+  independentes (corpo, cabeça, piscar). `tools/export_camadas.py` gera e confere contra os 80 frames finais.
+- **Taskbar do dono fica EM CIMA da tela**: ela pisa na fronteira entre a taskbar e as janelas (patas na borda de
+  baixo da taskbar, corpo dentro dela). A 2x ela (64 px) é mais alta que a taskbar de 48 px (escala 100%): decidir
+  o tamanho na Fase 1. Simulação já tem "Taskbar em cima" (padrão).
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
-- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições.
+- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições; o `ofegante`
+  parado está sendo refeito (o dono escolhe entre A2, meio-termo e A3).
 - Pra regenerar os finais: `python3 sprites/tools/export_final.py` (lê `sprites/final/aprovadas.json`).
 
 ## Estado do projeto
@@ -125,6 +135,11 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 
 ## Próximos passos (to-dos do dono)
 
+- **Análise das animações aprovadas** em `sprites/ANALISE.md` (pedido do dono, 15/10): o que têm em comum (tudo
+  em 1 px, só mexe o que tem motivo, mesma cachorra sempre, preparação → pico → volta, relógios separados) e as
+  receitas replicáveis (remendo + âncora, troca de cabeça, ciclo de pernas, respiração de 1 px, rabo como peça).
+  Ler antes de começar uma animação nova.
+
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
@@ -138,6 +153,10 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   O dono escolheu a **v4 com essa orelha** e pediu cabeça mais baixa e pescoço mais longo: opções
   "agora" (desce 3), **A** (desce 4, `anims/run_pescoco_A.json`) e **B** (desce 5, `run_pescoco_B.json`),
   com troncos `torso_run_*_A/_B.txt`; esperando a escolha (ver `run_log.md`).
+  Depois (15/10) pediu **corpo 3-4 px mais comprido**: `anims/run_c3.json` (35x32) e `run_c4.json` (36x32), feitos
+  com `tools/alongar.py` (estica o tronco numa coluna só de pelo preto; no frame recolhido as patas da frente e de
+  trás foram separadas à mão). Comparação com a atual e a v3 em https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1;
+  esperando a escolha (+3 ou +4) e quais "elementos bons" da página offline antiga ele quer de volta.
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.
@@ -162,6 +181,14 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   - Export: piscar solto (remendos + `olho` por frame, conferido contra o rig em todas as animações);
     ofegante pronto parado e andando. Falta: export em camadas (corpo sem cabeça + âncora da cabeça por
     frame + cabeças por expressão) pra ofegante/latido por cima de qualquer corpo (ex.: correndo ofegante).
+  - **Andando ofegante APROVADO** (15/10, "andando tá ok, perfeito"): corpo do andar (100 ms) + boca ofegante
+    (130 ms) em relógios separados. Export: remendos `final/expressoes/boca_ofegante1/2` (+ `_contorno` com 1 px
+    de folga) e `boca` por frame no JSON; `aprovadas.json` tem `andando_ofegante` como `composicao`. A galeria e
+    a simulação montam assim (na simulação o estado "andando ofegante" usa a cabeça do `--pant` no relógio dela).
+  - **Ofegante parado em revisão**: o dono pediu um meio-termo entre A2 (barriga toda estufa) e A3 (só o peito):
+    `anims/ofegante_M.json` (peito + metade da frente da barriga, colunas 14-16). Os três na prévia acima; quando
+    escolher, trocar `ofegante` em `aprovadas.json` e a simulação (`sim_page.py --pant`). Histórico em
+    `expressoes_log.md`.
   - Ideias em aberto: ritmo mais calmo do ofegante (180-200 ms) pra quando não correu;
     "cara relaxada" = ofegante + olho meio fechado.
 
@@ -227,7 +254,9 @@ só marcar como ✅ com aprovação explícita.
   `spritegen.py`, `recolor.py`, `sheet_extract.py`, `tweak.py` (ajuste fino de pixels com
   variantes, checagem de buracos/entalhes e aplicação), `preview_html.py` (HTML offline),
   `page.py` + `page_template.html` (página animada do artifact), `export_final.py`, `spritemap.py`
-  (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia).
+  (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia; o `preview_html.py`
+  offline também embute, com toque pra ampliar só em CSS), `alongar.py` (corpo N px mais comprido sem redesenhar),
+  `dois_relogios.py` (prévia de corpo e cabeça em ritmos separados, ex.: andando ofegante).
   Dependências: `sprites/requirements.txt`.
 - **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
   localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,

@@ -112,7 +112,8 @@ def main():
     ap.add_argument("--run-step", type=int, default=2, help="px do sprite por frame na corrida")
     ap.add_argument("--blink", default="piscar", help="receita do piscar (remendo do olho), '' pra tirar")
     ap.add_argument("--pant", default="ofegante", help="receita do ofegante parado, '' pra tirar")
-    ap.add_argument("--walkpant", default="andar_ofegante", help="receita do andar ofegante, '' pra tirar")
+    ap.add_argument("--walkpant", default="", help="(antigo) receita do andar ofegante sincronizado; hoje o andar "
+                    "ofegante é o corpo do andar + a cabeça do --pant, cada um no seu relógio")
     args = ap.parse_args()
 
     rig = Rig(PARTS)

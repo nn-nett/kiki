@@ -1,0 +1,19 @@
+{
+  "name": "ofegante_M",
+  "_nota": "meio-termo entre A2 e A3 a pedido do dono: ao inspirar o peito mexe como na A3 e só a metade da frente da barriga (colunas 14-16) desce 1 px; costas, rabo e pernas parados; o queixo abre e fecha.",
+  "canvas": [32, 32],
+  "loop": true,
+  "sequence": [0, 1],
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 130, "parts": [
+      {"id": "legs", "part": "legs_base_inspM", "at": [0, 19]},
+      {"id": "torso", "part": "torso_insp", "at": [0, 0]},
+      {"id": "head", "part": "head_ofegante1", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "set": {"legs": {"part": "legs_base"}, "torso": {"part": "torso"}, "head": {"part": "head_ofegante2"}}}
+  ]
+}

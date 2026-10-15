@@ -20,7 +20,7 @@ from zoneinfo import ZoneInfo
 
 from PIL import Image
 
-from common import SPRITES_DIR
+from common import SPRITES_DIR, load_palette
 from spritemap import spritemap
 
 FINAL = SPRITES_DIR / "final"
@@ -49,11 +49,22 @@ def mapa_uri(meta, approved):
     """Spritemap (frames numerados, grade e régua) das versões normais, recortado da folha final."""
     sheet = Image.open(FINAL / meta["sheet"]).convert("RGBA")
     rows = []
-    for key in approved:
-        frames = meta["animations"][key]["frames"]
-        rows.append((key, [(f"f{i} · {f['duration_ms']} ms",
-                            sheet.crop((f["x"], f["y"], f["x"] + f["w"], f["y"] + f["h"])))
-                           for i, f in enumerate(frames)]))
+    crop = lambda f: sheet.crop((f["x"], f["y"], f["x"] + f["w"], f["y"] + f["h"]))
+    for key, info in approved.items():
+        comp = info.get("composicao")
+        if not comp:
+            frames = meta["animations"][key]["frames"]
+            rows.append((key, [(f"f{i} · {f['duration_ms']} ms", crop(f)) for i, f in enumerate(frames)]))
+            continue
+        # corpo + expressão: cada frame do corpo com cada frame da expressão por cima
+        expr = meta["expressoes"][comp["expressao"]]
+        cells = []
+        for i, f in enumerate(meta["animations"][comp["corpo"]]["frames"]):
+            for j, e in enumerate(expr["frames"]):
+                im = crop(f)
+                im.alpha_composite(Image.open(FINAL / e["img"]).convert("RGBA"), tuple(f[expr["ancora"]]))
+                cells.append((f"f{i} + {comp['expressao']} {j}", im))
+        rows.append((f"{key} ({comp['corpo']} + {comp['expressao']}, cada um no seu ritmo)", cells))
     buf = io.BytesIO()
     img = spritemap(rows)
     img.save(buf, "PNG")
@@ -74,13 +85,21 @@ def main():
     data = {
         "sheet": sheet,
         "meta": meta,
-        "aprovadas": [{"key": k, "nota": v.get("aprovada", ""), "receita": v["recipe"]} for k, v in approved.items()],
+        "aprovadas": [{"key": k, "nota": v.get("aprovada", ""), "receita": v.get("recipe"),
+                       "composicao": v.get("composicao")} for k, v in approved.items()],
         "checklist": checklist(),
         "mapa": mapa_uri(meta, approved),
+        # camadas (corpo sem cabeça + cabeças) pro montador: o app monta igual
+        "camadasImgs": {f: "data:image/png;base64," + base64.b64encode((FINAL / f).read_bytes()).decode()
+                        for f in sorted({fr["img"] for c in meta.get("camadas", {}).get("corpos", {}).values()
+                                         for fr in c["frames"]} |
+                                        {h["img"] for h in meta.get("camadas", {}).get("cabecas", {}).values()})},
+        "contornoCor": "#%02x%02x%02x" % tuple(load_palette()["G"]),
         # remendos do piscar (expressão desacoplada), lidos de final/expressoes/
-        "olhos": {f["img"]: "data:image/png;base64," + base64.b64encode((FINAL / f["img"]).read_bytes()).decode()
+        # remendos das expressões (piscar, ofegante), lidos de final/expressoes/
+        "olhos": {fr[k]: "data:image/png;base64," + base64.b64encode((FINAL / fr[k]).read_bytes()).decode()
                   for e in meta.get("expressoes", {}).values() for fr in e["frames"]
-                  for f in ({"img": fr["img"]}, {"img": fr["img_esquerda"]})},
+                  for k in ("img", "img_esquerda", "img_contorno", "img_contorno_esquerda") if k in fr},
         "atualizada": now.strftime("%d/%m/%Y %H:%M"),
         "repo": REPO_URL,
     }

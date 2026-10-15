@@ -29,9 +29,14 @@ def font(size, bold=False):
 
 
 def from_folder(folder):
-    """Frames de uma pasta do rig (manifest.json) -> [(rótulo, Image)]."""
+    """Frames de uma pasta do rig (manifest.json) -> [(rótulo, Image)].
+
+    Se o manifest tiver "spritemap" ([{"label", "file"}]), mostra esses no lugar
+    (ex.: uma linha do tempo longa montada de poucas combinações)."""
     folder = Path(folder)
     man = json.loads((folder / "manifest.json").read_text())
+    if man.get("spritemap"):
+        return [(s["label"], Image.open(folder / s["file"]).convert("RGBA")) for s in man["spritemap"]]
     return [(f"f{i} · {f['duration']} ms", Image.open(folder / f["file"]).convert("RGBA"))
             for i, f in enumerate(man["frames"])]
 

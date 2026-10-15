@@ -129,3 +129,59 @@ Ofegante:
 - Conferência: 0 buracos, 0 pixels soltos, 0 entalhes novos; lint só com "silhueta some na taskbar escura"
   nas versões sem contorno; `sim_page.py` recompõe piscar/ofegante/andar ofegante pixel a pixel.
 - Spritemap e quadro em `sprites/previews/expressoes/`.
+
+## Revisão do ofegante (15/10, depois de aprovado)
+
+Dono: "ofegante, acho que tem coisa estranha aí: o movimento é mais no peito/torso/queixo, o resto não mexe tanto;
+andando ofegante tá estranho também". O que estava errado: na expiração o tronco inteiro descia 1 px (costas, rabo,
+garupa), e a linha da coxa piscava porque o tronco descido cobria a faixa das pernas.
+- Parada: costas, rabo e pernas parados. Inspira = `legs_base_inspA` (barriga e fundo do peito 1 px mais fundos)
+  ou `legs_base_inspB` (igual + a frente do peito 1 px pra fora nas linhas 21-22), com `head_ofegante1`;
+  expira = `legs_base` normal com `head_ofegante2` (queixo desce mais). Receitas `anims/ofegante_A.json` e
+  `ofegante_B.json`.
+- Andando: `anims/andar_ofegante_W1.json` (cabeça ofegante 1 fixa: a língua só balança com o passo) e
+  `andar_ofegante_W2.json` (alterna 1/2 a cada frame). Antes a boca abria só nos 2 frames em que o corpo desce, e a
+  língua pulava 2 px de uma vez.
+- Os finais (`sprites/final/`) seguem com a versão aprovada antes até o dono escolher; depois troca
+  `ofegante.json`/`andar_ofegante.json` pela escolhida e roda o `export_final.py`.
+- Quadros em `sprites/previews/expressoes/quadro_ofegante_peito.png` e `quadro_andar_ofegante.png`; spritemap em
+  `spritemap_ofegante.png`.
+
+### Segunda rodada (15/10)
+
+Dono: "andando tá bom, faltou só a animação da boca descendo; a boca aberta tá com um pixel preto no queixo estranho;
+a parada A tá boa, acho que vale expandir esses pixels à direita, os da quina, deixando o peito dela mais quadrado;
+vamos derivar da parada A".
+- Queixo: o lábio de baixo K virou G em `head_ofegante1` (27,14) e `head_ofegante2` (27,15). Vale pra todas as
+  receitas que usam essas cabeças (inclusive as aprovadas antes, no próximo export).
+- Parada **A2** (`anims/ofegante_A2.json`): inspira = `legs_base_inspA2` (a A + frente do peito reta na coluna 25,
+  linhas 20-22, e quina de baixo em (24,23)) + `torso_insp` (o torso com a quina da linha 20 1 px pra frente,
+  porque o torso cobre a linha 20); expira = `legs_base` + `torso` normais.
+- Andando **W3** (`anims/andar_ofegante_W3.json`): cabeça ofegante 2 (boca mais aberta) nos frames 2 e 5, fora dos
+  frames 1 e 4 em que o corpo desce: a língua mexe no máximo 1 px por frame.
+- Conferência: 0 buracos, 0 pixels soltos; lint só com "silhueta some na taskbar escura" sem contorno.
+
+### Terceira rodada (15/10)
+
+Dono: "parada: só a barriga não expandir, entre as duas patas do meio pra trás, porque ela respira mais pelo peito;
+quero ver com antes e depois" e "andando: você tá sincronizando a ofegação com o ritmo da andada; mantém o ritmo da
+respiração na cabeça e o ritmo do andar, coisas diferentes".
+- Parada **A3** (`anims/ofegante_A3.json`): inspira = `legs_base_inspA3` (só o peito: fundo do peito entre as patas
+  da frente 1 px mais fundo e frente quadrada; a barriga fica igual à `legs_base`) + `torso_insp`.
+- Andando com **relógios separados**: o corpo é o trote (100 ms por frame, `andar_ofegante_W1` = trote com a cabeça
+  ofegante) e a cabeça troca no ritmo do `ofegante_A3` (130 ms). Não existe como receita única: no app são duas
+  animações tocando juntas (corpo + cabeça). Pra prévia, `tools/dois_relogios.py` monta a linha do tempo inteira
+  (7,8 s até os dois ciclos baterem juntos, 132 trocas de 12 combinações), com o passo só quando o corpo troca de
+  frame. `page.py` aceita "step" por frame e o spritemap mostra as 12 combinações.
+- Quando aprovar: export em camadas pro app (corpo andando + cabeça ofegante por cima, cada um no seu relógio) e a
+  simulação com o mesmo esquema (o piscar já funciona assim).
+
+### Quarta rodada (15/10)
+
+- Andando com relógios separados **aprovado** ("andando tá ok, perfeito"). Export: a boca ofegante virou remendo
+  (`final/expressoes/boca_ofegante1/2`, recorte 5x5 das cabeças ofegantes na área que muda; `_contorno` 7x7 com o
+  contorno da língua) e cada frame ganhou `boca` (canto da cabeça + recorte; `null` quando a boca já mexe:
+  latindo, ofegante). `andando_ofegante` em `aprovadas.json` virou `composicao` (corpo `andando` + expressão
+  `ofegante`). Conferido no export: andando + remendo = trote com a cabeça ofegante do rig, 4 versões, 2 bocas.
+- Parada: o dono pediu "um meio-termo entre esses dois" (A2 e A3) e ver os três: `ofegante_M`
+  (`legs_base_inspM`: peito como na A3 e só as colunas 14-16 da barriga descem 1 px).

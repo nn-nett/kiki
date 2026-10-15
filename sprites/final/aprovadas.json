@@ -1,9 +1,9 @@
 {
-  "_comment": "Animações aprovadas pelo dono. tools/export_final.py lê esta lista e gera final/frames/ + final/kiara-sprites.png/.json. step_px = quantos px do sprite a janela anda por frame (0 = parada).",
+  "_comment": "Animações aprovadas pelo dono. tools/export_final.py lê esta lista e gera final/frames/ + final/kiara-sprites.png/.json. step_px = quantos px do sprite a janela anda por frame (0 = parada). composicao = um corpo aprovado + uma expressão por cima, cada um no seu relógio (não gera frames).",
   "parada": { "recipe": "stand", "step_px": 0, "aprovada": "pose base em pé" },
   "andando": { "recipe": "walk_b", "step_px": 1, "aprovada": "trote B, barriga +2 px com contorno, peito mais fundo, rabinho +1 px, orelha e pata corrigidas" },
   "latindo": { "recipe": "latir_tranco", "step_px": 0, "aprovada": "latido com tranco (2 latidos por ciclo, língua rosa), queixo fino no AU!" },
   "piscando": { "recipe": "piscar", "step_px": 0, "aprovada": "piscada parada (o piscar também sai como remendo do olho pra tocar por cima de qualquer animação); olho fechado sem o pixel preto da esquerda" },
   "ofegante": { "recipe": "ofegante", "step_px": 0, "aprovada": "ofegante parada: língua rosa pra fora com ponta reta, queixo desce e sobe com a respiração, peito desce 1 px" },
-  "andando_ofegante": { "recipe": "andar_ofegante", "step_px": 1, "aprovada": "trote B com a cabeça ofegante (a língua balança com a passada)" }
+  "andando_ofegante": { "composicao": { "corpo": "andando", "expressao": "ofegante" }, "step_px": 1, "aprovada": "andando com a boca ofegante por cima: a respiração no ritmo dela (130 ms) e o passo no dele (100 ms), sem sincronizar (\"andando tá ok, perfeito\")" }
 }

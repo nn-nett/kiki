@@ -8,6 +8,7 @@
 # queixo GGG de 1 linha, do mesmo tamanho do original) e a língua rosa P pendurada pra fora na
 # frente do queixo: sai por cima do lábio de baixo (linha 14) e desce 2 px de largura, ponta reta (redonda).
 # pedido do dono: "a língua tá pontuda, parecendo de cobra" (saiu o pixel da ponta)
+# pedido do dono: sem o pixel preto no queixo (lábio de baixo K virou G)
 XK........XX....
 XKKX.....XKX....
 XttK.....XtX....
@@ -22,7 +23,7 @@ KtttKKKKKKKK....
 ..XKKKtDKGWWWXX.
 ..XKKXttGWWWWXX.
 ..KKKKXtttKNNN..
-.KKKKKXtttGKPPP.
+.KKKKKXtttGGPPP.
 ..........GGGPP.
 .............PP.
 ................
