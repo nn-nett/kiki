@@ -149,6 +149,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   com `tools/alongar.py` (estica o tronco numa coluna só de pelo preto; no frame recolhido as patas da frente e de
   trás foram separadas à mão). Comparação com a atual e a v3 em https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1;
   esperando a escolha (+3 ou +4) e quais "elementos bons" da página offline antiga ele quer de volta.
+  **Galope v5** (15/10, depois de "parece que ela tem dwarfismo", "o corpo tá muito compacto", "deixa o corpo mais
+  longo"): redesenhado do zero com as medidas da pose parada: tronco de 27-30 colunas em todos os frames (parada
+  23), pernas do comprimento da parada que esticam no galope, `head_run` igual, quadro 40x32, 6×70 ms, 2 px/frame
+  (`anims/galope_v5.json`, peças `legs_galope0-5` + `torso_galope_*`, seção v5 no `run_log.md`, fonte editável no
+  scratch do desenhista). Comparação com a v4 em https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1. A simulação
+  ainda não roda quadros mais largos que 32 (`sim_page.py` precisa usar o `canvas` da receita).
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.

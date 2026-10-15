@@ -225,3 +225,68 @@ repetida N vezes; abaixo da barriga a parte da frente só anda N px. Pernas, pei
 - Quadro em `sprites/previews/correndo/corpo_quadro.png`, spritemap em `spritemap_correndo.png`.
 - Ainda com o pescoço "agora" (cabeça desce 3); dá pra repetir em cima das opções A/B do pescoço quando o dono escolher.
 - Quadro mais largo que 32: no app, alinhar as células pelo centro de baixo (a corrida "cresce" pros dois lados).
+
+### v5 (proporção, sem nanismo)
+
+Pedido do dono (15/10): "a corrida não tá boa ainda", "parece que ela tem dwarfismo", "no galope o corpo tá muito
+compacto, esse é o problema", "tenta deixar o corpo mais longo no galope". Galope redesenhado do zero a partir das
+medidas da pose parada; v4, `run_c3`/`run_c4` e as opções de pescoço não foram tocadas.
+
+**Medidas de referência (pose parada `base/kiara_32.txt`)**
+- Tronco: garupa col. 3 até o peito col. 25 = **23 col.**
+- Altura do corpo: costas na linha 15 até a barriga (X) na linha 24 = **10 linhas**.
+- Dianteira: do fundo do peito (linha 24) até o chão = **7 linhas** + pata. Traseira: da linha castanha da coxa
+  (linha 21) até a sola = **11 linhas** (7 abaixo da barriga).
+- O que a v4 tinha: tronco de 19 a 24 col. (bola no recolhido), corpo com 11-12 linhas de altura e pernas de 3-5 px
+  abaixo da barriga. Era isso o "dwarfismo".
+
+**Decisões**
+- Quadro **40x32** (cabe tronco de até 30 col. + cabeça + toquinho). Focinho na col. 38-39, toquinho a partir da col. 0-3.
+  No app, alinhar as células pelo centro de baixo, como a `run_c4`.
+- Mesma cabeça `head_run` (sem mudar nenhum pixel), encaixada em `torso.pescoco` com offset [0,0]: cada tronco tem o
+  socket onde a âncora da cabeça cai naquele frame. A cabeça se mexe no máximo 1 px por frame (origem 20,5 / 19,6 /
+  20,6 / 20,5 / 19,5 / 20,5). O alto do crânio fica nas linhas 8-9, ou seja, 3-4 px abaixo da pose parada (entre a
+  opção "agora" e a A do pescoço), com a cabeça mais à frente do peito, o que deixa o pescoço mais comprido.
+- Corpo **comprido em todos os frames** (27-30 col.) e **nunca mais grosso que o da pose parada** (9-10 linhas). No
+  recolhido as costas arqueiam (garupa na linha 15, lombo na 12), mas o tronco continua com 27 col.: arco, não bola.
+- Pernas com o **comprimento da pose parada**: a dianteira apoiada tem 7 linhas abaixo do peito (igual à parada); a
+  traseira apoiada tem coxa preta + canela castanha + jarrete, do mesmo jeito da parada (no pouso e no empurrão ela fica
+  1-3 px mais comprida que na parada porque estica). No ar as pernas vão em diagonal com ~9-10 px.
+- Cada perna tem o seu ciclo e a de longe (T) vai atrás: dianteira de longe pousa primeiro (F1) e empurra (F2); a de
+  perto pousa na frente (F2); traseira de perto pousa embaixo do quadril (F4) e empurra (F5); a de longe pousa na frente
+  (F4) e fica embaixo do quadril (F5). No ar as pernas balançam livre (2 px/frame é pouco pra uma passada de galope; o
+  que não pode é pata no chão escorregar).
+- Toquinho acompanha a coluna: 45° pra cima com a garupa alta (F1), pra trás e um pouco pra cima nos outros, mais
+  deitado no recolhido e no pouso de trás. Bumbum do mesmo tamanho em todos os frames.
+
+| frame | pose | tronco | corpo (lombo) | no chão (sola na linha 31) | pernas |
+|---|---|---|---|---|---|
+| 0 | esticado no ar | 30 col. (4-33) | 9 linhas | nada (patas até a linha 30) | dianteira de perto esticada pra frente, de longe descendo; traseiras pra trás |
+| 1 | dianteira pousa | 29 (4-32) | 9 | dianteira de longe, col. 26-29 | de perto esticada quase na horizontal; traseira de perto dobrando atrás, de longe vindo pra frente |
+| 2 | apoio da frente | 27 (7-33) | 10 | dianteira de longe 24-27 (recuou 2), de perto 31-34 | traseiras vindo pra frente embaixo da barriga |
+| 3 | recolhido no ar | 27 (7-33) | 10 | nada (patas até a linha 29) | traseira de perto dobrada embaixo do quadril, de longe pra frente; dianteiras dobradas pra trás |
+| 4 | traseiras pousam | 29 (4-32) | 10 | traseira de perto 7-9, de longe 13-15 | frente alta; dianteira de perto indo pra frente |
+| 5 | empurrão | 28 (6-33) | 9 | traseira de perto 5-7 (recuou 2), de longe 11-13 (recuou 2) | perto empurra pra trás na ponta da pata; dianteiras esticando |
+
+- 6 frames de 70 ms, 2 px/frame, `airborne` nos frames 0 e 3.
+- No recolhido, a pata de trás mais à frente (de longe, col. 17) fica a 3 col. da pata da frente mais atrás (de longe,
+  col. 21). As de perto ficam a 12 col. uma da outra: não se tocam.
+
+**Arquivos**
+- `legs_galope0..5.txt` (linhas 19-31, `@role pernas`), `torso_galope_{esticado,pouso_frente,apoio_frente,recolhido,
+  pouso_tras,empurrao}.txt` (linhas 0-18, `@role torso`, `@socket.pescoco` no lugar da cabeça), receita
+  `anims/galope_v5.json` (variantes `contorno` e `esquerda`).
+- Fonte editável fora do repo: `scratchpad/galope_v5/src/f0-5.txt` (o frame inteiro sem a cabeça + `# head x,y`);
+  `export5.py` gera as peças e a receita e confere o rig contra o desenho.
+
+**Conferência**
+- Rig == desenho nos 6 frames.
+- `problems()`: 0 buracos e 0 pixels soltos nas três variantes (normal, esquerda, contorno). Entalhes só entre as
+  pernas.
+- Lint (`--size 40 32`): normal e esquerda só com "silhueta some na taskbar escura"; contorno sem nenhum problema.
+  Maior mudança entre frames: 23% sem contorno e 31% com contorno (limite 35%).
+- Anti-patinação: as patas no chão recuam exatamente 2 px por frame (dianteira de longe F1→F2; traseiras F4→F5).
+- Regras do dono: bordas de baixo em X; perna de longe (T) atrás da barriga e do peito, com a 1ª linha em K; orelhas
+  da `head_run` intactas; só cores da paleta.
+- **A simulação ainda não toca a v5**: `sim_page.py` monta as camadas num quadro fixo de 32x32 e recusa o quadro de
+  40 ("camadas não batem com o rig"). Pra testar na simulação, o `sim_page.py` precisa usar o `canvas` da receita.
