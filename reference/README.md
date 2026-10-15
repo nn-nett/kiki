@@ -28,3 +28,13 @@ Formatos: JPG/PNG. Qualquer ângulo extra ajuda.
 
 O dono sugeriu: "ela precisa de um travesseiro pra ela subir e dormir" — quase sempre ela dorme com
 a cabeça apoiada numa almofada ou no braço do sofá.
+
+## De frente (enviadas pelo dono em 15/10, pra cabeça de frente da meia-volta)
+
+- `kiki_frente_deitada_1.jpg`, `_2.jpg`, `_3.jpg`: deitada de frente no sofá, cabeça levemente virada; mostram as
+  orelhas enormes abertas (por dentro escuras/rosadas, com borda castanha embaixo), os pontinhos castanhos de
+  sobrancelha, o grisalho em volta dos olhos e no focinho, as bochechas e a garganta castanhas, o peito grisalho no
+  centro com castanho dos lados e as patas da frente castanhas.
+- `kiki_frente_deitada_34.jpg`: a mesma pose em 3/4 (cabeça virada pro lado), boa pra cabeça 3/4.
+- `kiki_frente_sorrindo_peitoral.jpg`: de frente, boca aberta "sorrindo" com a língua rosa (referência pro
+  ofegante/feliz), com o peitoral teal do passeio.
