@@ -13,7 +13,7 @@ Pra ver tudo animado: Galeria da Kiara, https://claude.ai/artifact/Cg5sdrUGvrXio
 | `kiara-sprites.json` | Metadados: posição de cada frame na folha, duração, loop, passo e frames no ar. |
 | `frames/<anim>/<anim>[_variante]_<i>.png` | Os mesmos frames soltos, 32x32 cada (pra quem preferir um PNG por frame). |
 | `aprovadas.json` | Lista das animações aprovadas e de qual receita (`sprites/anims/*.json`) cada uma sai. |
-| `expressoes/` | Remendos do piscar (`olho_meio.png`, `olho_fechado.png`, 4x3, e as versões `_esquerda`). |
+| `expressoes/` | Remendos das expressões: piscar (`olho_meio`, `olho_fechado`, 4x3) e ofegante (`boca_ofegante1/2`, 5x5, e `_contorno` 7x7), cada um também em `_esquerda`. |
 | `spritemap.png` | Folha de revisão: todos os frames das versões normais, numerados, com grade e régua. |
 | `galeria.html` | Página com tudo animado, lida só destes arquivos (prova de que estão íntegros). |
 
@@ -28,8 +28,18 @@ Cada uma existe em 4 versões: `<nome>`, `<nome>_esquerda`, `<nome>_contorno`,
 | `andando` | 6 | 100 cada | 0,6 s | 1 | trote, andando pela barra |
 | `latindo` | 7 | 300, 90, 170, 100, 90, 170, 100 | 1,02 s | 0 | late parada (2 latidos por ciclo, com tranco) |
 | `piscando` | 4 | 1500, 60, 110, 60 | 1,73 s | 0 | parada piscando (o piscar também existe solto, ver abaixo) |
-| `ofegante` | 2 | 130, 130 | 0,26 s | 0 | parada com a língua pra fora, queixo e peito subindo e descendo |
-| `andando_ofegante` | 6 | 100 cada | 0,6 s | 1 | trote com a cabeça ofegante (ex.: depois de correr) |
+| `ofegante` | 2 | 130, 130 | 0,26 s | 0 | parada com a língua pra fora (em revisão: o dono está escolhendo como o peito mexe) |
+
+Composições (não têm frames próprios: são um corpo aprovado + uma expressão tocando juntos, cada um no
+seu relógio; ficam em `composicoes` no JSON):
+
+| Nome | Corpo | Expressão | `step_px` | Uso |
+|---|---|---|---|---|
+| `andando_ofegante` | `andando` (100 ms por frame) | `ofegante` (boca, 130 ms por frame) | 1 | andando com a língua pra fora (ex.: depois de correr) |
+
+**Mudou em 15/10:** `andando_ofegante` deixou de ser frames prontos (a boca ia sincronizada com o passo e o
+dono achou estranho). Agora é `andando` + o remendo da boca no ritmo dele. Se o app usava os frames
+`andando_ofegante_*`, troque por isso (ver "Expressões por cima" abaixo).
 
 ## Formato do JSON
 
@@ -58,7 +68,34 @@ Cada uma existe em 4 versões: `<nome>`, `<nome>_esquerda`, `<nome>_contorno`,
 - `frames[i].olho`: canto `[x, y]` onde o remendo do piscar cai nessa célula (`null` = a animação já
   mexe no olho, como `piscando`).
 
-## Piscar por cima de qualquer animação (expressão desacoplada)
+## Expressões por cima (piscar e ofegante, desacopladas do corpo)
+
+Cada expressão tem um relógio próprio, separado da animação do corpo, e um remendo pequeno desenhado por
+cima da célula. A âncora (`expressoes.<nome>.ancora`) diz qual campo do frame dá a posição: `olho` (piscar)
+ou `boca` (ofegante). Valor `null` = aquela animação já mexe nisso (não desenhe).
+
+### Ofegante (boca)
+
+```json
+"ofegante": {
+  "ancora": "boca",
+  "frames": [
+    { "img": "expressoes/boca_ofegante1.png", "img_esquerda": "...", "img_contorno": "...", "img_contorno_esquerda": "...", "duration_ms": 130 },
+    { "img": "expressoes/boca_ofegante2.png", "...": "...", "duration_ms": 130 }
+  ],
+  "loop": true,
+  "contorno_folga_px": 1
+}
+```
+
+- Toque em loop (130 ms por frame) enquanto ela estiver ofegante, num relógio que não depende do passo.
+- Em cada desenho: pinte a célula do corpo (ex.: `andando`) e o remendo em `(célula.x + boca[0], célula.y + boca[1])`.
+  Nas `_esquerda` use `img_esquerda`; nas `_contorno` use `img_contorno` (ou `img_contorno_esquerda`) em
+  `boca - 1` nos dois eixos (ele tem 1 px de folga em volta, pro contorno da língua).
+- Conferido: `andando` + remendo = trote com a cabeça ofegante montado pelo rig, nas 4 versões e nas duas bocas.
+  A galeria mostra o `andando_ofegante` assim.
+
+### Piscar (olho)
 
 O piscar não precisa de frames novos por animação: é um remendo pequeno do olho desenhado por cima.
 

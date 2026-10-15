@@ -146,7 +146,7 @@ function bg() { return dark ? '#202020' : '#f3f3f3'; }
 
 function header() {
   const n = DATA.aprovadas.length;
-  const frames = DATA.aprovadas.reduce((t, a) => t + DATA.meta.animations[a.key].frames.length, 0);
+  const frames = DATA.aprovadas.filter(a => !a.composicao).reduce((t, a) => t + DATA.meta.animations[a.key].frames.length, 0);
   const el = document.getElementById('saved');
   el.innerHTML = `<span class="chip ok">${n} ${n === 1 ? 'animação aprovada' : 'animações aprovadas'}</span>
     <span class="chip">${frames} frames × 4 versões</span>
@@ -157,7 +157,9 @@ function header() {
 function build() {
   const cards = document.getElementById('cards');
   for (const a of DATA.aprovadas) {
-    const base = DATA.meta.animations[a.key];
+    // composição: o corpo é uma animação aprovada e a expressão toca por cima no relógio dela
+    const key = a.composicao ? a.composicao.corpo : a.key;
+    const base = DATA.meta.animations[key];
     const total = base.frames.reduce((t, f) => t + f.duration_ms, 0);
     const card = document.createElement('section');
     card.className = 'card';
@@ -170,11 +172,14 @@ function build() {
         <div><dt>Anda/frame</dt><dd>${base.step_px} px</dd></div>
       </dl>
       <div class="frames"></div>
-      <p>Arquivos: <code>sprites/final/frames/${a.key}/</code> · receita <code>anims/${a.receita}.json</code></p>`;
+      <p>${a.composicao
+        ? `Corpo: <code>sprites/final/frames/${key}/</code> · ${a.composicao.expressao} por cima, no ritmo dele: <code>sprites/final/expressoes/</code>`
+        : `Arquivos: <code>sprites/final/frames/${a.key}/</code> · receita <code>anims/${a.receita}.json</code>`}</p>`;
     card.querySelector('p').textContent = a.nota;
     cards.appendChild(card);
-    const v = { key: a.key, cv: card.querySelector('canvas.strip'), framesEl: card.querySelector('.frames'),
-                f: 0, last: 0, x: base.step_px ? 8 : (STRIP_W - CELL.w) / 2, dir: 1 };
+    const v = { key, cv: card.querySelector('canvas.strip'), framesEl: card.querySelector('.frames'),
+                f: 0, last: 0, x: base.step_px ? 8 : (STRIP_W - CELL.w) / 2, dir: 1,
+                expr: a.composicao ? DATA.meta.expressoes[a.composicao.expressao] : null, exprI: 0, exprT: 0 };
     views.push(v);
     renderFrames(v);
   }
@@ -215,6 +220,11 @@ function draw(v) {
   const A = anim(v.key, flip);   // usa os frames _esquerda salvos (não espelha na hora): testa o arquivo final
   const fr = A.frames[v.f % A.frames.length], x = Math.round(v.x), y = STRIP_H - CELL.h - 4;
   blit(ctx, fr, x, y, false);
+  if (v.expr && fr[v.expr.ancora]) {   // expressão da composição (ex.: boca ofegante), no relógio dela
+    const e = v.expr.frames[v.exprI], k = 'img' + (outline ? '_contorno' : '') + (flip ? '_esquerda' : '');
+    const folga = outline ? (v.expr.contorno_folga_px || 0) : 0;
+    ctx.drawImage(olhos[e[k] || e.img], x + fr[v.expr.ancora][0] - folga, y + fr[v.expr.ancora][1] - folga);
+  }
   if (blinkOn && blinkI >= 0 && fr.olho) {
     const p = PISCAR.frames[blinkI], img = olhos[flip ? p.img_esquerda : p.img];
     ctx.drawImage(img, x + fr.olho[0], y + fr.olho[1]);
@@ -236,6 +246,12 @@ function blinkStep(t) {
 function loop(t) {
   blinkStep(t);
   for (const v of views) {
+    if (v.expr) {
+      while (t - v.exprT >= v.expr.frames[v.exprI].duration_ms / speed) {
+        v.exprT += v.expr.frames[v.exprI].duration_ms / speed; v.exprI = (v.exprI + 1) % v.expr.frames.length;
+      }
+      if (t - v.exprT > 1000) v.exprT = t;
+    }
     const A = DATA.meta.animations[v.key];
     const d = A.frames[v.f % A.frames.length].duration_ms / speed;
     if (t - v.last >= d) {

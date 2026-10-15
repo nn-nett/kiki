@@ -14,15 +14,18 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   (formato do JSON, `step_px`, variantes, regras de desenho na tela).
   - `kiara-sprites.png` (folha 32x32 por célula) + `kiara-sprites.json` (frames, durações, loop, passo).
   - `frames/<anim>/` com os PNGs soltos.
-- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame), `latindo` (com tranco), `piscando`,
-  `ofegante` e `andando_ofegante`. Cada uma em 4 versões: normal, `_esquerda`, `_contorno` (taskbar escura)
-  e `_contorno_esquerda`. O **piscar também sai solto** (remendo do olho em `final/expressoes/` + `olho`
-  por frame no JSON) pra tocar por cima de qualquer animação — ver o README.
+- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame), `latindo` (com tranco), `piscando` e
+  `ofegante` (parada; em revisão). Cada uma em 4 versões: normal, `_esquerda`, `_contorno` (taskbar escura)
+  e `_contorno_esquerda`. **Expressões soltas** em `final/expressoes/` pra tocar por cima de qualquer corpo,
+  cada uma no seu relógio: piscar (`olho` por frame) e boca ofegante (`boca` por frame).
+  **`andando_ofegante` é uma composição** (`andando` + boca ofegante em relógios separados, aprovada em 15/10:
+  "andando tá ok, perfeito"); não tem mais frames próprios — ver o README.
 - **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe (com spritemap: todos os
   frames numerados, grade e régua de coordenadas, toque pra ampliar)
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
-- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições.
+- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições; o `ofegante`
+  parado está sendo refeito (o dono escolhe entre A2, meio-termo e A3).
 - Pra regenerar os finais: `python3 sprites/tools/export_final.py` (lê `sprites/final/aprovadas.json`).
 
 ## Estado do projeto
@@ -152,13 +155,14 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   - Export: piscar solto (remendos + `olho` por frame, conferido contra o rig em todas as animações);
     ofegante pronto parado e andando. Falta: export em camadas (corpo sem cabeça + âncora da cabeça por
     frame + cabeças por expressão) pra ofegante/latido por cima de qualquer corpo (ex.: correndo ofegante).
-  - **Ofegante em revisão** (15/10, depois de aprovado). Rodada 3, a atual: parada **A3** (`anims/ofegante_A3.json`:
-    só o peito mexe, a barriga das patas do meio pra trás não estufa; queixo sem o pixel preto) e **andando com
-    relógios separados** (corpo no ritmo do trote, 100 ms; cabeça no ritmo do ofegante, 130 ms; prévia montada por
-    `tools/dois_relogios.py --corpo andar_ofegante_W1 --cabeca ofegante_A3`). Rodadas anteriores (A/B, A2, W1-W3) e
-    o motivo de cada uma em `expressoes_log.md`. Esperando aprovação; depois: export em camadas (corpo + cabeça em
-    relógios separados), simulação no mesmo esquema e `aprovadas.json` (ofegante → ofegante_A3). Os finais seguem
-    com a versão antiga até lá.
+  - **Andando ofegante APROVADO** (15/10, "andando tá ok, perfeito"): corpo do andar (100 ms) + boca ofegante
+    (130 ms) em relógios separados. Export: remendos `final/expressoes/boca_ofegante1/2` (+ `_contorno` com 1 px
+    de folga) e `boca` por frame no JSON; `aprovadas.json` tem `andando_ofegante` como `composicao`. A galeria e
+    a simulação montam assim (na simulação o estado "andando ofegante" usa a cabeça do `--pant` no relógio dela).
+  - **Ofegante parado em revisão**: o dono pediu um meio-termo entre A2 (barriga toda estufa) e A3 (só o peito):
+    `anims/ofegante_M.json` (peito + metade da frente da barriga, colunas 14-16). Os três na prévia acima; quando
+    escolher, trocar `ofegante` em `aprovadas.json` e a simulação (`sim_page.py --pant`). Histórico em
+    `expressoes_log.md`.
   - Ideias em aberto: ritmo mais calmo do ofegante (180-200 ms) pra quando não correu;
     "cara relaxada" = ofegante + olho meio fechado.
 

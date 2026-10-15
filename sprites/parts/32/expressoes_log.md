@@ -175,3 +175,13 @@ respiração na cabeça e o ritmo do andar, coisas diferentes".
   frame. `page.py` aceita "step" por frame e o spritemap mostra as 12 combinações.
 - Quando aprovar: export em camadas pro app (corpo andando + cabeça ofegante por cima, cada um no seu relógio) e a
   simulação com o mesmo esquema (o piscar já funciona assim).
+
+### Quarta rodada (15/10)
+
+- Andando com relógios separados **aprovado** ("andando tá ok, perfeito"). Export: a boca ofegante virou remendo
+  (`final/expressoes/boca_ofegante1/2`, recorte 5x5 das cabeças ofegantes na área que muda; `_contorno` 7x7 com o
+  contorno da língua) e cada frame ganhou `boca` (canto da cabeça + recorte; `null` quando a boca já mexe:
+  latindo, ofegante). `andando_ofegante` em `aprovadas.json` virou `composicao` (corpo `andando` + expressão
+  `ofegante`). Conferido no export: andando + remendo = trote com a cabeça ofegante do rig, 4 versões, 2 bocas.
+- Parada: o dono pediu "um meio-termo entre esses dois" (A2 e A3) e ver os três: `ofegante_M`
+  (`legs_base_inspM`: peito como na A3 e só as colunas 14-16 da barriga descem 1 px).
