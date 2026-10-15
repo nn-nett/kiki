@@ -133,7 +133,7 @@ async function build() {
       <canvas class="bar" width="${BAR_W}" height="${BAR_H}" aria-label="Kiara passeando na taskbar"></canvas>`;
     cards.appendChild(card);
     const [cz, cs, cb] = card.querySelectorAll('canvas');
-    views.push({ walk, stand, cz, cs, cb, x: v.step === 0 ? (BAR_W - walk[0].width*SCALE_BAR) / 2 : 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, f: 0, last: 0 });
+    views.push({ walk, stand, cz, cs, cb, x: v.step === 0 ? (BAR_W - walk[0].width*SCALE_BAR) / 2 : 10, dir: 1, durs: v.durs || [v.ms], step: v.step ?? 1, steps: v.steps || null, f: 0, last: 0 });
   }
   draw(); loop();
 }
@@ -163,7 +163,8 @@ function draw() {
 function step(v) {
   v.f = (v.f + 1) % v.walk.length;
   // patas plantadas recuam v.step px do sprite por frame: a janela anda o mesmo
-  v.x += v.dir * v.step * SCALE_BAR;
+  // (ou o passo daquele frame, quando a animação mistura relógios: só anda quando o passo troca)
+  v.x += v.dir * (v.steps ? v.steps[v.f] : v.step) * SCALE_BAR;
   if (v.x > BAR_W - v.walk[0].width*SCALE_BAR - 6) v.dir = -1;
   if (v.x < 6) v.dir = 1;
 }
@@ -172,7 +173,12 @@ function loop(t = 0) {
   if (playing) {
     let changed = false;
     for (const v of views) {
-      if (t - v.last >= v.durs[v.f % v.durs.length] / speed) { step(v); v.last = t; changed = true; }
+      // frames curtos (menos que um quadro da tela) não podem atrasar o relógio: avança quantos couberem
+      let n = 0;
+      while (t - v.last >= v.durs[v.f % v.durs.length] / speed && n++ < 60) {
+        v.last += v.durs[v.f % v.durs.length] / speed; step(v); changed = true;
+      }
+      if (t - v.last > 1000) v.last = t;   // voltou de uma aba parada: não corre atrás
     }
     if (changed) draw();
   }

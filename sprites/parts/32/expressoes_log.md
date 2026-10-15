@@ -160,3 +160,18 @@ vamos derivar da parada A".
 - Andando **W3** (`anims/andar_ofegante_W3.json`): cabeça ofegante 2 (boca mais aberta) nos frames 2 e 5, fora dos
   frames 1 e 4 em que o corpo desce: a língua mexe no máximo 1 px por frame.
 - Conferência: 0 buracos, 0 pixels soltos; lint só com "silhueta some na taskbar escura" sem contorno.
+
+### Terceira rodada (15/10)
+
+Dono: "parada: só a barriga não expandir, entre as duas patas do meio pra trás, porque ela respira mais pelo peito;
+quero ver com antes e depois" e "andando: você tá sincronizando a ofegação com o ritmo da andada; mantém o ritmo da
+respiração na cabeça e o ritmo do andar, coisas diferentes".
+- Parada **A3** (`anims/ofegante_A3.json`): inspira = `legs_base_inspA3` (só o peito: fundo do peito entre as patas
+  da frente 1 px mais fundo e frente quadrada; a barriga fica igual à `legs_base`) + `torso_insp`.
+- Andando com **relógios separados**: o corpo é o trote (100 ms por frame, `andar_ofegante_W1` = trote com a cabeça
+  ofegante) e a cabeça troca no ritmo do `ofegante_A3` (130 ms). Não existe como receita única: no app são duas
+  animações tocando juntas (corpo + cabeça). Pra prévia, `tools/dois_relogios.py` monta a linha do tempo inteira
+  (7,8 s até os dois ciclos baterem juntos, 132 trocas de 12 combinações), com o passo só quando o corpo troca de
+  frame. `page.py` aceita "step" por frame e o spritemap mostra as 12 combinações.
+- Quando aprovar: export em camadas pro app (corpo andando + cabeça ofegante por cima, cada um no seu relógio) e a
+  simulação com o mesmo esquema (o piscar já funciona assim).

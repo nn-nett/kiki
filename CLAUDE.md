@@ -152,13 +152,13 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   - Export: piscar solto (remendos + `olho` por frame, conferido contra o rig em todas as animações);
     ofegante pronto parado e andando. Falta: export em camadas (corpo sem cabeça + âncora da cabeça por
     frame + cabeças por expressão) pra ofegante/latido por cima de qualquer corpo (ex.: correndo ofegante).
-  - **Ofegante em revisão** (15/10, depois de aprovado: "o movimento é mais no peito/torso/queixo, o resto não
-    mexe tanto"; "andando ofegante tá estranho"). Rodada 2: queixo sem o pixel preto (lábio K→G nas duas cabeças
-    ofegantes), parada **A2** (`anims/ofegante_A2.json`: barriga/peito descem e a quina do peito vem 1 px, peito
-    quadrado; peças `legs_base_inspA2` + `torso_insp`) e andando **W3** (`anims/andar_ofegante_W3.json`: a boca
-    desce nos frames 2 e 5). Esperando aprovação; depois trocar `aprovadas.json` (ofegante → ofegante_A2,
-    andando_ofegante → andar_ofegante_W3), rodar o `export_final.py` e atualizar a simulação (`--pant`/`--walkpant`).
-    Os finais seguem com a versão antiga até lá (ver `expressoes_log.md`).
+  - **Ofegante em revisão** (15/10, depois de aprovado). Rodada 3, a atual: parada **A3** (`anims/ofegante_A3.json`:
+    só o peito mexe, a barriga das patas do meio pra trás não estufa; queixo sem o pixel preto) e **andando com
+    relógios separados** (corpo no ritmo do trote, 100 ms; cabeça no ritmo do ofegante, 130 ms; prévia montada por
+    `tools/dois_relogios.py --corpo andar_ofegante_W1 --cabeca ofegante_A3`). Rodadas anteriores (A/B, A2, W1-W3) e
+    o motivo de cada uma em `expressoes_log.md`. Esperando aprovação; depois: export em camadas (corpo + cabeça em
+    relógios separados), simulação no mesmo esquema e `aprovadas.json` (ofegante → ofegante_A3). Os finais seguem
+    com a versão antiga até lá.
   - Ideias em aberto: ritmo mais calmo do ofegante (180-200 ms) pra quando não correu;
     "cara relaxada" = ofegante + olho meio fechado.
 
@@ -225,7 +225,8 @@ só marcar como ✅ com aprovação explícita.
   variantes, checagem de buracos/entalhes e aplicação), `preview_html.py` (HTML offline),
   `page.py` + `page_template.html` (página animada do artifact), `export_final.py`, `spritemap.py`
   (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia; o `preview_html.py`
-  offline também embute, com toque pra ampliar só em CSS), `alongar.py` (corpo N px mais comprido sem redesenhar).
+  offline também embute, com toque pra ampliar só em CSS), `alongar.py` (corpo N px mais comprido sem redesenhar),
+  `dois_relogios.py` (prévia de corpo e cabeça em ritmos separados, ex.: andando ofegante).
   Dependências: `sprites/requirements.txt`.
 - **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
   localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,

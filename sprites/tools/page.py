@@ -66,6 +66,8 @@ def main():
             "nome": escape(name), "nota": escape(note),
             "step": float(own[1]) if len(own) > 1 and own[1] else args.step,
             "durs": [f["duration"] for f in man["frames"]],
+            # passo por frame, se o manifest disser (ex.: linha do tempo de andar + respirar em relógios separados)
+            "steps": [f["step"] for f in man["frames"]] if all("step" in f for f in man["frames"]) else None,
             "walk": [png_uri(folder / f["file"]) for f in man["frames"]],
             "stand": png_uri(own[0] if own and own[0] else args.stand),
         })
