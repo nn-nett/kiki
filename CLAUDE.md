@@ -121,6 +121,11 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 
 ## Próximos passos (to-dos do dono)
 
+- **Análise das animações aprovadas** em `sprites/ANALISE.md` (pedido do dono, 15/10): o que têm em comum (tudo
+  em 1 px, só mexe o que tem motivo, mesma cachorra sempre, preparação → pico → volta, relógios separados) e as
+  receitas replicáveis (remendo + âncora, troca de cabeça, ciclo de pernas, respiração de 1 px, rabo como peça).
+  Ler antes de começar uma animação nova.
+
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
