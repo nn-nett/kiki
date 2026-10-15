@@ -5,6 +5,10 @@ andando, ela parada, e ela passeando de um lado pro outro numa taskbar do
 Windows 11 em tamanho real (2x). Abre em qualquer navegador, inclusive no
 celular, sem internet.
 
+No fim vai o spritemap (spritemap.py: frames numerados, grade e régua), que
+abre em tela cheia ao tocar (só CSS, sem JavaScript), pedido do dono pra dar
+print no frame que quer mudar.
+
 Cada entrada é "Nome|nota|pasta[|parada.png]", onde a pasta é uma saída do
 rig.py (com manifest.json: ordem dos frames e duração de cada um). O 4º campo,
 opcional, troca a pose parada daquele cartão (o padrão é a de --stand).
@@ -23,6 +27,7 @@ from pathlib import Path
 from PIL import Image
 
 from common import TASKBAR_LIGHT, upscale
+from spritemap import from_folder, spritemap
 
 ZOOM, BAR_SCALE, BAR_W, BAR_H = 6, 2, 360, 76
 
@@ -95,6 +100,12 @@ figcaption { font-size: 12px; color: var(--muted); text-transform: uppercase; le
 img { image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; height: auto; border-radius: 8px; }
 .zoom img { width: 100%; }
 .bar { width: 100%; }
+.card.mapa img { width: 100%; image-rendering: pixelated; border-radius: 8px; display: block; }
+.lb { display: none; }
+.lb:target { display: block; position: fixed; inset: 0; z-index: 10; overflow: auto; background: #f3f3f3; }
+.lb > img { display: block; max-width: none; image-rendering: pixelated; }
+.lb .fechar { position: sticky; top: 0; left: 0; display: inline-block; margin: 10px 16px; padding: 8px 14px;
+  border-radius: 8px; border: 1px solid #cfc8bf; background: #fff; color: #1d1b1a; text-decoration: none; }
 """
 
 
@@ -111,7 +122,7 @@ def main():
     bg = TASKBAR_LIGHT
     stand = Image.open(args.stand).convert("RGBA")
     stand_uri = data_uri(gif_bytes([upscale(stand, ZOOM)], [1000], bg), "image/gif")
-    cards = []
+    cards, rows = [], []
     for entry in args.entries:
         name, note, folder, *own = entry.split("|", 4)
         step = int(own[1]) if len(own) > 1 and own[1] else args.step
@@ -120,6 +131,7 @@ def main():
             im = Image.open(own[0]).convert("RGBA")
             card_stand = data_uri(gif_bytes([upscale(im, ZOOM)], [1000], bg), "image/gif")
         frames, durs = load_anim(folder)
+        rows.append((name, from_folder(folder)))
         zoom = data_uri(gif_bytes([upscale(f, ZOOM) for f in frames], durs, bg), "image/gif")
         bar = data_uri(taskbar_walk(frames, durs, bg, step), "image/gif")
         cards.append(f"""
@@ -131,6 +143,9 @@ def main():
     </div>
     <img class="bar" src="{bar}" alt="{escape(name)} passeando na taskbar">
   </section>""")
+    buf = io.BytesIO()
+    spritemap(rows).save(buf, "PNG")
+    mapa = data_uri(buf.getvalue(), "image/png")
     html = f"""<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -139,7 +154,13 @@ def main():
   <header><h1>{escape(args.title)}</h1><p>{escape(args.intro)}</p></header>
   <div class="cards">{''.join(cards)}
   </div>
-</div></body></html>
+  <section class="card mapa">
+    <h2>Spritemap<small>frames numerados (f0, f1…) e régua com a posição do pixel: toque pra ampliar e dê print</small></h2>
+    <a href="#mapa-grande"><img src="{mapa}" alt="Spritemap com todos os frames numerados e grade de pixels"></a>
+  </section>
+</div>
+<div class="lb" id="mapa-grande"><a class="fechar" href="#">Fechar</a><img src="{mapa}" alt="Spritemap em tamanho real"></div>
+</body></html>
 """
     Path(args.out).write_text(html)
     print(f"html: {args.out} ({len(html)//1024} KB)")

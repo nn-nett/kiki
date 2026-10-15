@@ -124,6 +124,10 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   O dono escolheu a **v4 com essa orelha** e pediu cabeça mais baixa e pescoço mais longo: opções
   "agora" (desce 3), **A** (desce 4, `anims/run_pescoco_A.json`) e **B** (desce 5, `run_pescoco_B.json`),
   com troncos `torso_run_*_A/_B.txt`; esperando a escolha (ver `run_log.md`).
+  Depois (15/10) pediu **corpo 3-4 px mais comprido**: `anims/run_c3.json` (35x32) e `run_c4.json` (36x32), feitos
+  com `tools/alongar.py` (estica o tronco numa coluna só de pelo preto; no frame recolhido as patas da frente e de
+  trás foram separadas à mão). Comparação com a atual e a v3 em https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1;
+  esperando a escolha (+3 ou +4) e quais "elementos bons" da página offline antiga ele quer de volta.
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.
@@ -213,7 +217,8 @@ só marcar como ✅ com aprovação explícita.
   `spritegen.py`, `recolor.py`, `sheet_extract.py`, `tweak.py` (ajuste fino de pixels com
   variantes, checagem de buracos/entalhes e aplicação), `preview_html.py` (HTML offline),
   `page.py` + `page_template.html` (página animada do artifact), `export_final.py`, `spritemap.py`
-  (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia).
+  (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia; o `preview_html.py`
+  offline também embute, com toque pra ampliar só em CSS), `alongar.py` (corpo N px mais comprido sem redesenhar).
   Dependências: `sprites/requirements.txt`.
 - **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
   localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,
