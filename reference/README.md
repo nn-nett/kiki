@@ -1,5 +1,11 @@
 # Fotos de referência da Kiara
 
+**Todas as fotos da Kiara ficam aqui** (28 arquivos). Conferido em 15/10 nas 3 branches do GitHub:
+`claude/charming-gates-tf2lki` (sprites) tem as 28; `claude/pixel-pai-windows-bar-qx0qjl` (app) tem as mesmas
+28; `claude/kiara-pixel-pal-sprites-fuiep2` (tentativa antiga) tem 17 delas. Nenhuma foto existe só em outra branch.
+Referências de pixel art de outros artistas (cachorros correndo/andando achados na internet) ficam fora do git, em
+`sprites/extern/` (não são nossas pra publicar).
+
 Coloque aqui as fotos reais da Kiara. As mais úteis:
 
 1. **Corpo inteiro de lado** (em pé) — proporções, formato do rabo e das pernas
