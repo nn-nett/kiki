@@ -42,7 +42,7 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 - **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
   **e Fase 1 — Desktop em paralelo** (liberada pelo dono em 14/10/2026). App Electron em `desktop/`
   (ver `desktop/README.md`), branch `claude/pixel-pai-windows-bar-qx0qjl` (junta app + sprites aprovados).
-  **16/10 (prompt `prompts/app_animacoes_compostas.md`):** desenho **por camadas** (`renderer/compose.js`:
+  **15/10 (prompt `prompts/app_animacoes_compostas.md`):** desenho **por camadas** (`renderer/compose.js`:
   corpo → cabeça → olho → contorno → espelho; teste `npm test` confere os 80 quadros com a folha, 100%
   iguais) e cérebro de **dois níveis + piscar** (`BRAIN` em `renderer/kiara.js`): corpo parada/andando/
   latindo/ofegante, cabeça por cima (latir 1-2x, ofegante enquanto cansada), piscar sempre. Combinações:
