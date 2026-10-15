@@ -1,0 +1,19 @@
+# Kiara 32 — virar (rascunho, desafio "olhar pro outro lado")
+# espelho da head_virar34 (3/4 indo pra esquerda)
+# @anchor 11,14
+# @role cabeca
+..XX..........KX
+..XtX........XKX
+..XttX......XttX
+..XtttX.....XttX
+...XttDXXXXXtttX
+...XDtKKKKKKtDX.
+...XKKKKKKKKKKX.
+...XKKKKKKKKKK..
+...KtGKKKGtGKK..
+...KBEGKKGBEGK..
+..XXeEWGKGeEtK..
+.XXWGWWWWGGttX..
+.XNNNGWWWGttKX..
+..XNNNGGGttKX...
+...XGGGttXKKK...

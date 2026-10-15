@@ -1,0 +1,27 @@
+{
+  "name": "virar_A",
+  "canvas": [32, 32],
+  "loop": true,
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 300, "parts": [
+      {"id": "legs", "part": "legs_base", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0]},
+      {"id": "head", "part": "head", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "duration": 100, "set": {"head": {"part": "head_virar34", "offset": [-1, 0]}}},
+    {"base": 0, "duration": 110, "set": {
+      "legs": {"part": "legs_virarA_p1"},
+      "torso": {"part": "torso_virarA1"},
+      "head": {"part": "head_virar_frente", "offset": [1, 0]}}},
+    {"base": 0, "duration": 700, "set": {
+      "legs": {"part": "legs_virarA_p2"},
+      "torso": {"part": "torso_virarA2"},
+      "head": {"part": "head_virar_tras", "offset": [0, 0]}}},
+    {"base": 2, "duration": 100},
+    {"base": 1, "duration": 100}
+  ]
+}

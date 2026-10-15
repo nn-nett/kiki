@@ -1,0 +1,19 @@
+# Kiara 32 — virar (rascunho, desafio "olhar pro outro lado")
+# espelho da head.txt (perfil olhando pra esquerda), sem mudar pixel
+# @anchor 11,14
+# @role cabeca
+....XX........KX
+....XKX.....XKKX
+....XtX.....KttX
+....XtDX....XttX
+....XttX..KKXttX
+....KKKKKKKKtttK
+....KXKKKKKXttK.
+...XKKKKKKKKttX.
+...GKKGGGKKKKK..
+...KKKXBEGKKK...
+..XXWWXeEGKKK...
+.XXWWWGKDtKKKX..
+.XXWWWWGttXKKX..
+..KKKGtttXKKKK..
+...GGGtttXKKKKK.

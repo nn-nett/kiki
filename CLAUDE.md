@@ -126,6 +126,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   receitas replicáveis (remendo + âncora, troca de cabeça, ciclo de pernas, respiração de 1 px, rabo como peça).
   Ler antes de começar uma animação nova.
 
+- **Desafio "olhar pro outro lado"** (pedido do dono, 15/10: "ela vai girar a cabeça, o pescoço faz o movimento com
+  um pouco do peito, a pata do lado oposto sobe"): rascunho pra escolha em https://claude.ai/artifact/3UZmRxjPuafFXo6uhw1674
+  (cópia em `sprites/previews/virar/`). A) olhar pra trás (`anims/virar_A.json`, 6 frames, pico 0,7 s) e B) meia-volta
+  passando de frente (`anims/virar_B.json`, 7 frames, começa em `parada` e termina em `parada_esquerda`). Peças
+  `parts/32/*virar*` (cabeça de frente nova = identidade), raciocínio em `parts/32/virar_log.md` (a pata que sobe é a
+  da frente de fora da curva, a "de longe"). O piscar não tem remendo pras cabeças novas (olho = null no virar).
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do

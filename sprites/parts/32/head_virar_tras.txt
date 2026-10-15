@@ -1,0 +1,21 @@
+# Kiara 32 — virar (rascunho, desafio "olhar pro outro lado")
+# cabeça OLHANDO PRA TRÁS por cima do ombro: a head.txt espelhada pixel a pixel (mesmo rosto, mesmo tamanho);
+# só a nuca mudou: borda X na coluna 13 (linhas 10, 13 e 14) e sem a ponta do pescoço na coluna 14,
+# porque quem continua o pescoço (torcido) é o torso_virarA2. Âncora no queixo/garganta: encaixa em torso_virarA2.pescoco.
+# @anchor 6,13
+# @role cabeca
+....XX........KX
+....XKX.....XKKX
+....XtX.....KttX
+....XtDX....XttX
+....XttX..KKXttX
+....KKKKKKKKtttK
+....KXKKKKKXttK.
+...XKKKKKKKKttX.
+...GKKGGGKKKKK..
+...KKKXBEGKKK...
+..XXWWXeEGKKKX..
+.XXWWWGKDtKKKX..
+.XXWWWWGttXKKX..
+..KKKGtttXKKKX..
+...GGGtttXKKKX..
