@@ -153,9 +153,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
     ofegante pronto parado e andando. Falta: export em camadas (corpo sem cabeça + âncora da cabeça por
     frame + cabeças por expressão) pra ofegante/latido por cima de qualquer corpo (ex.: correndo ofegante).
   - **Ofegante em revisão** (15/10, depois de aprovado: "o movimento é mais no peito/torso/queixo, o resto não
-    mexe tanto"; "andando ofegante tá estranho"): opções parada A/B (`anims/ofegante_A/B.json`, só barriga/peito e
-    queixo mexem) e andando W1/W2 (`anims/andar_ofegante_W1/W2.json`) na prévia acima. Os finais seguem com a
-    versão antiga até ele escolher (ver `expressoes_log.md`).
+    mexe tanto"; "andando ofegante tá estranho"). Rodada 2: queixo sem o pixel preto (lábio K→G nas duas cabeças
+    ofegantes), parada **A2** (`anims/ofegante_A2.json`: barriga/peito descem e a quina do peito vem 1 px, peito
+    quadrado; peças `legs_base_inspA2` + `torso_insp`) e andando **W3** (`anims/andar_ofegante_W3.json`: a boca
+    desce nos frames 2 e 5). Esperando aprovação; depois trocar `aprovadas.json` (ofegante → ofegante_A2,
+    andando_ofegante → andar_ofegante_W3), rodar o `export_final.py` e atualizar a simulação (`--pant`/`--walkpant`).
+    Os finais seguem com a versão antiga até lá (ver `expressoes_log.md`).
   - Ideias em aberto: ritmo mais calmo do ofegante (180-200 ms) pra quando não correu;
     "cara relaxada" = ofegante + olho meio fechado.
 

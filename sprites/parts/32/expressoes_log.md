@@ -146,3 +146,17 @@ garupa), e a linha da coxa piscava porque o tronco descido cobria a faixa das pe
   `ofegante.json`/`andar_ofegante.json` pela escolhida e roda o `export_final.py`.
 - Quadros em `sprites/previews/expressoes/quadro_ofegante_peito.png` e `quadro_andar_ofegante.png`; spritemap em
   `spritemap_ofegante.png`.
+
+### Segunda rodada (15/10)
+
+Dono: "andando tá bom, faltou só a animação da boca descendo; a boca aberta tá com um pixel preto no queixo estranho;
+a parada A tá boa, acho que vale expandir esses pixels à direita, os da quina, deixando o peito dela mais quadrado;
+vamos derivar da parada A".
+- Queixo: o lábio de baixo K virou G em `head_ofegante1` (27,14) e `head_ofegante2` (27,15). Vale pra todas as
+  receitas que usam essas cabeças (inclusive as aprovadas antes, no próximo export).
+- Parada **A2** (`anims/ofegante_A2.json`): inspira = `legs_base_inspA2` (a A + frente do peito reta na coluna 25,
+  linhas 20-22, e quina de baixo em (24,23)) + `torso_insp` (o torso com a quina da linha 20 1 px pra frente,
+  porque o torso cobre a linha 20); expira = `legs_base` + `torso` normais.
+- Andando **W3** (`anims/andar_ofegante_W3.json`): cabeça ofegante 2 (boca mais aberta) nos frames 2 e 5, fora dos
+  frames 1 e 4 em que o corpo desce: a língua mexe no máximo 1 px por frame.
+- Conferência: 0 buracos, 0 pixels soltos; lint só com "silhueta some na taskbar escura" sem contorno.

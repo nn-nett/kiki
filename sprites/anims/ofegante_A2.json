@@ -1,0 +1,19 @@
+{
+  "name": "ofegante_A2",
+  "_nota": "derivado da A a pedido do dono: ao inspirar a barriga e o peito descem 1 px e a quina da frente do peito vem 1 px (peito mais quadrado); costas, rabo e pernas parados; o queixo abre e fecha.",
+  "canvas": [32, 32],
+  "loop": true,
+  "sequence": [0, 1],
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 130, "parts": [
+      {"id": "legs", "part": "legs_base_inspA2", "at": [0, 19]},
+      {"id": "torso", "part": "torso_insp", "at": [0, 0]},
+      {"id": "head", "part": "head_ofegante1", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "set": {"legs": {"part": "legs_base"}, "torso": {"part": "torso"}, "head": {"part": "head_ofegante2"}}}
+  ]
+}
