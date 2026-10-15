@@ -151,6 +151,7 @@ ipcMain.handle('kiki:init', (event) => {
   if (!display) return null;
   return {
     sheetUrl: pathToFileURL(SHEET_PNG).href,
+    baseUrl: pathToFileURL(SPRITES_DIR + path.sep).href,   // pra achar expressoes/*.png
     sheet: JSON.parse(fs.readFileSync(SHEET_JSON, 'utf8')),
     settings: settingsFor(display),
     active: display.id === activeDisplayId,

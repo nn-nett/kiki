@@ -16,6 +16,6 @@
     "appId": "com.kiki.pixelpal",
     "productName": "Kiara Pixel Pal",
     "files": ["main.js", "preload.js", "renderer/**"],
-    "extraResources": [{ "from": "../sprites/final", "to": "sprites", "filter": ["kiara-sprites.png", "kiara-sprites.json"] }]
+    "extraResources": [{ "from": "../sprites/final", "to": "sprites", "filter": ["kiara-sprites.png", "kiara-sprites.json", "expressoes/**"] }]
   }
 }

@@ -11,11 +11,13 @@ const CELL = 32;
 // Estados cuja animação ainda não está na folha final são ignorados automaticamente
 // (ex.: "correndo" entra sozinho quando for aprovado e exportado).
 const BRAIN = {
-  parada:         { anim: 'parada',          dur: [1500, 4000], next: { andando: .50, latindo: .20, parada: .15, correndo: .15 } },
-  andando:        { anim: 'andando',         dur: [2500, 7000], next: { parada: .35, andandoLatindo: .25, latindo: .15, meiaVolta: .10, correndo: .15 } },
-  latindo:        { anim: 'latindo',         dur: null,         next: { parada: .5, andando: .5 } },
-  andandoLatindo: { anim: 'latindo_andando', dur: null,         next: { andando: .6, parada: .4 } },
-  correndo:       { anim: 'correndo',        dur: [1200, 3000], next: { andando: .5, parada: .3, latindo: .2 } },
+  parada:          { anim: 'parada',           dur: [1500, 4000], next: { andando: .50, latindo: .20, parada: .15, correndo: .15 } },
+  andando:         { anim: 'andando',          dur: [2500, 7000], next: { parada: .35, andandoLatindo: .25, latindo: .15, meiaVolta: .10, correndo: .15 } },
+  latindo:         { anim: 'latindo',          dur: null,         next: { parada: .5, andando: .5 } },
+  andandoLatindo:  { anim: 'latindo_andando',  dur: null,         next: { andando: .6, parada: .4 } },
+  correndo:        { anim: 'correndo',         dur: [1200, 3000], next: { ofegante: .5, andandoOfegante: .2, andando: .2, latindo: .1 } },
+  ofegante:        { anim: 'ofegante',         dur: [2500, 5000], next: { parada: .5, andando: .3, andandoOfegante: .2 } },
+  andandoOfegante: { anim: 'andando_ofegante', dur: [2000, 4500], next: { andando: .6, parada: .4 } },
 };
 
 const canvas = document.getElementById('stage');
@@ -32,6 +34,8 @@ const dog = {
   x: 40, dir: 1, state: 'parada', until: 0,
   frameI: 0, frameT: 0, cycles: 0,
 };
+let blink = null;       // piscar: { frames, imgs, imgsEsq, intervalo } (expressão por cima de qualquer animação)
+const blinkClock = { i: -1, t: 0, next: 0 };
 let lastDrawn = null;    // retângulo desenhado por último (pra limpar só ele)
 let mouse = null;        // última posição do mouse (px CSS)
 let overDog = false;
@@ -92,6 +96,20 @@ function tick(now) {
     d = anim.frames[dog.frameI].duration_ms;
   }
   if (now >= dog.until) setState(pick(BRAIN[dog.state].next), now);
+  tickBlink(now);
+}
+
+// Piscar: relógio próprio, independente do que o corpo está fazendo.
+function tickBlink(now) {
+  if (!blink) return;
+  if (blinkClock.i < 0) {
+    if (now >= blinkClock.next) { blinkClock.i = 0; blinkClock.t = now; }
+    return;
+  }
+  while (blinkClock.i >= 0 && now - blinkClock.t >= blink.frames[blinkClock.i].duration_ms) {
+    blinkClock.t += blink.frames[blinkClock.i].duration_ms;
+    if (++blinkClock.i >= blink.frames.length) { blinkClock.i = -1; blinkClock.next = now + rnd(...blink.intervalo); }
+  }
 }
 
 // Chegou na ponta da barra: passa pro monitor vizinho (se houver) ou dá meia-volta.
@@ -141,6 +159,10 @@ function draw() {
   const f = currentAnim().frames[dog.frameI];
   const r = dogRect();   // patas na última linha da célula = encostadas no topo da barra
   ctx.drawImage(sheetImg, f.x, f.y, f.w, f.h, r.x, r.y, r.w, r.h);
+  if (blink && blinkClock.i >= 0 && f.olho) {   // remendo do olho (null = a animação já mexe no olho)
+    const img = (dog.dir < 0 ? blink.imgsEsq : blink.imgs)[blinkClock.i], P = settings.scale;
+    ctx.drawImage(img, r.x + f.olho[0] * P, r.y + f.olho[1] * P, img.width * P, img.height * P);
+  }
   lastDrawn = r;
 }
 
@@ -197,6 +219,19 @@ async function start() {
   sheet = init.sheet;
   settings = init.settings;
   sheetImg = await loadImage(init.sheetUrl);
+  const piscar = sheet.expressoes && sheet.expressoes.piscar;
+  if (piscar) {
+    try {
+      const load = (f) => loadImage(new URL(f, init.baseUrl).href);
+      blink = {
+        frames: piscar.frames,
+        intervalo: piscar.intervalo_ms,
+        imgs: await Promise.all(piscar.frames.map(f => load(f.img))),
+        imgsEsq: await Promise.all(piscar.frames.map(f => load(f.img_esquerda || f.img))),
+      };
+      blinkClock.next = performance.now() + rnd(...blink.intervalo);
+    } catch { blink = null; }   // sem os remendos ela só não pisca
+  }
 
   const c = document.createElement('canvas');
   c.width = sheetImg.width; c.height = sheetImg.height;

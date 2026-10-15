@@ -30,6 +30,9 @@ avisar "editor desconhecido" porque o app não é assinado: "Mais informações"
 ## O que ela faz
 
 - Anda, para e late sozinha em cima da barra (mesmo "cérebro" da simulação aprovada).
+- **Pisca** de vez em quando, em qualquer coisa que estiver fazendo.
+- Fica **ofegante** (língua de fora) depois de correr, parada ou andando. Isso só aparece quando a
+  corrida for aprovada.
 - Chegou na ponta da tela: dá meia-volta. Se tiver outro monitor colado daquele lado, ela
   **passa pro outro monitor**.
 - **Clicou nela = ela late.** Fora dela, os cliques passam direto pro que está atrás.

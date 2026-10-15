@@ -5,6 +5,8 @@ com marcações castanhas (tan), orelhas em pé, porte pequeno. **Detalhe essenc
 pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 (ela é idosa). Vive na taskbar do Windows 11 e num overlay no Android.
 
+**Como trabalhamos (regras, papéis Opus/Sonnet/Haiku, ciclo sprite → app, GitHub): leia `PROCESSO.md`.**
+
 ## Sprites prontos pra implementação (leia primeiro se for mexer no app)
 
 O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprovado; a Fase 0
@@ -30,11 +32,16 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
 - **Fase atual: Fase 0 — Sprites** (em andamento, nova tentativa — ver `sprites/PLANO.md`)
   **e Fase 1 — Desktop em paralelo** (liberada pelo dono em 14/10/2026, com as animações já
   aprovadas). App Electron em `desktop/` (ver `desktop/README.md`): faixa transparente em cima da
-  barra em cada monitor, cérebro da simulação (parada/andando/latindo), clique = late, passa de
+  barra em cada monitor, cérebro da simulação (parada/andando/latindo/ofegante/andando ofegante,
+  piscar por cima de tudo pelo remendo do olho), clique = late, passa de
   um monitor pro outro, contorno automático com a barra escura, bandeja (mostrar/esconder, latir,
   tamanho 1-3x, contorno, abrir com o Windows, sair). Lê `sprites/final/` direto: animação nova
   exportada entra sozinha (ex.: `correndo`, `latindo_andando`). Testado em Linux virtual
   (Xvfb, inclusive 2 monitores simulados); **falta o dono testar no Windows de verdade**.
+  Branch que junta app + todos os sprites aprovados: `claude/pixel-pai-windows-bar-qx0qjl`
+  (em 15/10 trouxe piscar e ofegante da sessão de sprites `claude/charming-gates-tf2lki`).
+  Obs.: como no cérebro da simulação, ofegante só vem depois de correr, então só aparece
+  quando `correndo` for aprovado.
 - Fotos reais em `./reference/` (16 fotos, incluindo perfil com o potinho, incluindo câmera noturna, peitoral teal,
   suéter listrado, dormindo enrolada, deitada lambendo e de cima com bandana vermelha)
 - Paleta v2 em `sprites/palette.json` — cores extraídas das fotos por amostragem.
