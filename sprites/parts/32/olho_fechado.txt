@@ -4,6 +4,7 @@
 # encaixa no @socket.olho da cabeça; mesma área do olho_meio (colunas 22-25, linhas 9-11 na pose parada)
 # pálpebra grisalha G (3 px) com a linha escura X embaixo (a ponta da frente sobe 1 px, no X que já existe);
 # o D da bochecha vira t e o K ao lado vira G (o D sozinho sob a linha parecia íris aberta)
+# pedido do dono: sem o pixel preto da esquerda, que passava do olho (a linha escura fica só nas colunas 23-24)
 .GG.
-XXXK
+.XXK
 .tG.

@@ -116,3 +116,16 @@ Ofegante:
 - O ritmo de 130 ms em 2 frames é ofegante "de calor". Mais calmo: 180-200 ms.
 - Combinações possíveis sem desenho novo: ofegante + `olho_meio` (cara relaxada/feliz), piscar durante
   o andar ou a corrida (no app, sorteando o remendo por cima de qualquer animação).
+
+## Ajuste do dono (15/10)
+
+- Piscar: "tem um pixel preto a mais à esquerda, tá indo além do olho" → `olho_fechado` linha do meio
+  `XXXK` → `.XXK` (o pixel (22,10) volta a ser o G da cabeça; a linha escura fica só nas colunas 23-24).
+- Ofegante: "senti falta do queixo dela descer" e "a língua tá pontuda, parecendo de cobra":
+  - `head_ofegante1` (inspira): igual, sem o pixel da ponta da língua (29,17) → ponta reta de 2 px.
+  - `head_ofegante2` (expira): mandíbula 2 px abaixo (fresta N nas linhas 13-14, lábio K e língua na 15,
+    queixo GGG na 16) e a língua desce junto, também com a ponta reta de 2 px.
+  - Opções B (ponta de 3 px) e C (língua curta) em `sprites/candidates/ofegante/`.
+- Conferência: 0 buracos, 0 pixels soltos, 0 entalhes novos; lint só com "silhueta some na taskbar escura"
+  nas versões sem contorno; `sim_page.py` recompõe piscar/ofegante/andar ofegante pixel a pixel.
+- Spritemap e quadro em `sprites/previews/expressoes/`.

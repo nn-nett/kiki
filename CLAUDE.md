@@ -16,7 +16,8 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   - `frames/<anim>/` com os PNGs soltos.
 - **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame) e `latindo` (com tranco). Cada uma em 4
   versões: normal, `_esquerda`, `_contorno` (taskbar escura) e `_contorno_esquerda`.
-- **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe
+- **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe (com spritemap: todos os
+  frames numerados, grade e régua de coordenadas, toque pra ampliar)
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
 - **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), piscar, ofegante, transições.
@@ -78,7 +79,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   arquivos finais (`final/kiara-sprites.png/.json` + `aprovadas.json`) e o checklist deste arquivo.
   `export_final.py` refaz `sprites/final/galeria.html` (`tools/gallery.py`); depois de cada aprovação,
   republicar o artifact com esse mesmo arquivo e mandar o link pro dono.
-- Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
+- Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1 (hoje: correndo, com as 3
+  opções de pescoço; cópia em `sprites/previews/correndo/kiara_correndo.html`).
+- **Regra do dono: tudo o que for mostrado vai com o spritemap junto** ("pra eu clicar, expandir e dar
+  print, talvez até no frame que tenho que atualizar"): `tools/spritemap.py` (frames numerados f0, f1…,
+  duração, grade de pixel, régua de 4 em 4 com as coordenadas do quadro). O `page.py` e a galeria já
+  embutem com "toque pra ampliar"; `page.py --mapa arquivo.png` grava o PNG pra mandar junto.
 - **Simulação "Kiara na taskbar"** (pedido do dono: andando e latindo ao acaso):
   https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y — `tools/sim_page.py` + `sim_template.html`
   (cópia em `sprites/previews/simulacao/`). Monta os frames por camadas (pernas, tronco,
@@ -123,15 +129,19 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   fotos novas `reference/kiki_dormindo_*.jpg`. Depois da escolha: respiração (2-3 frames) e a
   transição "subir no travesseiro" (plano no log).
 
-- **Expressões desacopladas** (ideia do dono) — **piscar e ofegante prontos pra aprovação**:
-  prévia https://claude.ai/artifact/NwRJaKgDuVaZGukfRDMjxw (cópia em `sprites/previews/expressoes/`).
+- **Expressões desacopladas** (ideia do dono) — **piscar e ofegante pra aprovação**:
+  prévia https://claude.ai/artifact/NwRJaKgDuVaZGukfRDMjxw (cópia e spritemap em `sprites/previews/expressoes/`).
   - Piscar: remendos `olho_meio`/`olho_fechado` (`@anchor 1,0`, vindos do olho fechado do dormir) que
     encaixam em `@socket.olho` de qualquer cabeça (7,9 em head/head_bark1/2/head_ofegante; 12,7 em
-    head_run). Receita `anims/piscar.json` (aberto 1,5 s, meio 60, fechado 110, meio 60).
-  - Ofegante: `head_ofegante1/2` (boca entreaberta como no latido, língua rosa P pendurada que desce 1 px
-    na expiração; o peito desce 1 px). `anims/ofegante.json` (2×130 ms) e `anims/andar_ofegante.json`
-    (trote B + cabeça ofegante). Log em `parts/32/expressoes_log.md`.
-  - Perguntas abertas do desenhista: ritmo (130 ms ofegante de quem correu ou 180-200 ms mais calmo);
+    head_run). Receita `anims/piscar.json` (aberto 1,5 s, meio 60, fechado 110, meio 60). Ajuste do dono
+    (15/10): o olho fechado perdeu o pixel preto da esquerda, que passava do olho.
+  - Ofegante: `head_ofegante1/2`, língua rosa P pendurada; o peito desce 1 px na expiração.
+    `anims/ofegante.json` (2×130 ms) e `anims/andar_ofegante.json` (trote B + cabeça ofegante). Log em
+    `parts/32/expressoes_log.md`. Ajuste do dono (15/10, "senti falta do queixo dela descer", "língua
+    pontuda parecendo de cobra"): o queixo desce 1 px na inspiração e 2 px na expiração, e a língua ficou
+    com a ponta reta de 2 px (opção A, aplicada); B (ponta de 3 px) e C (língua curta) em
+    `sprites/candidates/ofegante/`.
+  - Perguntas abertas: ritmo (130 ms ofegante de quem correu ou 180-200 ms mais calmo);
     "cara relaxada" = ofegante + olho meio fechado.
   - Depois: o export final passa a ter camadas (corpo sem cabeça + âncora da cabeça por frame +
     cabeças/olhos por expressão) pro app compor.
@@ -195,7 +205,8 @@ só marcar como ✅ com aprovação explícita.
   qualquer tamanho), `tiers_board.py` (quadro 8/16/32), `animate.py`, `pack.py`,
   `spritegen.py`, `recolor.py`, `sheet_extract.py`, `tweak.py` (ajuste fino de pixels com
   variantes, checagem de buracos/entalhes e aplicação), `preview_html.py` (HTML offline),
-  `page.py` + `page_template.html` (página animada do artifact), `export_final.py`.
+  `page.py` + `page_template.html` (página animada do artifact), `export_final.py`, `spritemap.py`
+  (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia).
   Dependências: `sprites/requirements.txt`.
 - **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
   localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,

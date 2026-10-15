@@ -43,6 +43,12 @@ Coisas que o dono já ensinou (não repetir):
 - trabalhar sem o contorno grisalho nos previews (o contorno sai por filtro no final).
 
 ## 3. Mostrar
+**Sempre com o spritemap junto** (pedido do dono: "sempre que me mostrar algo, deixa o spritemap junto
+pra eu clicar, expandir e dar print, talvez até no frame que tenho que atualizar"). É a folha com todos
+os frames numerados (f0, f1…), a duração, grade de pixel e régua de 4 em 4 com as coordenadas do quadro
+(as mesmas do `tweak.py`). O `page.py` monta e embute sozinho (seção "Spritemap", toque pra ampliar);
+use `--mapa SCRATCH/spritemap_<anim>.png` pra gravar o PNG e mande ele com SendUserFile. Avulso:
+`python3 sprites/tools/spritemap.py --out mapa.png "Nome|pasta do rig" ...`. A galeria também tem o dela.
 - Quadro(s) PNG do `try` + HTML offline (abre no celular sem internet):
   `python3 sprites/tools/preview_html.py --out sprites/previews/<anim>/kiara_<anim>_offline.html --title ... --intro ... "Nome|nota|SCRATCH/teste/A/out/walk_b|SCRATCH/teste/A/out/stand/stand_0.png" ...`
 - Página animada (artifact): `python3 sprites/tools/page.py --out SCRATCH/page/kiara_andando.html --title ... --intro ... [--step 2] "Nome|nota|pasta|parada.png" ...`
