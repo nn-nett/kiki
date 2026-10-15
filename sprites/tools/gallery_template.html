@@ -69,6 +69,15 @@ ul.check li { display: flex; gap: 8px; align-items: baseline; font-size: 14px; }
 ul.check li .box { flex: none; width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--line); transform: translateY(2px); }
 ul.check li.done .box { background: var(--ok); border-color: var(--ok); }
 ul.check li:not(.done) { color: var(--muted); }
+.mapa p { margin: 0; color: var(--muted); font-size: 14px; }
+.mapa button { padding: 0; border: 1px solid var(--line); border-radius: 8px; background: #f3f3f3; cursor: zoom-in; overflow: hidden; }
+.mapa button:focus-visible, .lb button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mapa img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.lb { position: fixed; inset: 0; z-index: 10; background: #f3f3f3; overflow: auto; overscroll-behavior: contain; }
+.lb[hidden] { display: none; }
+.lb img { display: block; max-width: none; image-rendering: pixelated; }
+.lb .lb-bar { position: sticky; top: 0; left: 0; display: flex; gap: 8px; padding: 10px 16px; background: rgba(243, 243, 243, 0.92); }
+.lb button { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px; border: 1px solid #cfc8bf; background: #fff; color: #17171b; cursor: pointer; }
 </style>
 
 <div class="wrap">
@@ -84,6 +93,7 @@ ul.check li:not(.done) { color: var(--muted); }
       <button id="barDark" type="button" aria-pressed="false">Taskbar escura</button>
     </span>
     <label for="outline"><input id="outline" type="checkbox"> Contorno grisalho</label>
+    <label for="blinkOn"><input id="blinkOn" type="checkbox" checked> Piscar por cima</label>
     <span class="seg" role="group" aria-label="Lado">
       <button id="dirR" type="button" aria-pressed="true">Pra direita</button>
       <button id="dirL" type="button" aria-pressed="false">Pra esquerda</button>
@@ -93,6 +103,12 @@ ul.check li:not(.done) { color: var(--muted); }
 
   <div class="cards" id="cards"></div>
 
+  <section class="panel mapa" aria-labelledby="h-mapa">
+    <h2 id="h-mapa">Spritemap</h2>
+    <p>Todos os frames aprovados numerados (f0, f1…), com a duração. A régua dá a coluna e a linha do pixel: toque pra ampliar e dê print no frame que quer mudar.</p>
+    <button id="mapaBtn" type="button" aria-label="Ampliar o spritemap"><img id="mapa" alt="Spritemap com todos os frames aprovados, numerados e com grade de pixels"></button>
+  </section>
+
   <section class="panel" aria-labelledby="h-check">
     <h2 id="h-check">Checklist da Fase 0</h2>
     <div class="progress" aria-hidden="true"><span id="bar"></span></div>
@@ -101,10 +117,24 @@ ul.check li:not(.done) { color: var(--muted); }
   </section>
 </div>
 
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Spritemap ampliado">
+  <div class="lb-bar">
+    <button id="lbFechar" type="button">Fechar</button>
+    <button id="lbTamanho" type="button" aria-pressed="false">Caber na tela</button>
+  </div>
+  <img id="lbImg" alt="Spritemap ampliado, em tamanho real">
+</div>
+
 <script>
 const DATA = __DATA__;
 const CELL = DATA.meta.cell, ZOOM = 2, STRIP_W = 150, STRIP_H = 44;
-const NOMES = { parada: 'Parada', andando: 'Andando', latindo: 'Latindo', correndo: 'Correndo', dormindo: 'Dormindo' };
+const NOMES = { parada: 'Parada', andando: 'Andando', latindo: 'Latindo', correndo: 'Correndo', dormindo: 'Dormindo',
+                piscando: 'Piscando', ofegante: 'Ofegante', andando_ofegante: 'Andando ofegante' };
+// piscar desacoplado: o remendo do olho (final/expressoes/) cai em frames[i].olho de qualquer animação
+const PISCAR = DATA.meta.expressoes && DATA.meta.expressoes.piscar;
+const olhos = {};
+for (const [k, src] of Object.entries(DATA.olhos || {})) { const i = new Image(); i.src = src; olhos[k] = i; }
+let blinkOn = !!PISCAR, blinkI = -1, blinkT = 0, nextBlink = 1500;
 let dark = false, outline = false, left = false, speed = 1;
 const sheet = new Image();
 const views = [];
@@ -183,10 +213,28 @@ function draw(v) {
   // anda de um lado pro outro quando a animação anda; senão fica no meio, virada pro lado escolhido
   const flip = base.step_px ? v.dir < 0 : left;
   const A = anim(v.key, flip);   // usa os frames _esquerda salvos (não espelha na hora): testa o arquivo final
-  blit(ctx, A.frames[v.f % A.frames.length], Math.round(v.x), STRIP_H - CELL.h - 4, false);
+  const fr = A.frames[v.f % A.frames.length], x = Math.round(v.x), y = STRIP_H - CELL.h - 4;
+  blit(ctx, fr, x, y, false);
+  if (blinkOn && blinkI >= 0 && fr.olho) {
+    const p = PISCAR.frames[blinkI], img = olhos[flip ? p.img_esquerda : p.img];
+    ctx.drawImage(img, x + fr.olho[0], y + fr.olho[1]);
+  }
+}
+
+function blinkStep(t) {
+  if (!blinkOn) return;
+  if (blinkI < 0 && t >= nextBlink) { blinkI = 0; blinkT = t; }
+  while (blinkI >= 0 && t - blinkT >= PISCAR.frames[blinkI].duration_ms / speed) {
+    blinkT += PISCAR.frames[blinkI].duration_ms / speed; blinkI++;
+    if (blinkI >= PISCAR.frames.length) {
+      blinkI = -1;
+      const [a, b] = PISCAR.intervalo_ms; nextBlink = t + (a + Math.random() * (b - a)) / speed;
+    }
+  }
 }
 
 function loop(t) {
+  blinkStep(t);
   for (const v of views) {
     const A = DATA.meta.animations[v.key];
     const d = A.frames[v.f % A.frames.length].duration_ms / speed;
@@ -223,9 +271,22 @@ function refresh() { views.forEach(renderFrames); }
 $('barLight').onclick = () => { dark = false; pressed($('barLight'), $('barDark')); refresh(); };
 $('barDark').onclick = () => { dark = true; pressed($('barDark'), $('barLight')); if (!outline) { outline = true; $('outline').checked = true; } refresh(); };
 $('outline').onchange = e => { outline = e.target.checked; refresh(); };
+$('blinkOn').onchange = e => { blinkOn = e.target.checked && !!PISCAR; blinkI = -1; nextBlink = 0; };
+if (!PISCAR) $('blinkOn').parentElement.hidden = true;
 $('dirR').onclick = () => { left = false; pressed($('dirR'), $('dirL')); refresh(); };
 $('dirL').onclick = () => { left = true; pressed($('dirL'), $('dirR')); refresh(); };
 $('speed').oninput = e => { speed = e.target.value / 100; $('speedv').textContent = speed + 'x'; };
+
+// spritemap: abre em tela cheia no tamanho real (dá pra rolar e dar print); "Caber na tela" encolhe
+$('mapa').src = DATA.mapa; $('lbImg').src = DATA.mapa;
+$('mapaBtn').onclick = () => { $('lb').hidden = false; $('lbFechar').focus(); };
+$('lbFechar').onclick = () => { $('lb').hidden = true; $('mapaBtn').focus(); };
+$('lbTamanho').onclick = () => {
+  const fit = $('lbTamanho').getAttribute('aria-pressed') !== 'true';
+  $('lbTamanho').setAttribute('aria-pressed', String(fit));
+  $('lbImg').style.width = fit ? '100%' : ''; $('lbTamanho').textContent = fit ? 'Tamanho real' : 'Caber na tela';
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('lb').hidden) $('lbFechar').click(); });
 
 header(); checklist();
 sheet.onload = () => { build(); requestAnimationFrame(loop); };

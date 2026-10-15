@@ -11,13 +11,17 @@ Uso:
 """
 import argparse
 import base64
+import io
 import json
 import re
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from PIL import Image
+
 from common import SPRITES_DIR
+from spritemap import spritemap
 
 FINAL = SPRITES_DIR / "final"
 TEMPLATE = Path(__file__).with_name("gallery_template.html")
@@ -41,6 +45,22 @@ def checklist():
     return items
 
 
+def mapa_uri(meta, approved):
+    """Spritemap (frames numerados, grade e régua) das versões normais, recortado da folha final."""
+    sheet = Image.open(FINAL / meta["sheet"]).convert("RGBA")
+    rows = []
+    for key in approved:
+        frames = meta["animations"][key]["frames"]
+        rows.append((key, [(f"f{i} · {f['duration_ms']} ms",
+                            sheet.crop((f["x"], f["y"], f["x"] + f["w"], f["y"] + f["h"])))
+                           for i, f in enumerate(frames)]))
+    buf = io.BytesIO()
+    img = spritemap(rows)
+    img.save(buf, "PNG")
+    img.save(FINAL / "spritemap.png")  # o mesmo PNG solto, pra mandar junto e abrir fora da página
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(FINAL / "galeria.html"))
@@ -56,6 +76,11 @@ def main():
         "meta": meta,
         "aprovadas": [{"key": k, "nota": v.get("aprovada", ""), "receita": v["recipe"]} for k, v in approved.items()],
         "checklist": checklist(),
+        "mapa": mapa_uri(meta, approved),
+        # remendos do piscar (expressão desacoplada), lidos de final/expressoes/
+        "olhos": {f["img"]: "data:image/png;base64," + base64.b64encode((FINAL / f["img"]).read_bytes()).decode()
+                  for e in meta.get("expressoes", {}).values() for fr in e["frames"]
+                  for f in ({"img": fr["img"]}, {"img": fr["img_esquerda"]})},
         "atualizada": now.strftime("%d/%m/%Y %H:%M"),
         "repo": REPO_URL,
     }

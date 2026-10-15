@@ -14,9 +14,12 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   (formato do JSON, `step_px`, variantes, regras de desenho na tela).
   - `kiara-sprites.png` (folha 32x32 por célula) + `kiara-sprites.json` (frames, durações, loop, passo).
   - `frames/<anim>/` com os PNGs soltos.
-- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame) e `latindo` (com tranco). Cada uma em 4
-  versões: normal, `_esquerda`, `_contorno` (taskbar escura) e `_contorno_esquerda`.
-- **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe
+- **Aprovadas hoje:** `parada`, `andando` (trote, 1 px/frame), `latindo` (com tranco), `piscando`,
+  `ofegante` e `andando_ofegante`. Cada uma em 4 versões: normal, `_esquerda`, `_contorno` (taskbar escura)
+  e `_contorno_esquerda`. O **piscar também sai solto** (remendo do olho em `final/expressoes/` + `olho`
+  por frame no JSON) pra tocar por cima de qualquer animação — ver o README.
+- **Ver tudo animado:** Galeria https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe (com spritemap: todos os
+  frames numerados, grade e régua de coordenadas, toque pra ampliar)
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
 - **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições.
@@ -75,7 +78,8 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   receitas estão aprovadas; `python3 sprites/tools/export_final.py` gera `final/frames/<anim>/`
   (normal, esquerda, contorno, contorno_esquerda) e `final/kiara-sprites.png/.json` (células
   32x32, durações, loop, `step_px` = px do sprite que a janela anda por frame, frames no ar).
-  Hoje: parada + andando + latindo. Aprovou uma animação nova → adicionar em `aprovadas.json` e rodar.
+  Hoje: parada, andando, latindo, piscando, ofegante, andando_ofegante (+ remendos do piscar em
+  `final/expressoes/`). Aprovou uma animação nova → adicionar em `aprovadas.json` e rodar.
 - **Cabeça separada** (pro latido e futuras expressões): `head.txt` (linhas 0-14, cols 16-31,
   `@anchor 4,14`) + `torso.txt` (`@socket.pescoco 20,14`, com toco do pescoço escondido). `stand_head`
   = `stand` pixel a pixel. Pra migrar uma receita: `upper` → `torso` e `head` com
@@ -85,13 +89,20 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   arquivos finais (`final/kiara-sprites.png/.json` + `aprovadas.json`) e o checklist deste arquivo.
   `export_final.py` refaz `sprites/final/galeria.html` (`tools/gallery.py`); depois de cada aprovação,
   republicar o artifact com esse mesmo arquivo e mandar o link pro dono.
-- Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1
+- Página animada de comparação: https://claude.ai/artifact/8mDaYnhGo8hGKTrh5hvmm1 (hoje: correndo, com as 3
+  opções de pescoço; cópia em `sprites/previews/correndo/kiara_correndo.html`).
+- **Regra do dono: tudo o que for mostrado vai com o spritemap junto** ("pra eu clicar, expandir e dar
+  print, talvez até no frame que tenho que atualizar"): `tools/spritemap.py` (frames numerados f0, f1…,
+  duração, grade de pixel, régua de 4 em 4 com as coordenadas do quadro). O `page.py` e a galeria já
+  embutem com "toque pra ampliar"; `page.py --mapa arquivo.png` grava o PNG pra mandar junto.
 - **Simulação "Kiara na taskbar"** (pedido do dono: andando e latindo ao acaso):
   https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y — `tools/sim_page.py` + `sim_template.html`
   (cópia em `sprites/previews/simulacao/`). Monta os frames por camadas (pernas, tronco,
   cabeça; conferido pixel a pixel contra o rig), então ela late andando sem frames novos.
   O "cérebro" (estados, chances e tempos) é um rascunho pra Fase 1. Usa as animações aprovadas e,
-  marcada como teste, a corrida (`sim_page.py --run run`; caixa "Correr (em teste)" na página).
+  com caixa pra desligar: a corrida (ainda em teste, `sim_page.py --run run`), o ofegante (depois de
+  correr: parada ofegante ou andando ofegante) e o piscar (sozinho a cada 2,5-7 s, por cima de qualquer
+  estado; o remendo cai em `eyePos[cabeça][olho]`). Tudo conferido pixel a pixel.
 
 ### Observações de anatomia (das fotos)
 
@@ -112,10 +123,14 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
   galope, freada com o corpo pra trás), montados no rig com as peças que já existem quando der, e
   a simulação passa a tocar a transição entre um estado e outro.
-- Galope: o dono está "entre a v3 e a v4" e pediu a **cabeça de corrida** (focinho esticado, orelhas
-  deitadas pra trás, cabeça baixa na linha das costas; `parts/32/head_run.txt`). Duas opções pra ele
-  escolher: v4 + cabeça (`anims/run.json`, peças em `parts/32`) e v3 + cabeça (`anims/run_v3c.json`,
-  peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá). Refs em `sprites/extern/refs_correr/`.
+- Galope: o dono está "entre a v3 e a v4" e pediu a **cabeça de corrida** (orelhas deitadas pra trás,
+  cabeça mais alinhada com o corpo). Corrigida a pedido dele ("mudou o tamanho do focinho", "cadê o
+  pescoço"): rosto idêntico à `head.txt` (só as orelhas mudam), pescoço visível, cabeça só 3 px abaixo
+  da pose parada (`parts/32/head_run.txt`). Duas opções: v4 + cabeça (`anims/run.json`) e v3 + cabeça
+  (`anims/run_v3c.json`, peças em `sprites/candidates/correndo_v3c/parts/`, ver README lá).
+  O dono escolheu a **v4 com essa orelha** e pediu cabeça mais baixa e pescoço mais longo: opções
+  "agora" (desce 3), **A** (desce 4, `anims/run_pescoco_A.json`) e **B** (desce 5, `run_pescoco_B.json`),
+  com troncos `torso_run_*_A/_B.txt`; esperando a escolha (ver `run_log.md`).
 - Kiki dormindo — **4 opções de frame pra validar**: A (de barriga) e B (enrolada), 32x32, e com o
   **travesseiro** que o dono sugeriu ("ela precisa de um travesseiro pra subir e dormir"): C (corpo no
   chão, peito/cabeça/pata apoiados no travesseiro) e D (inteira em cima, cabeça na beirada), quadro 44x32.
@@ -123,6 +138,25 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   `travesseiro` da paleta, tiradas das fotos); receitas `anims/dormir_A-D.json`; log `dormir_log.md`;
   fotos novas `reference/kiki_dormindo_*.jpg`. Depois da escolha: respiração (2-3 frames) e a
   transição "subir no travesseiro" (plano no log).
+
+- **Expressões desacopladas** (ideia do dono) — **piscar e ofegante APROVADOS** (15/10, "ofegante e
+  piscada validados"; ofegante com a língua A):
+  prévia https://claude.ai/artifact/NwRJaKgDuVaZGukfRDMjxw (cópia e spritemap em `sprites/previews/expressoes/`).
+  - Piscar: remendos `olho_meio`/`olho_fechado` (`@anchor 1,0`, vindos do olho fechado do dormir) que
+    encaixam em `@socket.olho` de qualquer cabeça (7,9 em head/head_bark1/2/head_ofegante; 12,7 em
+    head_run). Receita `anims/piscar.json` (aberto 1,5 s, meio 60, fechado 110, meio 60). Ajuste do dono
+    (15/10): o olho fechado perdeu o pixel preto da esquerda, que passava do olho.
+  - Ofegante: `head_ofegante1/2`, língua rosa P pendurada; o peito desce 1 px na expiração.
+    `anims/ofegante.json` (2×130 ms) e `anims/andar_ofegante.json` (trote B + cabeça ofegante). Log em
+    `parts/32/expressoes_log.md`. Ajuste do dono (15/10, "senti falta do queixo dela descer", "língua
+    pontuda parecendo de cobra"): o queixo desce 1 px na inspiração e 2 px na expiração, e a língua ficou
+    com a ponta reta de 2 px (opção A, aplicada); B (ponta de 3 px) e C (língua curta) em
+    `sprites/candidates/ofegante/`.
+  - Export: piscar solto (remendos + `olho` por frame, conferido contra o rig em todas as animações);
+    ofegante pronto parado e andando. Falta: export em camadas (corpo sem cabeça + âncora da cabeça por
+    frame + cabeças por expressão) pra ofegante/latido por cima de qualquer corpo (ex.: correndo ofegante).
+  - Ideias em aberto: ritmo mais calmo do ofegante (180-200 ms) pra quando não correu;
+    "cara relaxada" = ofegante + olho meio fechado.
 
 ## Fases
 
@@ -150,6 +184,8 @@ só marcar como ✅ com aprovação explícita.
   `torso_run_*`, 6×70 ms, 2 px/frame (`anims/run.json`, `legs_run0-5`, `run_log.md`). Na simulação como teste.
 - [x] ✅ Latindo — `anims/latir_tranco.json` (o dono escolheu "com tranco"; queixo do AU! afinado a pedido
   dele; confirmado: "o latido com tranco tá perfeito")
+- [x] ✅ Piscar — remendo do olho por cima de qualquer animação (`olho_meio`/`olho_fechado`, `anims/piscar.json`)
+- [x] ✅ Ofegante — língua pra fora, parada e andando (`anims/ofegante.json`, `anims/andar_ofegante.json`)
 - [ ] Sentada/idle (2–3 frames, respiração + piscar)
 - [ ] Dormindo (2–3 frames, "zZz" opcional)
 - [ ] Comendo (3–4 frames, no potinho)
@@ -183,7 +219,8 @@ só marcar como ✅ com aprovação explícita.
   qualquer tamanho), `tiers_board.py` (quadro 8/16/32), `animate.py`, `pack.py`,
   `spritegen.py`, `recolor.py`, `sheet_extract.py`, `tweak.py` (ajuste fino de pixels com
   variantes, checagem de buracos/entalhes e aplicação), `preview_html.py` (HTML offline),
-  `page.py` + `page_template.html` (página animada do artifact), `export_final.py`.
+  `page.py` + `page_template.html` (página animada do artifact), `export_final.py`, `spritemap.py`
+  (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia).
   Dependências: `sprites/requirements.txt`.
 - **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
   localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,

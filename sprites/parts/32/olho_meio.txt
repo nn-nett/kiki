@@ -1,0 +1,10 @@
+# Kiara 32 — remendo do piscar: olho MEIO fechado (camada por cima de qualquer cabeça)
+# @anchor 1,0
+# @role olho
+# encaixa no @socket.olho da cabeça (canto de cima do olho castanho E); cobre as colunas 22-25,
+# linhas 9-11 do quadro na pose parada. '.' = mantém o pixel da cabeça.
+# pálpebra grisalha G desce sobre a linha de cima do olho (tapa o E e o brilho B);
+# a linha de baixo do olho (E e) continua aparecendo
+.GG.
+....
+....

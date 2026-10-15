@@ -52,6 +52,17 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 .foto img { width: 100%; border-radius: 8px; }
 .foto p { margin: 0; color: var(--muted); }
 @media (max-width: 560px) { .foto { grid-template-columns: 1fr; } }
+.mapa { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
+.mapa h2 { font-family: var(--font-display); font-weight: 500; font-size: 22px; margin: 0; }
+.mapa p { margin: 0; color: var(--muted); font-size: 14px; }
+.mapa button { padding: 0; border: 1px solid var(--line); border-radius: 8px; background: #f3f3f3; cursor: zoom-in; overflow: hidden; }
+.mapa button:focus-visible, .lb button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mapa img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.lb { position: fixed; inset: 0; z-index: 10; background: #f3f3f3; overflow: auto; overscroll-behavior: contain; }
+.lb[hidden] { display: none; }
+.lb img { display: block; max-width: none; image-rendering: pixelated; }
+.lb .lb-bar { position: sticky; top: 0; left: 0; display: flex; gap: 8px; padding: 10px 16px; background: rgba(243, 243, 243, 0.92); }
+.lb button { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px; border: 1px solid #cfc8bf; background: #fff; color: #1d1b1a; cursor: pointer; }
 </style>
 
 <div class="wrap">
@@ -74,10 +85,24 @@ canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: bloc
 
   <div class="cards" id="cards"></div>
 
+  <section class="mapa" aria-labelledby="mapaTitulo">
+    <h2 id="mapaTitulo">Spritemap</h2>
+    <p>Todos os frames numerados (f0, f1…), com a duração. A régua dá a coluna e a linha do pixel: toque pra ampliar e dê print no frame que quer mudar.</p>
+    <button id="mapaBtn" aria-label="Ampliar o spritemap"><img id="mapa" alt="Spritemap com todos os frames das animações desta página, numerados e com grade de pixels"></button>
+  </section>
+
   <div class="foto">
     <img id="foto" alt="Foto da Kiara de perfil, em pé ao lado do potinho de ração">
     <p>__FOTO_NOTA__</p>
   </div>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Spritemap ampliado">
+  <div class="lb-bar">
+    <button id="lbFechar">Fechar</button>
+    <button id="lbTamanho" aria-pressed="false">Caber na tela</button>
+  </div>
+  <img id="lbImg" alt="Spritemap ampliado, em tamanho real">
 </div>
 
 <script>
@@ -93,6 +118,8 @@ const views = [];
 
 async function build() {
   document.getElementById('foto').src = DATA.foto;
+  if (DATA.mapa) { document.getElementById('mapa').src = DATA.mapa; document.getElementById('lbImg').src = DATA.mapa; }
+  else document.querySelector('.mapa').hidden = true;
   for (const v of DATA.variants) {
     const walk = await Promise.all(v.walk.map(load));
     const stand = await load(v.stand);
@@ -162,5 +189,15 @@ bl.onclick = () => { barTheme = 'light'; setPressed(bl, bd); draw(); };
 const pl = document.getElementById('play'), pa = document.getElementById('pause');
 pl.onclick = () => { playing = true; setPressed(pl, pa); };
 pa.onclick = () => { playing = false; setPressed(pa, pl); draw(); };
+// spritemap: abre em tela cheia no tamanho real (dá pra rolar e dar print); "Caber na tela" encolhe
+const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbT = document.getElementById('lbTamanho');
+document.getElementById('mapaBtn').onclick = () => { lb.hidden = false; document.getElementById('lbFechar').focus(); };
+document.getElementById('lbFechar').onclick = () => { lb.hidden = true; document.getElementById('mapaBtn').focus(); };
+lbT.onclick = () => {
+  const fit = lbT.getAttribute('aria-pressed') !== 'true';
+  lbT.setAttribute('aria-pressed', String(fit));
+  lbImg.style.width = fit ? '100%' : ''; lbT.textContent = fit ? 'Tamanho real' : 'Caber na tela';
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lb.hidden) document.getElementById('lbFechar').click(); });
 build();
 </script>

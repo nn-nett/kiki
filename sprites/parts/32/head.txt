@@ -1,6 +1,7 @@
 # Kiara 32 — cabeça (do pescoço pra cima), linhas 0-14 / colunas 16-31 do upper.txt
 # @anchor 4,14
 # @role cabeca
+# @socket.olho 7,9
 # encaixa em torso.pescoco; desenhada por cima do torso
 XK........XX....
 XKKX.....XKX....

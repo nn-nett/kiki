@@ -196,6 +196,186 @@
         100
       ],
       "loop": true
+    },
+    "piscando": {
+      "frames": [
+        "frames/piscando/piscando_0.png",
+        "frames/piscando/piscando_1.png",
+        "frames/piscando/piscando_2.png",
+        "frames/piscando/piscando_3.png"
+      ],
+      "durations": [
+        1500,
+        60,
+        110,
+        60
+      ],
+      "loop": true
+    },
+    "piscando_esquerda": {
+      "frames": [
+        "frames/piscando/piscando_esquerda_0.png",
+        "frames/piscando/piscando_esquerda_1.png",
+        "frames/piscando/piscando_esquerda_2.png",
+        "frames/piscando/piscando_esquerda_3.png"
+      ],
+      "durations": [
+        1500,
+        60,
+        110,
+        60
+      ],
+      "loop": true
+    },
+    "piscando_contorno": {
+      "frames": [
+        "frames/piscando/piscando_contorno_0.png",
+        "frames/piscando/piscando_contorno_1.png",
+        "frames/piscando/piscando_contorno_2.png",
+        "frames/piscando/piscando_contorno_3.png"
+      ],
+      "durations": [
+        1500,
+        60,
+        110,
+        60
+      ],
+      "loop": true
+    },
+    "piscando_contorno_esquerda": {
+      "frames": [
+        "frames/piscando/piscando_contorno_esquerda_0.png",
+        "frames/piscando/piscando_contorno_esquerda_1.png",
+        "frames/piscando/piscando_contorno_esquerda_2.png",
+        "frames/piscando/piscando_contorno_esquerda_3.png"
+      ],
+      "durations": [
+        1500,
+        60,
+        110,
+        60
+      ],
+      "loop": true
+    },
+    "ofegante": {
+      "frames": [
+        "frames/ofegante/ofegante_0.png",
+        "frames/ofegante/ofegante_1.png"
+      ],
+      "durations": [
+        130,
+        130
+      ],
+      "loop": true
+    },
+    "ofegante_esquerda": {
+      "frames": [
+        "frames/ofegante/ofegante_esquerda_0.png",
+        "frames/ofegante/ofegante_esquerda_1.png"
+      ],
+      "durations": [
+        130,
+        130
+      ],
+      "loop": true
+    },
+    "ofegante_contorno": {
+      "frames": [
+        "frames/ofegante/ofegante_contorno_0.png",
+        "frames/ofegante/ofegante_contorno_1.png"
+      ],
+      "durations": [
+        130,
+        130
+      ],
+      "loop": true
+    },
+    "ofegante_contorno_esquerda": {
+      "frames": [
+        "frames/ofegante/ofegante_contorno_esquerda_0.png",
+        "frames/ofegante/ofegante_contorno_esquerda_1.png"
+      ],
+      "durations": [
+        130,
+        130
+      ],
+      "loop": true
+    },
+    "andando_ofegante": {
+      "frames": [
+        "frames/andando_ofegante/andando_ofegante_0.png",
+        "frames/andando_ofegante/andando_ofegante_1.png",
+        "frames/andando_ofegante/andando_ofegante_2.png",
+        "frames/andando_ofegante/andando_ofegante_3.png",
+        "frames/andando_ofegante/andando_ofegante_4.png",
+        "frames/andando_ofegante/andando_ofegante_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    },
+    "andando_ofegante_esquerda": {
+      "frames": [
+        "frames/andando_ofegante/andando_ofegante_esquerda_0.png",
+        "frames/andando_ofegante/andando_ofegante_esquerda_1.png",
+        "frames/andando_ofegante/andando_ofegante_esquerda_2.png",
+        "frames/andando_ofegante/andando_ofegante_esquerda_3.png",
+        "frames/andando_ofegante/andando_ofegante_esquerda_4.png",
+        "frames/andando_ofegante/andando_ofegante_esquerda_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    },
+    "andando_ofegante_contorno": {
+      "frames": [
+        "frames/andando_ofegante/andando_ofegante_contorno_0.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_1.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_2.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_3.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_4.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
+    },
+    "andando_ofegante_contorno_esquerda": {
+      "frames": [
+        "frames/andando_ofegante/andando_ofegante_contorno_esquerda_0.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_esquerda_1.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_esquerda_2.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_esquerda_3.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_esquerda_4.png",
+        "frames/andando_ofegante/andando_ofegante_contorno_esquerda_5.png"
+      ],
+      "durations": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": true
     }
   }
 }

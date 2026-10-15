@@ -3,6 +3,9 @@
 Mesmas entradas do preview_html.py ("Nome|nota|pasta do rig[|parada.png]"),
 mas com canvas e controles: velocidade, taskbar clara/escura, andando/parada.
 Usa sprites/tools/page_template.html e embute os PNGs e a foto de referência.
+Também monta o spritemap (spritemap.py: todos os frames numerados, com grade e
+régua) e põe na página com "toque pra ampliar" (pedido do dono: sempre mandar o
+spritemap junto pra ele dar print no frame que quer mudar); --mapa grava o PNG.
 Pra atualizar o artifact, publique sempre o mesmo arquivo de saída.
 
 Uso:
@@ -19,6 +22,7 @@ from pathlib import Path
 from PIL import Image, ImageOps
 
 from common import SPRITES_DIR
+from spritemap import from_folder, spritemap
 
 TEMPLATE = Path(__file__).with_name("page_template.html")
 FOTO = SPRITES_DIR.parent / "reference" / "kiki_perfil_potinho.jpg"
@@ -50,9 +54,10 @@ def main():
     ap.add_argument("--foto-nota", default="Referência de perfil: corpo compacto e robusto, pernas finas, orelhas enormes.")
     ap.add_argument("--stand", default=str(SPRITES_DIR / "base" / "kiara_32.png"))
     ap.add_argument("--step", type=float, default=1, help="px do sprite que ela anda por frame na taskbar")
+    ap.add_argument("--mapa", default="", help="grava também o PNG do spritemap aqui")
     args = ap.parse_args()
 
-    variants = []
+    variants, rows = [], []
     for entry in args.entries:
         name, note, folder, *own = entry.split("|", 4)
         folder = Path(folder)
@@ -64,7 +69,15 @@ def main():
             "walk": [png_uri(folder / f["file"]) for f in man["frames"]],
             "stand": png_uri(own[0] if own and own[0] else args.stand),
         })
-    data = {"foto": foto_uri(args.foto, args.foto_crop), "variants": variants}
+        rows.append((name, from_folder(folder)))
+    mapa = spritemap(rows)
+    buf = io.BytesIO()
+    mapa.save(buf, "PNG")
+    if args.mapa:
+        mapa.save(args.mapa)
+        print(f"spritemap: {args.mapa}")
+    data = {"foto": foto_uri(args.foto, args.foto_crop), "variants": variants,
+            "mapa": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()}
     html = (TEMPLATE.read_text()
             .replace("__TITLE__", escape(args.title))
             .replace("__INTRO__", escape(args.intro))
