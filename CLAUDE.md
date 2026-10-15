@@ -132,6 +132,9 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   passando de frente (`anims/virar_B.json`, 7 frames, começa em `parada` e termina em `parada_esquerda`). Peças
   `parts/32/*virar*` (cabeça de frente nova = identidade), raciocínio em `parts/32/virar_log.md` (a pata que sobe é a
   da frente de fora da curva, a "de longe"). O piscar não tem remendo pras cabeças novas (olho = null no virar).
+  Rodada 2 (15/10, dono: "a pata que levanta é a outra da frente, na parada"; "quando ela girar o corpo todo, as
+  patas todas colaboram, não só uma"): `anims/virar_A2.json` (sobe a pata da frente de perto) e `virar_B2.json`
+  (8 frames, as quatro patas dão passinhos de 1 px durante a meia-volta); peças `legs_virar2*`. Na mesma prévia.
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do

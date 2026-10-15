@@ -117,3 +117,45 @@ mancha, pata da frente direita (de perto) à esquerda e a esquerda (de longe) à
 3. Tempo: o pico da A (700 ms olhando pra trás) e o "olhou pra gente" da B (260 ms) estão bons, mais curtos ou mais longos?
 4. De frente: corpo mais estreito assim ou um pouco mais largo/robusto? Patas de trás escondidas ou aparecendo?
 5. Ele prefere que a meia-volta passe de frente pra gente (B) ou de costas (ver o bumbum, girando pro outro lado)?
+
+## 7. Rodada 2 (feedback do dono, 15/10)
+
+Feedback: (1) "a pata que levanta é a outra da frente, na parada" e (2) "quando ela girar o corpo todo, as patas meio
+que todas colaboram, né? não só uma". Arquivos novos (as v1 continuam como estavam): receitas `anims/virar_A2.json`
+e `anims/virar_B2.json`; peças `legs_virar2A_p1/_p2`, `legs_virar2_34_passo`, `legs_virar2_34esq_passo`,
+`legs_virar2_esq_passo`. Cabeças e troncos são os mesmos da v1, inclusive a cabeça de frente.
+
+**Por que a pata de perto (o dono tem razão).** O raciocínio da v1 olhava só pra onde o peso vai depois que a cabeça
+virou. Parada, o cachorro faz o contrário primeiro: joga o peso na pata de fora (a esquerda dela, a de longe) pra
+DESCARREGAR a pata do lado pra onde vai olhar ou andar, e essa pata de dentro (a direita dela, a de perto, a do lado
+da tela) levanta, como quem prepara o primeiro passo naquela direção. É o mesmo que a gente faz pra dar um passo
+de lado: o peso vai pro outro pé e o pé do lado do passo sobe.
+
+**A2: olhar pra trás, 6 frames, 300 / 100 / 110 / 700 / 100 / 100 ms (1,41 s).** Igual à A, só muda a pata:
+f0 todas no chão; f1 só a cabeça (3/4); f2 pata da frente de perto (direita) 1 px; f3 a mesma pata 2 px, punho
+dobrado, olhando pra trás; f4 1 px; f5 no chão.
+
+**B2: meia-volta com passinhos das 4 patas, 8 frames, 300 / 100 / 110 / 260 / 100 / 110 / 100 / 300 ms (1,38 s).**
+Cada pata sobe 1-2 px e pousa no lugar novo, uma depois da outra, na ordem de um passo lento (frente direita →
+lado esquerdo → traseira direita → traseira esquerda), sempre 1 px por frame em cada pata:
+
+| frame | ms | cabeça / corpo | pata no ar (px) |
+|---|---|---|---|
+| f0 | 300 | perfil / perfil | nenhuma |
+| f1 | 100 | 3/4 / perfil | frente DIREITA (de perto) 1: o primeiro passo, pro lado do giro |
+| f2 | 110 | frente / 3/4 | frente direita pousa; frente ESQUERDA 1 + traseira ESQUERDA 1 (as duas de longe, o lado de fora da curva dá o passo junto, como no andar) |
+| f3 | 260 | frente / frente | frente esquerda 2 (lado direito da tela); traseiras escondidas atrás |
+| f4 | 100 | 3/4 esq. / frente | frente esquerda 1 (descendo) |
+| f5 | 110 | perfil esq. / 3/4 esq. | frente esquerda pousa; traseira DIREITA 1 (a de longe no 3/4 esquerdo) |
+| f6 | 100 | perfil esq. / perfil esq. | traseira direita pousa; traseira ESQUERDA 1 (a de perto): o último passinho, o bumbum assenta |
+| f7 | 300 | perfil esq. / perfil esq. | nenhuma |
+
+A traseira esquerda dá dois passos (f2 e f6) porque é a que mais anda: o bumbum vai da esquerda da tela pra direita.
+Na vista de frente as traseiras ficam escondidas atrás das dianteiras (o passo delas aparece no 3/4 e no perfil).
+
+**Conferências:** `problems()` sem buraco nem pixel solto (normal e esquerda); lint: paleta ok, patas na linha 31,
+A2 contorno limpo; B2 com os mesmos avisos de "pulo de desenho" da v1 (troca de vista do corpo). f0 = `parada` e
+f7 = `parada_esquerda` pixel a pixel. Prévia: `quadro.png` (A antes/depois, B antes/depois) e `spritemap.png` da v2.
+
+**Perguntas:** os passinhos de 1 px ficaram visíveis o bastante no tamanho real, ou subir 2 px nas traseiras? Na
+vista de frente, mostrar as traseiras dando o passo atrás das dianteiras?

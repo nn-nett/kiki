@@ -1,0 +1,38 @@
+{
+  "name": "virar_B2",
+  "canvas": [32, 32],
+  "loop": false,
+  "variants": {
+    "contorno": [{"filter": "outline", "opts": {"color": "G"}}],
+    "esquerda": ["mirror"]
+  },
+  "frames": [
+    {"duration": 300, "parts": [
+      {"id": "legs", "part": "legs_base", "at": [0, 19]},
+      {"id": "torso", "part": "torso", "at": [0, 0]},
+      {"id": "head", "part": "head", "attach": "torso.pescoco"}
+    ]},
+    {"base": 0, "duration": 100, "set": {
+      "legs": {"part": "legs_virar2A_p1"},
+      "head": {"part": "head_virar34", "offset": [-1, 0]}}},
+    {"base": 0, "duration": 110, "set": {
+      "legs": {"part": "legs_virar2_34_passo", "at": [0, 22]},
+      "torso": {"part": "torso_virar34"},
+      "head": {"part": "head_virar_frente", "offset": [0, 0]}}},
+    {"base": 2, "duration": 260, "set": {
+      "legs": {"part": "legs_virar_frente_p2"},
+      "torso": {"part": "torso_virar_frente"}}},
+    {"base": 3, "duration": 100, "set": {
+      "legs": {"part": "legs_virar_frente_p1"},
+      "head": {"part": "head_virar34_esq"}}},
+    {"base": 4, "duration": 110, "set": {
+      "legs": {"part": "legs_virar2_34esq_passo"},
+      "torso": {"part": "torso_virar34_esq"},
+      "head": {"part": "head_virar_esq"}}},
+    {"base": 5, "duration": 100, "set": {
+      "legs": {"part": "legs_virar2_esq_passo", "at": [0, 19]},
+      "torso": {"part": "torso_virar_esq"}}},
+    {"base": 6, "duration": 300, "set": {
+      "legs": {"part": "legs_virar_esq"}}}
+  ]
+}
