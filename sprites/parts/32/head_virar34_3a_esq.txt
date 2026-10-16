@@ -1,0 +1,19 @@
+# Kiara 32 — virar v4 (rodada 4)
+# espelho da head_virar34_3a (3/4 indo pra esquerda)
+# @anchor 11,14
+# @role cabeca
+.XX...........KX
+.XKX.........XKX
+.XDX........XtDX
+.XDDX......XttDX
+..XtDXXXXXXKttX.
+...XtKKKKKKKttX.
+...XKKKKKKKKKX..
+...XKKKKKKKKKX..
+...KGtKGKGtGKK..
+...KGEKGKBEGKK..
+..XGGeGWGeEttK..
+..NNGGGWGGtttX..
+..XNGGGGGGttKX..
+...XXXXGGttKX...
+......XGGttX....

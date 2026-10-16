@@ -174,3 +174,28 @@ com elas (mesma âncora e tamanho; só as linhas 1-20 dos frames com cabeça de 
 - Piscar: a cabeça de frente tem 2 olhos. O remendo `olho_meio`/`olho_fechado` encaixa nos dois (`@socket.olho 4,9`
   e `@socket.olho2 9,9`; testado, sem buraco), mas o app hoje só desenha 1 olho por cabeça: precisa do `olho2` no
   export pra piscar de frente. As cabeças espelhadas (`_esq2`) ficaram sem socket (usariam o remendo espelhado).
+
+## 9. Rodada 4: 3/4 nova, peito e patas de frente, "olhar pra você"
+
+Feedback: B3 f1, B3 f4 e A3 f1/f5 esquisitos (todos com a cabeça 3/4); gostou da cabeça de frente sobre o corpo de
+perfil; no de frente "deixar o peito mais fiel e melhorar a pata". Arquivos novos, nada sobrescrito.
+- **3/4 nova derivada da `head_virar_frente2`** (`head_virar34_3a`/`_3b` + `_esq`): mesma testa, sobrancelhas e máscara G
+  da de frente; a cara anda 1 px pro lado do focinho; olho de longe com 1 px (atrás do focinho); focinho sai 1 px (a)
+  ou 2 px (b) além da bochecha com o nariz N na ponta; só 2 px de W (o bloco branco da 3/4 antiga saiu); orelha de perto
+  mais de perfil, a de longe 1 px mais estreita. Encaixada 2 px pra trás (offset -2) pra girar no mesmo lugar da de
+  frente. No B, na volta (f4) ela fica centrada no peito (offset +3: crânio na coluna 15, focinho até a coluna 9).
+- **Peito de frente** (`torso_virar_frente3`): faixa castanha na garganta, babador grisalho mais largo que alto, dois
+  triângulos castanhos (4 px em cima afinando pra baixo e pro meio), preto entre eles e 1 px de W no esterno. Na 3/4
+  (`torso_virar34_3`/`_esq3`): o mesmo visto de lado (triângulo de perto inteiro, o de longe mais estreito).
+- **Patas de frente** (`legs_virar_frente3`, `_p1`, `_p2`): perna reta X t X com o castanho na frente, pezinho redondo
+  e simétrico (X t t t X, com X embaixo e cantos arredondados); a pata do passinho é a mesma, só 1-2 px mais alta.
+  Patas de trás entre as da frente: testei, poluía, ficaram escondidas.
+- **Olhar pra você** (`anims/olhar_voce.json`, 9 frames, 3,03 s): parada 300 → 3/4 (a) 100 → de frente 1500 (peito
+  `torso_virarA1`, sem levantar pata) → piscada nos dois olhos (meio 60, fechado 110, meio 60; o remendo vai duas vezes,
+  ids `olho` e `olho2`, nos sockets `olho` 4,9 e `olho2` 9,9 da `head_virar_frente2`) → de frente 500 → 3/4 100 →
+  parada 300. Na 3/4 só o olho de perto tem socket (o de longe tem 1 px; o remendo 4x3 não cabe).
+- **Pixels que mudam por troca de frame:** A3 125/121/179/179/121 (soma 725) → A4a 144/82/179/179/82 (666), A4b
+  143/87/179/179/87 (675). B3 138/415/419/180/392/376/6 (1926) → B4a 157/405/423/72/450/388/6 (1901), B4b 156/410/423/77/
+  449/388/6 (1909). A entrada e a saída da cara de frente caíram de 121-180 pra 72-87; as trocas de corpo (perfil ↔ 3/4 ↔
+  frente) continuam ~400, porque é o corpo inteiro mudando de vista. Olhar pra você: 144/69/4/8/8/4/69/144.
+- Recomendo a **3a** (focinho 1 px): menos troca de pixel e mais sutil; a 3b mostra a direção do focinho com mais força.

@@ -141,6 +141,13 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   Receitas `virar_A3`/`virar_B3` (= A2/B2 com as peças novas). Antes/depois em `sprites/previews/virar/quadro_rodada3.png`.
   A cabeça de frente tem dois olhos (`@socket.olho` 4,9 e `olho2` 9,9): o export do piscar ainda só põe um olho por
   cabeça. Dúvida pro dono: escurecer também o dentro da orelha de perfil (hoje castanho, aprovado)?
+  Rodada 4 (16/10, dono: "B3 f1 e f4 estão esquisitos, A3 f1 e f5 também" = todos os frames da cabeça 3/4; gostou do
+  A3 f4 = corpo de perfil + cabeça de frente; "no de frente só precisa deixar o peito mais fiel e melhorar a pata"):
+  3/4 nova derivada da `head_virar_frente2` (`head_virar34_3a` focinho +1 px, `_3b` +2 px, com `_esq`), peito de frente
+  pelas fotos (`torso_virar_frente3`, `torso_virar34_3`/`_esq3`: babador G, dois triângulos t, 1 px W no esterno),
+  patas de frente retas com pezinho redondo (`legs_virar_frente3*`). Receitas `virar_A4a/b`, `virar_B4a/b` e a nova
+  **`olhar_voce`** (cabeça vira pra frente, segura 1,5 s, pisca nos dois olhos com remendos em `olho` e `olho2`, volta;
+  ideia pra reação ao mouse/clique). Quadros em `sprites/previews/virar/quadro_rodada4_*.png`; log seção 9.
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do

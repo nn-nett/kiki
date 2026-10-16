@@ -1,0 +1,23 @@
+# Kiara 32 — virar v4 (rodada 4)
+# cabeça 3/4 nova, derivada da head_virar_frente2 (a de frente aprovada): focinho sai 1 px além da bochecha, nariz N na ponta,
+# cara 1 px pro lado do focinho, olho de longe com 1 px (meio escondido atrás do focinho), grisalho em G e só 2 px de W,
+# orelha de perto mais de perfil (ponta preta, castanho dentro), a de longe 1 px mais estreita. Mesma âncora da 3/4 antiga.
+# piscar: socket olho no olho de perto; o de longe tem 1 px e o remendo (4x3) não cabe nele (ver virar_log.md).
+# @anchor 4,14
+# @role cabeca
+# @socket.olho 5,9
+XK...........XX.
+XKX.........XKX.
+XDtX........XDX.
+XDttX......XDDX.
+.XttKXXXXXXDtX..
+.XttKKKKKKKtX...
+..XKKKKKKKKKX...
+..XKKKKKKKKKX...
+..KKGtGKGKtGK...
+..KKGEBKGKEGK...
+..KttEeGWGeGGX..
+..XtttGGWGGGNN..
+..XKttGGGGGGNX..
+...XKttGGXXXX...
+....XttGGX......

@@ -1,0 +1,122 @@
+{
+  "name": "olhar_voce",
+  "canvas": [
+    32,
+    32
+  ],
+  "loop": true,
+  "variants": {
+    "contorno": [
+      {
+        "filter": "outline",
+        "opts": {
+          "color": "G"
+        }
+      }
+    ],
+    "esquerda": [
+      "mirror"
+    ]
+  },
+  "frames": [
+    {
+      "duration": 300,
+      "parts": [
+        {
+          "id": "legs",
+          "part": "legs_base",
+          "at": [
+            0,
+            19
+          ]
+        },
+        {
+          "id": "torso",
+          "part": "torso",
+          "at": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "head",
+          "part": "head",
+          "attach": "torso.pescoco"
+        }
+      ]
+    },
+    {
+      "base": 0,
+      "duration": 100,
+      "set": {
+        "head": {
+          "part": "head_virar34_3a",
+          "offset": [
+            -2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 0,
+      "duration": 1500,
+      "set": {
+        "torso": {
+          "part": "torso_virarA1"
+        },
+        "head": {
+          "part": "head_virar_frente2",
+          "offset": [
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": 2,
+      "duration": 60,
+      "parts": [
+        {
+          "id": "olho",
+          "part": "olho_meio",
+          "attach": "head.olho"
+        },
+        {
+          "id": "olho2",
+          "part": "olho_meio",
+          "attach": "head.olho2"
+        }
+      ]
+    },
+    {
+      "base": 3,
+      "duration": 110,
+      "set": {
+        "olho": {
+          "part": "olho_fechado"
+        },
+        "olho2": {
+          "part": "olho_fechado"
+        }
+      }
+    },
+    {
+      "base": 3,
+      "duration": 60
+    },
+    {
+      "base": 2,
+      "duration": 500
+    },
+    {
+      "base": 1,
+      "duration": 100
+    },
+    {
+      "base": 0,
+      "duration": 300
+    }
+  ]
+}
