@@ -1,0 +1,7 @@
+# Kiara 32 — remendo do piscar pra CABEÇA DE FRENTE: os dois olhos FECHADOS, numa peça só
+# @anchor 0,0
+# @role olho
+# encaixa no @socket.olho da head_virar_frente2; pálpebra grisalha G em cima e a linha escura X embaixo, nos dois
+# olhos (igual ao olho fechado do perfil, sem os retoques de bochecha, que de frente não precisam).
+GG...GG
+XX...XX

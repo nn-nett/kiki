@@ -1,0 +1,8 @@
+# Kiara 32 — remendo do piscar pra CABEÇA DE FRENTE: os dois olhos MEIO fechados, numa peça só
+# @anchor 0,0
+# @role olho
+# encaixa no @socket.olho da head_virar_frente2 (o E de cima do olho da esquerda da tela) e cobre os dois olhos
+# (colunas 4-5 e 9-10 da cabeça). '.' = mantém o pixel da cabeça. A pálpebra grisalha G tapa a linha de cima dos
+# olhos (E e brilho B); a de baixo (E e) continua aparecendo. Uma peça só pros dois olhos: o app continua pondo
+# um remendo por cabeça.
+GG...GG
