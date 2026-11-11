@@ -114,6 +114,8 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   olhos; pelos brancos salpicados pela cabeça.
 - Tan: bochechas, sobrancelhas (pontinhos), garganta, peito (com mancha clara
   cremosa no centro), pernas e patas.
+- Peito de frente (fotos `kiki_frente_*`): garganta castanha, babador grisalho embaixo, duas marcas castanhas
+  descendo dos ombros em V e a mancha clara no esterno, no bico do V.
 - Olhos castanhos (o dono corrigiu: nada de catarata/névoa azulada; o azulado das
   fotos é reflexo). Cor E #4a2c1e com 1 pixel de brilho B.
 - Corpo compacto e robusto, pernas finas.
@@ -125,6 +127,10 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   em 1 px, só mexe o que tem motivo, mesma cachorra sempre, preparação → pico → volta, relógios separados) e as
   receitas replicáveis (remendo + âncora, troca de cabeça, ciclo de pernas, respiração de 1 px, rabo como peça).
   Ler antes de começar uma animação nova.
+  **Reanálise geral (11/11)** no fim do mesmo arquivo: aprovadas continuam de pé; galope precisa ser refeito a partir de
+  duas poses-chave (v4 encolhe demais, v5 estica demais e fica rígida); as três opções do ofegante parado são iguais em
+  tamanho real; e cinco regras de trabalho novas (decidir em tamanho real, vista intermediária = híbrido das pontas
+  aprovadas, posição por medida, mesma marca em todas as vistas, poses-chave primeiro).
 
 - **Desafio "olhar pro outro lado"** (pedido do dono, 15/10: "ela vai girar a cabeça, o pescoço faz o movimento com
   um pouco do peito, a pata do lado oposto sobe"): rascunho pra escolha em https://claude.ai/artifact/3UZmRxjPuafFXo6uhw1674
@@ -148,6 +154,14 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   patas de frente retas com pezinho redondo (`legs_virar_frente3*`). Receitas `virar_A4a/b`, `virar_B4a/b` e a nova
   **`olhar_voce`** (cabeça vira pra frente, segura 1,5 s, pisca nos dois olhos com remendos em `olho` e `olho2`, volta;
   ideia pra reação ao mouse/clique). Quadros em `sprites/previews/virar/quadro_rodada4_*.png`; log seção 9.
+  **Rodada 5 (11/11, dono: "dá uma reanalisada em tudo e faz essa última animação" com o modelo novo): redesenhada na
+  sessão principal, pra aprovação.** Receitas `virar_B5` (meia-volta), `virar_A5` (olhar pra trás, pico = 3/4 do outro
+  lado por cima do ombro, não mais o perfil espelhado) e `olhar_voce5` (piscada de frente com um remendo só pros dois
+  olhos: `olho_frente_meio`/`olho_frente_fechado`). Peças com sufixo `5`: cabeça 3/4 híbrida (`head_virar34_5`: metade
+  de frente, metade perfil), corpo de frente em escudo com o peito em V + mancha W (`torso_virar_frente5`,
+  `legs_virar_frente5*`), corpo 3/4 (`torso_virar34_5`, `legs_virar34_5*`), tronco do pico (`torso_virarA5`), e os
+  espelhos `_esq5`. Antes/depois em `sprites/previews/virar/quadro_rodada5.png`; log seção 10. As rodadas 1-4 ficam
+  como histórico.
 - **Frames de transição entre estados** (pedido pra "amanhã", 14/10): parado → andando,
   andando → correndo, correndo → andando, andando → parado, parado → latindo etc. Ideia: 1-3 frames
   curtos por transição (ex.: pata levantando antes do primeiro passo, corpo inclinando antes do
@@ -274,6 +288,8 @@ só marcar como ✅ com aprovação explícita.
   (folha de revisão com frames numerados, grade e régua; vai junto de toda prévia; o `preview_html.py`
   offline também embute, com toque pra ampliar só em CSS), `alongar.py` (corpo N px mais comprido sem redesenhar),
   `dois_relogios.py` (prévia de corpo e cabeça em ritmos separados, ex.: andando ofegante).
+  `bancada.py` (bancada de desenho: folha com o ampliado + tamanho real 2x/3x em fundo claro e escuro, e a checagem
+  de buracos/soltos; usar antes de mostrar qualquer coisa ao dono).
   Dependências: `sprites/requirements.txt`.
 - **Skill do projeto `ajuste-sprite`** (`.claude/skills/ajuste-sprite/SKILL.md`): o ciclo
   localizar → variantes → mostrar → aplicar → salvar, com as lições do dono (bordas X,

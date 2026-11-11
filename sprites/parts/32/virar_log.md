@@ -199,3 +199,46 @@ perfil; no de frente "deixar o peito mais fiel e melhorar a pata". Arquivos novo
   449/388/6 (1909). A entrada e a saída da cara de frente caíram de 121-180 pra 72-87; as trocas de corpo (perfil ↔ 3/4 ↔
   frente) continuam ~400, porque é o corpo inteiro mudando de vista. Olhar pra você: 144/69/4/8/8/4/69/144.
 - Recomendo a **3a** (focinho 1 px): menos troca de pixel e mais sutil; a 3b mostra a direção do focinho com mais força.
+
+## 10. Rodada 5: redesenho na sessão principal (11/11)
+
+Pedido do dono: "dá uma reanalisada em tudo e faz essa última animação" com o modelo novo. Peças com sufixo `5`,
+receitas `virar_B5`, `virar_A5` e `olhar_voce5`. Nada das rodadas anteriores foi apagado.
+
+O que estava errado nas rodadas 3 e 4 (olhando em tamanho real, não só ampliado):
+- A cabeça 3/4 era desenhada como uma cabeça nova. Virava uma cara de frente achatada com um focinho cinza sem forma,
+  e o olho de longe (1 px castanho no preto) sumia.
+- O corpo de frente era uma caixa de 13 px com as laterais retas e as pernas saindo dos cantos ("mesa").
+- As marcas do peito mudavam de desenho entre as vistas (triângulos de frente, mancha W no perfil).
+- As cabeças eram postas "no olho": a 3/4 entrava 2-3 px fora do lugar e a cabeça pulava entre os frames.
+
+O que mudou:
+- **Cabeça 3/4 híbrida** (`head_virar34_5`, espelho `_esq5`): a metade de perto vem da cabeça de frente (orelha
+  aberta, olho 2x2 com o grisalho atrás, bochecha castanha) e a metade de longe vem do perfil aprovado (focinho W com
+  o nariz preto na ponta). O olho de longe tem brilho e encosta na borda da cara, e o focinho passa por baixo dele:
+  é o que faz ler "meio de lado". O nariz ficou arredondado (1 px em cima, 2 embaixo, queixo 1 px mais curto).
+- **Posição por medida**: a cabeça gira em volta do pescoço (eixo na coluna 21,5 do corpo parado). A 45°, o olho de
+  perto fica 2 px atrás do olho do perfil e o nariz 2 px mais curto; por isso a 3/4 entra com offset 0 no corpo de
+  perfil e +1 no corpo de frente. Brilho do olho na coluna 24 (perfil) → 22 (3/4) → 19 (frente).
+- **Corpo de frente em escudo** (`torso_virar_frente5`): ombros arredondados (11 → 13 px), afina pra 11 px e as
+  pernas saem de baixo dos ombros, pretas em cima e castanhas do cotovelo pra baixo, como no perfil.
+- **Peito igual em todas as vistas**: garganta castanha, babador grisalho (triângulo pra baixo), as duas marcas
+  castanhas descendo dos ombros em V (fotos `kiki_frente_deitada_*`) e a mancha clara W no bico do V, que é a mesma
+  mancha do perfil aprovado e da foto `kiki_frente_sorrindo_peitoral`. No 3/4 (`torso_virar34_5`) o braço de perto do
+  V é comprido e o de longe é cortado pela borda.
+- **Patas de frente** (`legs_virar_frente5`, `_p1`, `_p2`): perna XtX reta, pezinho redondo simétrico; a pata no ar é a
+  mesma perna 1 ou 2 px mais curta. No 3/4 (`legs_virar34_5*`) o pezinho vira 1 px pro lado pra onde ela vai.
+- **Olhar pra trás** (`virar_A5`): o pico deixou de ser o perfil espelhado (cabeça "ao contrário", 180°) e virou a
+  3/4 esquerda puxada 1 px pra trás: ela olha por cima do ombro com os dois olhos aparecendo (135°, o que um
+  cachorro faz). A cabeça gira em passos iguais: perfil → 3/4 → frente → 3/4 do outro lado. Tronco do pico
+  `torso_virarA5` (pescoço preto, marca do peito 1 px pra trás).
+- **Olhar pra você** (`olhar_voce5`): piscada de frente com um remendo só pros dois olhos (`olho_frente_meio`,
+  `olho_frente_fechado`, encaixe no `olho` da cabeça de frente), pra o app continuar com um remendo por cabeça.
+
+Conferido: primeiro frame = `parada` e último da meia-volta = `parada_esquerda` pixel a pixel; só cores da paleta; sem
+buraco nem pixel solto; patas na linha 31; lint com contorno sem erros (só os avisos de "muda muito pixel" nas trocas
+de vista do corpo, que são da natureza da meia-volta). Pixels que mudam por troca: A5 78/153/162 (A4: 144/82/179),
+olhar pra você no máximo 140.
+
+Em aberto pro dono: (1) a orelha é castanha por dentro no perfil aprovado e escura de frente (como nas fotos); na 3/4
+fica metade/metade. (2) As cabeças espelhadas não têm encaixe do piscar (na meia-volta não faz falta: dura 1,4 s).

@@ -69,3 +69,44 @@ outras regras (1 px de cada vez na cabeça, toquinho acompanhando a coluna, bord
    fechado).
 3. **Reação ao toque** no ritmo preparação → pico → volta, com o rabo abanando.
 4. **Transições** de 1-3 frames com as faixas de pernas que já existem.
+
+## Reanálise geral (11/11)
+
+Pedido do dono: "dá uma reanalisada em tudo". Olhei de novo todos os frames aprovados e os pendentes, ampliados e em
+tamanho real (2x e 3x, fundo claro e escuro), com a ferramenta nova `tools/bancada.py`.
+
+### Aprovadas: continuam de pé
+
+Parada, andando, latindo e piscar passam nas oito regras acima e não precisam de retoque. Dois pontos pra decisão do
+dono, sem mexer em nada por enquanto:
+
+- **Orelha por dentro.** No perfil aprovado é castanha; nas fotos de frente é escura com a base castanha. Enquanto ela
+  só existia de perfil isso não aparecia; na meia-volta a orelha muda de cor no caminho. Dá pra deixar (lê como a
+  orelha virando) ou escurecer a parte de cima da orelha do perfil.
+- **Ofegante parada (A2, meio-termo, A3).** As três diferem em 2 a 6 pixels da barriga. Em tamanho real não dá pra
+  distinguir uma da outra. Sugestão: fechar com o meio-termo, que foi o último pedido, e seguir.
+
+### Pendentes
+
+- **Galope.** Nenhuma das duas versões está certa, e pelo mesmo motivo com sinais trocados. A v4 encolhe o corpo até
+  19 colunas (bola) e encurta as pernas: daí o "dwarfismo". A v5 corrigiu demais: o corpo fica com 27-30 colunas em
+  todos os frames (parada tem 23), com as costas retas, e os frames f4/f5 parecem ela parada de pernas abertas. O que
+  faz um galope ler é a alternância entre dois momentos: recolhida (costas arqueadas, patas de trás passando por baixo
+  das da frente) e esticada (tudo no ar, patas pra frente e pra trás), com o comprimento do corpo oscilando em volta
+  do comprimento da parada (uns 21 a 26), nunca 30. Proposta: refazer começando só pelas duas poses-chave, aprovar as
+  duas, e só então desenhar os frames do meio.
+- **Dormindo.** As quatro opções leem como "cachorra deitada". A D (inteira em cima do travesseiro) é a mais compacta e
+  a que melhor lê em tamanho real; a A é a melhor sem travesseiro. Falta a escolha do dono.
+- **Olhar pro outro lado.** Refeito na rodada 5 (`parts/32/virar_log.md`, seção 10).
+
+### O que mudou no jeito de trabalhar (vale pras próximas animações)
+
+1. **Decidir em tamanho real.** Várias rodadas reprovadas pareciam boas a 10x, onde ruído de pixel passa por detalhe.
+   A bancada mostra sempre o ampliado e o tamanho real juntos.
+2. **Vista intermediária = híbrido das duas pontas aprovadas.** A cabeça meio de lado só funcionou quando deixou de
+   ser um desenho novo: metade da cabeça de frente, metade do perfil. Vale pra corpo 3/4 e pra transições.
+3. **Posição por medida, não no olho.** Escolher o eixo do giro (o pescoço), calcular onde caem olho e nariz em cada
+   ângulo e conferir a coluna do brilho do olho frame a frame.
+4. **Uma marca é a mesma em todas as vistas.** A mancha clara do peito existe no perfil, então tem que existir de
+   frente e no 3/4, no lugar que a geometria manda. É a regra 3 (mesma cachorra) aplicada às marcações.
+5. **Poses-chave primeiro.** Aprovar as duas ou três poses que definem a animação antes de desenhar os frames do meio.
