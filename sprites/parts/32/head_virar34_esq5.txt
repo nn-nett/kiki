@@ -1,0 +1,18 @@
+# Kiara 32 — virar v5 (rodada 5): espelho de head_virar34_5, sem mudar pixel (cabeça 3/4 indo pra esquerda)
+# @anchor 11,14
+# @role cabeca
+....XX........KX
+....XKX.....XKKX
+....XDX.....KtDX
+....XDDX...XttDX
+....XtDKKKKXttX.
+....XtKKKKKKttX.
+....XKKKKKKKKX..
+....XKKKKKKKKX..
+....XtGKKGtGKK..
+....XBEKKBEGKK..
+...XXeWWGeEtKK..
+...XXWWWWGttKX..
+...XXWWGGttKKX..
+...KKGGttXKKK...
+....GGtttXKKKK..
