@@ -1,6 +1,7 @@
 # Sprites prontos da Kiara (pra implementação)
 
-Tudo nesta pasta foi **aprovado pelo dono** e é gerado por `python3 sprites/tools/export_final.py`
+Tudo nesta pasta foi **VALIDADO pelo dono** (cada animação tem `"status": "VALIDADO"` em `aprovadas.json`;
+o painel geral do que está validado e do que falta é o `STATUS.md` na raiz) e é gerado por `python3 sprites/tools/export_final.py`
 a partir de `aprovadas.json`. Não edite os PNGs à mão: eles saem das peças em `sprites/parts/32/`.
 Pra ver tudo animado: Galeria da Kiara, https://claude.ai/artifact/Cg5sdrUGvrXio7Wn9rx6oe
 (também em `galeria.html` nesta pasta, abre offline).

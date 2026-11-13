@@ -5,6 +5,16 @@ com marcações castanhas (tan), orelhas em pé, porte pequeno. **Detalhe essenc
 pelos grisalhos/brancos no focinho, ao redor dos olhos e espalhados pelo rosto**
 (ela é idosa). Vive na taskbar do Windows 11 e num overlay no Android.
 
+## Começando uma sessão nova (leia primeiro)
+
+- **`STATUS.md`**: painel do que está ✅ validado (em `sprites/final/`, com `"status": "VALIDADO"` em
+  `aprovadas.json`), do que ⏳ falta o dono validar (com link, arquivos e sugestão) e do que 🔲 não começou.
+- **`CONTINUAR.md`**: método de trabalho (multi-agentes), regras do dono, páginas publicadas e como republicar,
+  comandos e lições técnicas.
+- Skills do projeto: **`rodada-animacao`** (rodada de animação nova/refeita, com o briefing do desenhista) e
+  **`ajuste-sprite`** (ajuste fino de pixels).
+- Prompt pronto pra abrir a próxima sessão: `prompts/proxima_sessao_sprites.md`.
+
 ## Sprites prontos pra implementação (leia primeiro se for mexer no app)
 
 O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprovado; a Fase 0
@@ -31,8 +41,8 @@ O dono vai implementar o app (Fase 1) em outra sessão com o que já está aprov
   o tamanho na Fase 1. Simulação já tem "Taskbar em cima" (padrão).
 - **Comportamento de referência:** simulação https://claude.ai/artifact/GmRRzGRh512wQHAbToic6Y
   (`sprites/tools/sim_template.html`, objeto `BRAIN`).
-- **Ainda não aprovados** (não usar como final): correndo, dormindo (+ travesseiro), transições; o `ofegante`
-  parado está sendo refeito (o dono escolhe entre A2, meio-termo e A3).
+- **Ainda não aprovados** (não usar como final): olhar pro outro lado (rodada 5), correndo, dormindo (+ travesseiro),
+  transições; o `ofegante` parado está sendo refeito (o dono escolhe entre A2, meio-termo e A3). Ver `STATUS.md`.
 - Pra regenerar os finais: `python3 sprites/tools/export_final.py` (lê `sprites/final/aprovadas.json`).
 
 ## Estado do projeto
@@ -274,9 +284,10 @@ só marcar como ✅ com aprovação explícita.
   bake-off de rotas (A Claude desenha, B foto→pixels, C Canva, D Figma AI, E pixel a
   pixel com juiz). A estratégia antiga de adaptar o sheet de husky foi abandonada
   (opengameart segue bloqueado na rede do sandbox).
-- **Papéis dos modelos**: Opus (sessão principal) = diretor de arte, código central,
-  decisões e conversa com o dono; Sonnet (subagentes) = desenhista e scripts de rotina;
-  Haiku (subagentes) = juiz rápido A/B e conferências frame a frame.
+- **Papéis dos modelos** (detalhes em `CONTINUAR.md` e na skill `rodada-animacao`): sessão principal = diretor
+  de arte, código central, decisões, conversa com o dono e as peças de identidade (cabeça, rosto, vistas novas);
+  subagentes `general-purpose` em background, em paralelo = desenhistas (variações, frames do meio, espelhos) e
+  scripts de rotina; Haiku = juiz rápido A/B e conferências frame a frame.
 - Ferramentas em `sprites/tools/` (base comum em `common.py`): `rig.py`, `filters.py`,
   `lint.py` (paleta, pés no chão, contraste com a taskbar), `review.py` (folha com
   grade e foto), `compare.py` (A/B pro juiz), `similarity.py` (nota 0–100 vs. foto),
